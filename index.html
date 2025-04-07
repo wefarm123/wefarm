@@ -1821,6 +1821,112 @@ With our intuitive system, farmers can achieve exceptional results without requi
 
 <script src="//code.tidio.co/uyd3wtwgpwqplxhkbbxsygfouhs4wn2z.js" async></script>
 
+    <!-- Weather Box UI -->
+<style>
+  #wefarm-weather-box {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background-color: #f3fbe9;
+    color: #2d572c;
+    border: 2px solid #4CAF50;
+    border-radius: 12px;
+    padding: 12px 16px 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    z-index: 9998;
+  }
+
+  #wefarm-weather-close {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    padding: 2px 8px;
+    font-size: 14px;
+  }
+
+  #wefarm-weather-box .emoji {
+    font-size: 20px;
+    margin-right: 6px;
+  }
+</style>
+
+<!-- Weather Box -->
+<div id="wefarm-weather-box">
+  <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
+  ⏳ Mausam ka haal la rahe hain...
+</div>
+
+<!-- Weather Script -->
+<script>
+  const apiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
+
+  async function fetchWeather() {
+    try {
+      const locRes = await fetch("https://ipapi.co/json/");
+      const locData = await locRes.json();
+      const location = `${locData.city}, ${locData.region}`;
+      const lat = locData.latitude;
+      const lon = locData.longitude;
+
+      const weatherURL = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`;
+      const res = await fetch(weatherURL);
+      const data = await res.json();
+      const weather = data.data.values;
+
+      const temp = weather.temperature;
+      const humidity = weather.humidity;
+      const rainChance = weather.precipitationProbability;
+      const code = weather.weatherCode;
+
+      const conditionMap = {
+        1000: "Clear",
+        1001: "Cloudy",
+        1100: "Mostly Clear",
+        1101: "Partly Cloudy",
+        1102: "Mostly Cloudy",
+        2000: "Fog",
+        4200: "Light Rain",
+        4201: "Heavy Rain",
+        5000: "Snow",
+        5100: "Light Snow",
+        5101: "Heavy Snow"
+      };
+
+      const readableCondition = conditionMap[code] || "Mausam info";
+
+      document.getElementById("wefarm-weather-box").innerHTML = `
+        <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
+        <span class="emoji">📍</span><strong>${location}</strong><br>
+        <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
+        <span class="emoji">💧</span>Humidity: ${humidity}%<br>
+        <span class="emoji">🌧️</span>Rain Chance: ${rainChance}%<br>
+        <span class="emoji">🌦️</span>Condition: ${readableCondition}
+      `;
+    } catch (err) {
+      document.getElementById("wefarm-weather-box").innerHTML = `
+        <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
+        ⚠️ Mausam ki jankari nahi mil payi.
+      `;
+      console.error("Weather Error:", err);
+    }
+  }
+
+  // 🟢 Call initially
+  fetchWeather();
+
+  // 🔄 Auto-refresh every hour (3600000 ms)
+  setInterval(fetchWeather, 3600000);
+</script>
+
+
 
 </body>
 </html>
