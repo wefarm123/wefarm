@@ -583,6 +583,16 @@
             </div>
         </div>
     </div>
+
+          <!-- 🌦️ WEATHER BOX -->
+  <div id="weather-widget" style="display: none; border-left: 8px solid #4CAF50; background-color: #f6fff6; color: #000; padding: 16px; border-radius: 8px; min-width: 300px;">
+    <strong>📍 <span id="location-name">Loading...</span></strong><br>
+    🌡️ तापमान: <span id="temperature"></span>°C<br>
+    💧 नमी: <span id="humidity"></span>%<br>
+    🌧️ बारिश की संभावना: <span id="precipitation"></span>%<br>
+    🌥️ मौसम: <span id="condition"></span>
+  </div>
+</div>
 </section>
         #home {
             height: 100vh;
@@ -1821,117 +1831,55 @@ With our intuitive system, farmers can achieve exceptional results without requi
 
 <script src="//code.tidio.co/uyd3wtwgpwqplxhkbbxsygfouhs4wn2z.js" async></script>
 
-<!-- Weather Box Styled Like LIVE MANDI -->
-<style>
-  #weather-mandi-style {
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
-    z-index: 9998;
-    max-width: 260px;
-    line-height: 1.6;
-  }
+    <script>
+  async function loadWeather() {
+    const apiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
+    const widget = document.getElementById("weather-widget");
 
-  #weather-mandi-style h4 {
-    margin: 0 0 4px;
-    font-size: 15px;
-    color: #ffffff;
-    font-weight: bold;
-  }
-
-  #weather-mandi-style span.label {
-    display: inline-block;
-    font-weight: bold;
-    min-width: 90px;
-    color: #fffdd0;
-  }
-
-  #weather-mandi-close {
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #2e7d32;
-    border-radius: 50%;
-    padding: 2px 8px;
-    font-size: 14px;
-  }
-</style>
-
-<div id="weather-mandi-style">
-  <div id="weather-mandi-close" onclick="document.getElementById('weather-mandi-style').style.display='none'">×</div>
-  <h4>📍 Mausam Update</h4>
-  ⏳ Loading...
-</div>
-
-<script>
-  const apiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
-
-  async function fetchWeather() {
     try {
       const locRes = await fetch("https://ipapi.co/json/");
       const locData = await locRes.json();
-      const location = `${locData.city}, ${locData.region}`;
       const lat = locData.latitude;
       const lon = locData.longitude;
+      const city = locData.city + ", " + locData.region;
+      document.getElementById("location-name").innerText = city;
 
-      const weatherURL = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`;
-      const res = await fetch(weatherURL);
-      const data = await res.json();
-      const weather = data.data.values;
+      const weatherRes = await fetch(`https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`);
+      const weatherData = await weatherRes.json();
 
-      const temp = weather.temperature;
-      const humidity = weather.humidity;
-      const rainChance = weather.precipitationProbability;
-      const code = weather.weatherCode;
+      const values = weatherData.data.values;
 
-      const conditionMap = {
-        1000: "Clear",
-        1001: "Cloudy",
-        1100: "Mostly Clear",
-        1101: "Partly Cloudy",
-        1102: "Mostly Cloudy",
-        2000: "Fog",
-        4200: "Light Rain",
-        4201: "Heavy Rain",
-        5000: "Snow",
-        5100: "Light Snow",
-        5101: "Heavy Snow"
-      };
+      document.getElementById("temperature").innerText = values.temperature;
+      document.getElementById("humidity").innerText = values.humidity;
+      document.getElementById("precipitation").innerText = values.precipitationProbability;
+      document.getElementById("condition").innerText = translateCondition(values.weatherCode);
 
-      const readableCondition = conditionMap[code] || "Unknown";
-
-      document.getElementById("weather-mandi-style").innerHTML = `
-        <div id="weather-mandi-close" onclick="document.getElementById('weather-mandi-style').style.display='none'">×</div>
-        <h4>📍 ${location}</h4>
-        <div><span class="label">🌡️ Temp:</span> ${temp}°C</div>
-        <div><span class="label">💧 Humidity:</span> ${humidity}%</div>
-        <div><span class="label">🌧️ Rain:</span> ${rainChance}%</div>
-        <div><span class="label">🌤️ Condition:</span> ${readableCondition}</div>
-      `;
-    } catch (err) {
-      document.getElementById("weather-mandi-style").innerHTML = `
-        <div id="weather-mandi-close" onclick="document.getElementById('weather-mandi-style').style.display='none'">×</div>
-        ⚠️ Mausam data nahi mil paya.
-      `;
-      console.error("Weather Fetch Error:", err);
+      widget.style.display = "block";
+    } catch (error) {
+      console.error("Weather Error:", error);
+      widget.innerHTML = "❌ मौसम की जानकारी नहीं मिल पाई।";
+      widget.style.display = "block";
     }
   }
 
-  fetchWeather();
-  setInterval(fetchWeather, 3600000); // 1hr refresh
+  function translateCondition(code) {
+    const mapping = {
+      1000: "साफ",
+      1100: "हल्के बादल",
+      1101: "बादल",
+      1102: "गहरे बादल",
+      4000: "बारिश",
+      4200: "हल्की बारिश",
+      4201: "तेज़ बारिश",
+      5000: "बर्फ",
+      5100: "हल्की बर्फबारी",
+      5101: "तेज़ बर्फबारी"
+    };
+    return mapping[code] || "अज्ञात";
+  }
+
+  loadWeather();
 </script>
-
-
 
 
 </body>
