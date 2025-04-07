@@ -1822,12 +1822,11 @@ With our intuitive system, farmers can achieve exceptional results without requi
 
 <script src="//code.tidio.co/uyd3wtwgpwqplxhkbbxsygfouhs4wn2z.js" async></script>
 
-<!-- Weather Box UI -->
 <style>
   #wefarm-weather-box {
     position: fixed;
     bottom: 90px;
-    right: 20px;
+    left: 20px; /* Changed from right: 20px to left: 20px */
     color: #2d572c;
     border: 2px solid #4CAF50;
     border-radius: 12px;
@@ -1891,25 +1890,7 @@ With our intuitive system, farmers can achieve exceptional results without requi
     50% { border-color: #2d572c; }
     100% { border-color: transparent; }
   }
-
-  #speaker-btn {
-    position: absolute;
-    top: 8px;
-    left: 10px;
-    cursor: pointer;
-    font-size: 18px;
-    color: #4CAF50;
-  }
 </style>
-
-<!-- Weather Box -->
-<div id="wefarm-weather-box">
-  <div id="speaker-btn" onclick="speakWeather()">🔊</div>
-  <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-  <span id="typing-effect" class="typing"></span>
-</div>
-
-<!-- Weather Script -->
 <script>
   const tomorrowApi = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
   const owmKeys = [
@@ -1917,8 +1898,6 @@ With our intuitive system, farmers can achieve exceptional results without requi
     "c6bf2b8e43a09686efa728ec92ad2897",
     "a3ff3905404a1f6373ae77d28f633eaf"
   ];
-
-  let latestWeatherText = "";
 
   function typeEffect(text, elementId, speed = 100) {
     let i = 0;
@@ -1930,7 +1909,7 @@ With our intuitive system, farmers can achieve exceptional results without requi
       i++;
       if (i >= text.length) {
         clearInterval(typingInterval);
-        fetchWeather(); // Fetch once typing ends
+        fetchWeather();
       }
     }, speed);
   }
@@ -1968,23 +1947,23 @@ With our intuitive system, farmers can achieve exceptional results without requi
         const weather = data.data.values;
 
         const conditionMap = {
-          1000: "Clear",
-          1001: "Cloudy",
-          1100: "Mostly Clear",
-          1101: "Partly Cloudy",
-          1102: "Mostly Cloudy",
-          2000: "Fog",
-          4200: "Light Rain",
-          4201: "Heavy Rain",
-          5000: "Snow",
-          5100: "Light Snow",
-          5101: "Heavy Snow"
+          1000: "साफ मौसम",
+          1001: "बादल वाला",
+          1100: "अधिकतर साफ",
+          1101: "आंशिक बादल",
+          1102: "ज्यादा बादल",
+          2000: "कोहरा",
+          4200: "हल्की बारिश",
+          4201: "तेज बारिश",
+          5000: "बर्फबारी",
+          5100: "हल्की बर्फबारी",
+          5101: "तेज बर्फबारी"
         };
 
         temp = weather.temperature;
         humidity = weather.humidity;
         rainChance = weather.precipitationProbability;
-        readableCondition = conditionMap[weather.weatherCode] || "Unknown";
+        readableCondition = conditionMap[weather.weatherCode] || "अज्ञात";
       } catch (err) {
         for (const key of owmKeys) {
           try {
@@ -1994,7 +1973,7 @@ With our intuitive system, farmers can achieve exceptional results without requi
               temp = data.main.temp;
               humidity = data.main.humidity;
               rainChance = data.clouds ? data.clouds.all : 0;
-              readableCondition = data.weather[0].main;
+              readableCondition = data.weather[0].description || "अज्ञात";
               break;
             }
           } catch (error) {
@@ -2003,43 +1982,27 @@ With our intuitive system, farmers can achieve exceptional results without requi
         }
       }
 
-      latestWeatherText = `Location: ${location}. Temperature is ${temp} degrees Celsius. Humidity is ${humidity} percent. Rain chance is ${rainChance} percent. Condition is ${readableCondition}.`;
-
       document.getElementById("wefarm-weather-box").innerHTML = `
-        <div id="speaker-btn" onclick="speakWeather()">🔊</div>
         <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
         <span class="emoji">📍</span><strong>${location}</strong><br>
-        <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
-        <span class="emoji">💧</span>Humidity: ${humidity}%<br>
-        <span class="emoji">🌧️</span>Rain Chance: ${rainChance}%<br>
-        <span class="emoji pulse">🌦️</span>Condition: ${readableCondition}
+        <span class="emoji">🌡️</span>तापमान: ${temp}°C<br>
+        <span class="emoji">💧</span>नमी: ${humidity}%<br>
+        <span class="emoji">🌧️</span>बारिश की संभावना: ${rainChance}%<br>
+        <span class="emoji pulse">🌦️</span>मौसम: ${readableCondition}
       `;
     } catch (err) {
-      latestWeatherText = "Mausam ki jankari nahi mil payi.";
       document.getElementById("wefarm-weather-box").innerHTML = `
-        <div id="speaker-btn" onclick="speakWeather()">🔊</div>
         <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-        ⚠️ Mausam ki jankari nahi mil payi.
+        ⚠️ मौसम की जानकारी नहीं मिल पाई।
       `;
+      console.error("Weather Error:", err);
     }
   }
 
-  function speakWeather() {
-    const msg = new SpeechSynthesisUtterance();
-    msg.text = latestWeatherText;
-    msg.lang = 'en-IN';
-    msg.rate = 0.95;
-    window.speechSynthesis.speak(msg);
-  }
+  typeEffect("⏳ मौसम की जानकारी ला रहे हैं...", "typing-effect");
 
-  // Initial typing intro
-  typeEffect("⏳ Mausam ka haal la rahe hain...", "typing-effect");
-
-  // Auto refresh hourly
-  setInterval(fetchWeather, 3600000);
+  setInterval(fetchWeather, 3600000); // हर एक घंटे में रिफ्रेश
 </script>
-
-
 
 
 
