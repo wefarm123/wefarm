@@ -592,6 +592,58 @@
     🌧️ बारिश की संभावना: <span id="precipitation"></span>%<br>
     🌥️ मौसम: <span id="condition"></span>
   </div>
+
+<script>
+  async function loadWeather() {
+    const apiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
+    const widget = document.getElementById("weather-widget");
+
+    try {
+      const locRes = await fetch("https://ipapi.co/json/");
+      const locData = await locRes.json();
+      const lat = locData.latitude;
+      const lon = locData.longitude;
+      const city = locData.city + ", " + locData.region;
+      document.getElementById("location-name").innerText = city;
+
+      const weatherRes = await fetch(`https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`);
+      const weatherData = await weatherRes.json();
+
+      const values = weatherData.data.values;
+
+      document.getElementById("temperature").innerText = values.temperature;
+      document.getElementById("humidity").innerText = values.humidity;
+      document.getElementById("precipitation").innerText = values.precipitationProbability;
+      document.getElementById("condition").innerText = translateCondition(values.weatherCode);
+
+      widget.style.display = "block";
+    } catch (error) {
+      console.error("Weather Error:", error);
+      widget.innerHTML = "❌ मौसम की जानकारी नहीं मिल पाई।";
+      widget.style.display = "block";
+    }
+  }
+
+  function translateCondition(code) {
+    const mapping = {
+      1000: "साफ",
+      1100: "हल्के बादल",
+      1101: "बादल",
+      1102: "गहरे बादल",
+      4000: "बारिश",
+      4200: "हल्की बारिश",
+      4201: "तेज़ बारिश",
+      5000: "बर्फ",
+      5100: "हल्की बर्फबारी",
+      5101: "तेज़ बर्फबारी"
+    };
+    return mapping[code] || "अज्ञात";
+  }
+
+  loadWeather();
+</script>
+
+
 </div>
 </section>
         #home {
