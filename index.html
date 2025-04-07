@@ -1891,6 +1891,7 @@ With our intuitive system, farmers can achieve exceptional results without requi
     100% { border-color: transparent; }
   }
 </style>
+    
 <script>
   const tomorrowApi = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
   const owmKeys = [
@@ -1898,6 +1899,12 @@ With our intuitive system, farmers can achieve exceptional results without requi
     "c6bf2b8e43a09686efa728ec92ad2897",
     "a3ff3905404a1f6373ae77d28f633eaf"
   ];
+
+  function speakHindi(text) {
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.lang = "hi-IN";
+    speechSynthesis.speak(msg);
+  }
 
   function typeEffect(text, elementId, speed = 100) {
     let i = 0;
@@ -1919,13 +1926,13 @@ With our intuitive system, farmers can achieve exceptional results without requi
     const box = document.getElementById("wefarm-weather-box");
 
     if (hour >= 5 && hour < 11) {
-      box.style.backgroundColor = "#fff9c4"; // Morning
+      box.style.backgroundColor = "#fff9c4";
     } else if (hour >= 11 && hour < 16) {
-      box.style.backgroundColor = "#d0f8ce"; // Noon
+      box.style.backgroundColor = "#d0f8ce";
     } else if (hour >= 16 && hour < 19) {
-      box.style.backgroundColor = "#ffe0b2"; // Evening
+      box.style.backgroundColor = "#ffe0b2";
     } else {
-      box.style.backgroundColor = "#c8e6c9"; // Night
+      box.style.backgroundColor = "#c8e6c9";
     }
   }
 
@@ -1940,31 +1947,41 @@ With our intuitive system, farmers can achieve exceptional results without requi
       const lon = locData.longitude;
 
       let temp, humidity, rainChance, readableCondition;
+      let tomorrowTemp = "-", tomorrowCondition = "जानकारी नहीं";
+
+      const conditionMap = {
+        1000: "साफ मौसम",
+        1001: "बादल वाला",
+        1100: "अधिकतर साफ",
+        1101: "आंशिक बादल",
+        1102: "ज्यादा बादल",
+        2000: "कोहरा",
+        4200: "हल्की बारिश",
+        4201: "तेज बारिश",
+        5000: "बर्फबारी",
+        5100: "हल्की बर्फबारी",
+        5101: "तेज बर्फबारी"
+      };
 
       try {
-        const res = await fetch(`https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${tomorrowApi}`);
-        const data = await res.json();
-        const weather = data.data.values;
+        const resNow = await fetch(`https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${tomorrowApi}`);
+        const dataNow = await resNow.json();
+        const weatherNow = dataNow.data.values;
+        temp = weatherNow.temperature;
+        humidity = weatherNow.humidity;
+        rainChance = weatherNow.precipitationProbability;
+        readableCondition = conditionMap[weatherNow.weatherCode] || "अज्ञात";
 
-        const conditionMap = {
-          1000: "साफ मौसम",
-          1001: "बादल वाला",
-          1100: "अधिकतर साफ",
-          1101: "आंशिक बादल",
-          1102: "ज्यादा बादल",
-          2000: "कोहरा",
-          4200: "हल्की बारिश",
-          4201: "तेज बारिश",
-          5000: "बर्फबारी",
-          5100: "हल्की बर्फबारी",
-          5101: "तेज बर्फबारी"
-        };
+        // Tomorrow
+        const resForecast = await fetch(`https://api.tomorrow.io/v4/weather/forecast/daily?location=${lat},${lon}&apikey=${tomorrowApi}`);
+        const forecastData = await resForecast.json();
+        const tomorrow = forecastData.timelines.daily[1];
+        tomorrowTemp = tomorrow.values.temperatureMax;
+        const tomorrowCode = tomorrow.values.weatherCodeMax;
+        tomorrowCondition = conditionMap[tomorrowCode] || "अज्ञात";
 
-        temp = weather.temperature;
-        humidity = weather.humidity;
-        rainChance = weather.precipitationProbability;
-        readableCondition = conditionMap[weather.weatherCode] || "अज्ञात";
       } catch (err) {
+        console.log("Tomorrow API failed:", err);
         for (const key of owmKeys) {
           try {
             const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${key}`);
@@ -1977,19 +1994,26 @@ With our intuitive system, farmers can achieve exceptional results without requi
               break;
             }
           } catch (error) {
-            console.log("Fallback OWM failed with key:", key);
+            console.log("Fallback OWM failed:", error);
           }
         }
       }
 
+      // Show in Box
       document.getElementById("wefarm-weather-box").innerHTML = `
         <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
         <span class="emoji">📍</span><strong>${location}</strong><br>
         <span class="emoji">🌡️</span>तापमान: ${temp}°C<br>
         <span class="emoji">💧</span>नमी: ${humidity}%<br>
         <span class="emoji">🌧️</span>बारिश की संभावना: ${rainChance}%<br>
-        <span class="emoji pulse">🌦️</span>मौसम: ${readableCondition}
+        <span class="emoji pulse">🌦️</span>मौसम: ${readableCondition}<br>
+        <span class="emoji">🗓️</span><strong>कल:</strong> ${tomorrowCondition}, ${tomorrowTemp}°C
       `;
+
+      // Voice in Hindi
+      const voiceText = `${location} का आज का तापमान है ${temp} डिग्री सेल्सियस, बारिश की संभावना है ${rainChance} प्रतिशत, मौसम है ${readableCondition}, और कल का मौसम रहेगा ${tomorrowCondition}, अधिकतम तापमान ${tomorrowTemp} डिग्री।`;
+      speakHindi(voiceText);
+
     } catch (err) {
       document.getElementById("wefarm-weather-box").innerHTML = `
         <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
@@ -2000,8 +2024,7 @@ With our intuitive system, farmers can achieve exceptional results without requi
   }
 
   typeEffect("⏳ मौसम की जानकारी ला रहे हैं...", "typing-effect");
-
-  setInterval(fetchWeather, 3600000); // हर एक घंटे में रिफ्रेश
+  setInterval(fetchWeather, 3600000); // हर घंटे अपडेट
 </script>
 
 
