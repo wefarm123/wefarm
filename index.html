@@ -1865,85 +1865,67 @@ With our intuitive system, farmers can achieve exceptional results without requi
   ⏳ Mausam ka haal la rahe hain...
 </div>
 
+<!-- Weather Script -->
 <script>
-const apiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
+  const apiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
 
-const weatherMap = {
-  0: "साफ़",
-  1000: "साफ़",
-  1001: "बादल",
-  1100: "अधिकतर साफ़",
-  1101: "थोड़े बादल",
-  1102: "अधिकतर बादल",
-  2000: "कोहरा",
-  2100: "हल्का कोहरा",
-  4000: "बूंदाबांदी",
-  4001: "बारिश",
-  4200: "हल्की बारिश",
-  4201: "तेज़ बारिश",
-  5000: "बर्फ",
-  5001: "बर्फ की फुहार",
-  5100: "हल्की बर्फ",
-  5101: "तेज़ बर्फबारी",
-  6000: "जमी बूंदाबांदी",
-  6001: "जमी बारिश",
-  6200: "हल्की जमी बारिश",
-  6201: "तेज़ जमी बारिश",
-  7000: "ओले",
-  7101: "तेज़ ओले",
-  7102: "हल्के ओले",
-  8000: "आंधी तूफान"
-};
+  async function fetchWeather() {
+    try {
+      const locRes = await fetch("https://ipapi.co/json/");
+      const locData = await locRes.json();
+      const location = `${locData.city}, ${locData.region}`;
+      const lat = locData.latitude;
+      const lon = locData.longitude;
 
-async function getWeather(lat, lon) {
-  const url = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`;
-  
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    const values = data.data.values;
+      const weatherURL = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`;
+      const res = await fetch(weatherURL);
+      const data = await res.json();
+      const weather = data.data.values;
 
-    const weatherText = weatherMap[values.weatherCode] || "मौसम की जानकारी नहीं";
+      const temp = weather.temperature;
+      const humidity = weather.humidity;
+      const rainChance = weather.precipitationProbability;
+      const code = weather.weatherCode;
 
-    document.getElementById("weather-box").innerHTML = `
-      📍 आपका स्थान<br>
-      🌡️ तापमान: ${values.temperature}°C<br>
-      💧 नमी: ${values.humidity}%<br>
-      🌧️ बारिश की संभावना: ${values.precipitationProbability}%<br>
-      🌥️ मौसम: ${weatherText}
-    `;
-  } catch (err) {
-    console.error("Weather Error:", err);
-    document.getElementById("weather-box").innerHTML = "मौसम की जानकारी नहीं मिल पाई।";
+      const conditionMap = {
+        1000: "Clear",
+        1001: "Cloudy",
+        1100: "Mostly Clear",
+        1101: "Partly Cloudy",
+        1102: "Mostly Cloudy",
+        2000: "Fog",
+        4200: "Light Rain",
+        4201: "Heavy Rain",
+        5000: "Snow",
+        5100: "Light Snow",
+        5101: "Heavy Snow"
+      };
+
+      const readableCondition = conditionMap[code] || "Mausam info";
+
+      document.getElementById("wefarm-weather-box").innerHTML = `
+        <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
+        <span class="emoji">📍</span><strong>${location}</strong><br>
+        <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
+        <span class="emoji">💧</span>Humidity: ${humidity}%<br>
+        <span class="emoji">🌧️</span>Rain Chance: ${rainChance}%<br>
+        <span class="emoji">🌦️</span>Condition: ${readableCondition}
+      `;
+    } catch (err) {
+      document.getElementById("wefarm-weather-box").innerHTML = `
+        <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
+        ⚠️ Mausam ki jankari nahi mil payi.
+      `;
+      console.error("Weather Error:", err);
+    }
   }
-}
 
-function initWeather() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        getWeather(lat, lon);
+  // 🟢 Call initially
+  fetchWeather();
 
-        // Auto-refresh every 1 hour
-        setInterval(() => {
-          getWeather(lat, lon);
-        }, 3600000);
-      },
-      (err) => {
-        console.error("Location Error:", err);
-        document.getElementById("weather-box").innerHTML = "लोकेशन की अनुमति नहीं मिली।";
-      }
-    );
-  } else {
-    document.getElementById("weather-box").innerHTML = "ब्राउज़र लोकेशन सपोर्ट नहीं करता।";
-  }
-}
-
-window.onload = initWeather;
+  // 🔄 Auto-refresh every hour (3600000 ms)
+  setInterval(fetchWeather, 3600000);
 </script>
-
 
 
 
