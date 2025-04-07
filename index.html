@@ -1865,67 +1865,61 @@ With our intuitive system, farmers can achieve exceptional results without requi
   ⏳ Mausam ka haal la rahe hain...
 </div>
 
-<!-- Weather Script -->
 <script>
   const apiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
 
-  async function fetchWeather() {
+  async function fetchWeatherByLocation(lat, lon) {
+    const url = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`;
+    
     try {
-      const locRes = await fetch("https://ipapi.co/json/");
-      const locData = await locRes.json();
-      const location = `${locData.city}, ${locData.region}`;
-      const lat = locData.latitude;
-      const lon = locData.longitude;
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log("Weather:", data);
 
-      const weatherURL = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`;
-      const res = await fetch(weatherURL);
-      const data = await res.json();
-      const weather = data.data.values;
-
-      const temp = weather.temperature;
-      const humidity = weather.humidity;
-      const rainChance = weather.precipitationProbability;
-      const code = weather.weatherCode;
-
-      const conditionMap = {
-        1000: "Clear",
-        1001: "Cloudy",
-        1100: "Mostly Clear",
-        1101: "Partly Cloudy",
-        1102: "Mostly Cloudy",
-        2000: "Fog",
-        4200: "Light Rain",
-        4201: "Heavy Rain",
-        5000: "Snow",
-        5100: "Light Snow",
-        5101: "Heavy Snow"
-      };
-
-      const readableCondition = conditionMap[code] || "Mausam info";
-
-      document.getElementById("wefarm-weather-box").innerHTML = `
-        <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-        <span class="emoji">📍</span><strong>${location}</strong><br>
-        <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
-        <span class="emoji">💧</span>Humidity: ${humidity}%<br>
-        <span class="emoji">🌧️</span>Rain Chance: ${rainChance}%<br>
-        <span class="emoji">🌦️</span>Condition: ${readableCondition}
+      // Display weather info
+      const weatherBox = document.getElementById("weather");
+      weatherBox.innerHTML = `
+        📍 Location: ${data.location.name || "आपका स्थान"}<br>
+        🌡️ Temperature: ${data.data.values.temperature}°C<br>
+        💧 Humidity: ${data.data.values.humidity}%<br>
+        🌧️ Rain Chance: ${data.data.values.precipitationProbability}%<br>
+        🌥️ Condition: ${data.data.values.weatherCode}
       `;
-    } catch (err) {
-      document.getElementById("wefarm-weather-box").innerHTML = `
-        <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-        ⚠️ Mausam ki jankari nahi mil payi.
-      `;
-      console.error("Weather Error:", err);
+    } catch (error) {
+      console.error("Weather Error:", error);
+      document.getElementById("weather").innerHTML = "माफ कीजिए, मौसम की जानकारी नहीं मिल पाई।";
     }
   }
 
-  // 🟢 Call initially
-  fetchWeather();
+  function getUserLocationAndFetch() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          fetchWeatherByLocation(lat, lon);
 
-  // 🔄 Auto-refresh every hour (3600000 ms)
-  setInterval(fetchWeather, 3600000);
+          // 🔁 Auto-refresh every 1 hour (3600000 ms)
+          setInterval(() => {
+            fetchWeatherByLocation(lat, lon);
+          }, 3600000);
+        },
+        (error) => {
+          console.error("Location error:", error);
+          document.getElementById("weather").innerHTML = "लोकेशन की अनुमति नहीं मिली।";
+        }
+      );
+    } else {
+      document.getElementById("weather").innerHTML = "ब्राउज़र लोकेशन सपोर्ट नहीं करता।";
+    }
+  }
+
+  // Call on page load
+  window.onload = getUserLocationAndFetch;
 </script>
+
+<div id="weather">Loading weather info...</div>
+
 
 
 
