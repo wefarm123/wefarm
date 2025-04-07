@@ -1828,7 +1828,6 @@ With our intuitive system, farmers can achieve exceptional results without requi
     position: fixed;
     bottom: 90px;
     right: 20px;
-    background-color: #f3fbe9;
     color: #2d572c;
     border: 2px solid #4CAF50;
     border-radius: 12px;
@@ -1838,6 +1837,17 @@ With our intuitive system, farmers can achieve exceptional results without requi
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     max-width: 300px;
     z-index: 9998;
+    animation: slideInUp 1s ease forwards;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: background-color 0.8s ease;
+  }
+
+  @keyframes slideInUp {
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 
   #wefarm-weather-close {
@@ -1853,49 +1863,109 @@ With our intuitive system, farmers can achieve exceptional results without requi
     font-size: 14px;
   }
 
-  #wefarm-weather-box .emoji {
+  .emoji {
     font-size: 20px;
     margin-right: 6px;
+  }
+
+  .pulse {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .typing {
+    display: inline-block;
+    border-right: 2px solid #2d572c;
+    animation: blink 0.7s infinite;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  @keyframes blink {
+    0% { border-color: transparent; }
+    50% { border-color: #2d572c; }
+    100% { border-color: transparent; }
+  }
+
+  #speaker-btn {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #4CAF50;
   }
 </style>
 
 <!-- Weather Box -->
 <div id="wefarm-weather-box">
+  <div id="speaker-btn" onclick="speakWeather()">🔊</div>
   <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-  ⏳ Mausam ka haal la rahe hain...
+  <span id="typing-effect" class="typing"></span>
 </div>
 
 <!-- Weather Script -->
 <script>
-  const tomorrowApiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
-  const openWeatherApiKeys = [
+  const tomorrowApi = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
+  const owmKeys = [
     "3b26b91846a858fbdaa1e3628a488510",
     "c6bf2b8e43a09686efa728ec92ad2897",
     "a3ff3905404a1f6373ae77d28f633eaf"
   ];
-  let owIndex = 0;
+
+  let latestWeatherText = "";
+
+  function typeEffect(text, elementId, speed = 100) {
+    let i = 0;
+    const element = document.getElementById(elementId);
+    element.innerHTML = "";
+
+    const typingInterval = setInterval(() => {
+      element.innerHTML += text.charAt(i);
+      i++;
+      if (i >= text.length) {
+        clearInterval(typingInterval);
+        fetchWeather(); // Fetch once typing ends
+      }
+    }, speed);
+  }
+
+  function setBackgroundByTime() {
+    const hour = new Date().getHours();
+    const box = document.getElementById("wefarm-weather-box");
+
+    if (hour >= 5 && hour < 11) {
+      box.style.backgroundColor = "#fff9c4"; // Morning
+    } else if (hour >= 11 && hour < 16) {
+      box.style.backgroundColor = "#d0f8ce"; // Noon
+    } else if (hour >= 16 && hour < 19) {
+      box.style.backgroundColor = "#ffe0b2"; // Evening
+    } else {
+      box.style.backgroundColor = "#c8e6c9"; // Night
+    }
+  }
 
   async function fetchWeather() {
     try {
+      setBackgroundByTime();
+
       const locRes = await fetch("https://ipapi.co/json/");
       const locData = await locRes.json();
+      const location = `${locData.city}, ${locData.region}`;
       const lat = locData.latitude;
       const lon = locData.longitude;
-      const city = locData.city;
-      const region = locData.region;
 
-      // 👉 Try primary: Tomorrow.io
-      const tomorrowURL = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${tomorrowApiKey}`;
-      const res = await fetch(tomorrowURL);
+      let temp, humidity, rainChance, readableCondition;
 
-      if (res.status !== 429 && res.ok) {
+      try {
+        const res = await fetch(`https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${tomorrowApi}`);
         const data = await res.json();
         const weather = data.data.values;
-
-        const temp = weather.temperature;
-        const humidity = weather.humidity;
-        const rainChance = weather.precipitationProbability;
-        const code = weather.weatherCode;
 
         const conditionMap = {
           1000: "Clear",
@@ -1911,61 +1981,62 @@ With our intuitive system, farmers can achieve exceptional results without requi
           5101: "Heavy Snow"
         };
 
-        const readableCondition = conditionMap[code] || "Mausam info";
-
-        document.getElementById("wefarm-weather-box").innerHTML = `
-          <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-          <span class="emoji">📍</span><strong>${city}, ${region}</strong><br>
-          <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
-          <span class="emoji">💧</span>Humidity: ${humidity}%<br>
-          <span class="emoji">🌧️</span>Rain Chance: ${rainChance}%<br>
-          <span class="emoji">🌦️</span>Condition: ${readableCondition}
-        `;
-        return; // ✅ Success: stop here
+        temp = weather.temperature;
+        humidity = weather.humidity;
+        rainChance = weather.precipitationProbability;
+        readableCondition = conditionMap[weather.weatherCode] || "Unknown";
+      } catch (err) {
+        for (const key of owmKeys) {
+          try {
+            const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${key}`);
+            const data = await res.json();
+            if (data.main) {
+              temp = data.main.temp;
+              humidity = data.main.humidity;
+              rainChance = data.clouds ? data.clouds.all : 0;
+              readableCondition = data.weather[0].main;
+              break;
+            }
+          } catch (error) {
+            console.log("Fallback OWM failed with key:", key);
+          }
+        }
       }
 
-      // ❌ If Tomorrow.io failed: fallback to OpenWeatherMap
-      for (let i = 0; i < openWeatherApiKeys.length; i++) {
-        const key = openWeatherApiKeys[(owIndex + i) % openWeatherApiKeys.length];
-        const owmURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${key}`;
-        const owmRes = await fetch(owmURL);
+      latestWeatherText = `Location: ${location}. Temperature is ${temp} degrees Celsius. Humidity is ${humidity} percent. Rain chance is ${rainChance} percent. Condition is ${readableCondition}.`;
 
-        if (owmRes.status === 429) continue;
-        if (!owmRes.ok) continue;
-
-        const owmData = await owmRes.json();
-        owIndex = (owIndex + i) % openWeatherApiKeys.length;
-
-        const temp = owmData.main.temp;
-        const humidity = owmData.main.humidity;
-        const condition = owmData.weather[0].description;
-        const icon = owmData.weather[0].icon;
-        const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-
-        document.getElementById("wefarm-weather-box").innerHTML = `
-          <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-          <span class="emoji">📍</span><strong>${city}, ${region}</strong><br>
-          <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
-          <span class="emoji">💧</span>Humidity: ${humidity}%<br>
-          <span class="emoji">🌤️</span>Condition: ${condition}<br>
-          <img src="${iconUrl}" alt="Weather icon" width="48">
-        `;
-        return; // ✅ Success
-      }
-
-      // ❌ If all fail
-      throw new Error("All weather APIs failed");
-    } catch (err) {
       document.getElementById("wefarm-weather-box").innerHTML = `
+        <div id="speaker-btn" onclick="speakWeather()">🔊</div>
+        <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
+        <span class="emoji">📍</span><strong>${location}</strong><br>
+        <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
+        <span class="emoji">💧</span>Humidity: ${humidity}%<br>
+        <span class="emoji">🌧️</span>Rain Chance: ${rainChance}%<br>
+        <span class="emoji pulse">🌦️</span>Condition: ${readableCondition}
+      `;
+    } catch (err) {
+      latestWeatherText = "Mausam ki jankari nahi mil payi.";
+      document.getElementById("wefarm-weather-box").innerHTML = `
+        <div id="speaker-btn" onclick="speakWeather()">🔊</div>
         <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
         ⚠️ Mausam ki jankari nahi mil payi.
       `;
-      console.error("Weather Error:", err);
     }
   }
 
-  fetchWeather();
-  setInterval(fetchWeather, 3600000); // 🔄 Refresh every hour
+  function speakWeather() {
+    const msg = new SpeechSynthesisUtterance();
+    msg.text = latestWeatherText;
+    msg.lang = 'en-IN';
+    msg.rate = 0.95;
+    window.speechSynthesis.speak(msg);
+  }
+
+  // Initial typing intro
+  typeEffect("⏳ Mausam ka haal la rahe hain...", "typing-effect");
+
+  // Auto refresh hourly
+  setInterval(fetchWeather, 3600000);
 </script>
 
 
