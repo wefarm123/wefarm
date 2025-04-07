@@ -1836,7 +1836,7 @@ With our intuitive system, farmers can achieve exceptional results without requi
     font-family: 'Poppins', sans-serif;
     font-size: 15px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 320px;
+    max-width: 300px;
     z-index: 9998;
   }
 
@@ -1867,65 +1867,105 @@ With our intuitive system, farmers can achieve exceptional results without requi
 
 <!-- Weather Script -->
 <script>
-  const apiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
+  const tomorrowApiKey = "y5ICtGQuhtMYyAKToF6IvgfhkC4RslY2";
+  const openWeatherApiKeys = [
+    "3b26b91846a858fbdaa1e3628a488510",
+    "c6bf2b8e43a09686efa728ec92ad2897",
+    "a3ff3905404a1f6373ae77d28f633eaf"
+  ];
+  let owIndex = 0;
 
   async function fetchWeather() {
     try {
       const locRes = await fetch("https://ipapi.co/json/");
       const locData = await locRes.json();
-      const location = `${locData.city}, ${locData.region}`;
       const lat = locData.latitude;
       const lon = locData.longitude;
+      const city = locData.city;
+      const region = locData.region;
 
-      const weatherURL = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${apiKey}`;
-      const res = await fetch(weatherURL);
-      const data = await res.json();
+      // 👉 Try primary: Tomorrow.io
+      const tomorrowURL = `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lon}&apikey=${tomorrowApiKey}`;
+      const res = await fetch(tomorrowURL);
 
-      const weather = data.data.values;
+      if (res.status !== 429 && res.ok) {
+        const data = await res.json();
+        const weather = data.data.values;
 
-      const temp = weather.temperature ?? "N/A";
-      const humidity = weather.humidity ?? "N/A";
-      const rainChance = weather.precipitationProbability ?? "N/A";
-      const code = weather.weatherCode ?? 1001;
+        const temp = weather.temperature;
+        const humidity = weather.humidity;
+        const rainChance = weather.precipitationProbability;
+        const code = weather.weatherCode;
 
-      const conditionMap = {
-        1000: "Bilkul Saaf",
-        1001: "Badal Chhaye Hain",
-        1100: "Thoda Saaf",
-        1101: "Thoda Badli",
-        1102: "Zyada Badli",
-        2000: "Kohra",
-        4200: "Halka Barish",
-        4201: "Teez Barish",
-        5000: "Barf Gir Rahi Hai",
-        5100: "Halki Barf",
-        5101: "Zyada Barf"
-      };
+        const conditionMap = {
+          1000: "Clear",
+          1001: "Cloudy",
+          1100: "Mostly Clear",
+          1101: "Partly Cloudy",
+          1102: "Mostly Cloudy",
+          2000: "Fog",
+          4200: "Light Rain",
+          4201: "Heavy Rain",
+          5000: "Snow",
+          5100: "Light Snow",
+          5101: "Heavy Snow"
+        };
 
-      const readableCondition = conditionMap[code] || "Mausam ki info mil nahi pai";
+        const readableCondition = conditionMap[code] || "Mausam info";
 
-      document.getElementById("wefarm-weather-box").innerHTML = `
-        <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-        <span class="emoji">📍</span><strong>${location}</strong><br>
-        <span class="emoji">🌡️</span><strong>Taapmaan:</strong> ${temp}°C<br>
-        <span class="emoji">💧</span><strong>Nami:</strong> ${humidity}%<br>
-        <span class="emoji">🌧️</span><strong>Barish ke Chance:</strong> ${rainChance}%<br>
-        <span class="emoji">🌦️</span><strong>Haal:</strong> ${readableCondition}
-      `;
+        document.getElementById("wefarm-weather-box").innerHTML = `
+          <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
+          <span class="emoji">📍</span><strong>${city}, ${region}</strong><br>
+          <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
+          <span class="emoji">💧</span>Humidity: ${humidity}%<br>
+          <span class="emoji">🌧️</span>Rain Chance: ${rainChance}%<br>
+          <span class="emoji">🌦️</span>Condition: ${readableCondition}
+        `;
+        return; // ✅ Success: stop here
+      }
+
+      // ❌ If Tomorrow.io failed: fallback to OpenWeatherMap
+      for (let i = 0; i < openWeatherApiKeys.length; i++) {
+        const key = openWeatherApiKeys[(owIndex + i) % openWeatherApiKeys.length];
+        const owmURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${key}`;
+        const owmRes = await fetch(owmURL);
+
+        if (owmRes.status === 429) continue;
+        if (!owmRes.ok) continue;
+
+        const owmData = await owmRes.json();
+        owIndex = (owIndex + i) % openWeatherApiKeys.length;
+
+        const temp = owmData.main.temp;
+        const humidity = owmData.main.humidity;
+        const condition = owmData.weather[0].description;
+        const icon = owmData.weather[0].icon;
+        const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+        document.getElementById("wefarm-weather-box").innerHTML = `
+          <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
+          <span class="emoji">📍</span><strong>${city}, ${region}</strong><br>
+          <span class="emoji">🌡️</span>Temperature: ${temp}°C<br>
+          <span class="emoji">💧</span>Humidity: ${humidity}%<br>
+          <span class="emoji">🌤️</span>Condition: ${condition}<br>
+          <img src="${iconUrl}" alt="Weather icon" width="48">
+        `;
+        return; // ✅ Success
+      }
+
+      // ❌ If all fail
+      throw new Error("All weather APIs failed");
     } catch (err) {
       document.getElementById("wefarm-weather-box").innerHTML = `
         <div id="wefarm-weather-close" onclick="document.getElementById('wefarm-weather-box').style.display='none'">×</div>
-        ⚠️ Mausam ki jankari nahi mil pai bhai. 🙏
+        ⚠️ Mausam ki jankari nahi mil payi.
       `;
       console.error("Weather Error:", err);
     }
   }
 
-  // Initial call
   fetchWeather();
-
-  // Refresh every hour
-  setInterval(fetchWeather, 3600000);
+  setInterval(fetchWeather, 3600000); // 🔄 Refresh every hour
 </script>
 
 
