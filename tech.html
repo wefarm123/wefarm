@@ -239,8 +239,7 @@
           </div>
         </div>
       </div>
-
-     
+     </section>
 
 <script>
 function detectByImage() {
@@ -271,31 +270,7 @@ function detectByImage() {
   }, 2000);
 }
 
-function detectBySymptoms() {
-  const crop = document.getElementById("cropSelect").value;
-  const symptoms = document.getElementById("symptomInput").value.trim();
-  const result = document.getElementById("diagnosisResult");
 
-  if (!crop || !symptoms) {
-    alert("Please select crop and enter symptoms.");
-    return;
-  }
-
-  result.innerHTML = `
-    <div class="alert alert-info">
-      🔍 Diagnosing symptoms for <strong>${crop}</strong>... (demo)
-    </div>
-  `;
-
-  setTimeout(() => {
-    result.innerHTML = `
-      <div class="alert alert-success">
-        ✅ <strong>Probable Disease:</strong> Early Blight<br>
-        💊 <strong>Treatment:</strong> Use Chlorothalonil or Copper fungicides. Rotate crops regularly and avoid wet leaves.
-      </div>
-    `;
-  }, 2000);
-}
 </script>
 
 
