@@ -100,73 +100,128 @@
   });
 </script>
 
-
- <!-- Crop Doctor Tool -->
+<!-- Crop Doctor Tool -->
 <section class="py-5 bg-light" id="crop-doctor">
-  <div class="container">
-    <h2 class="text-center mb-4">🧑‍⚕️ AI Crop Doctor</h2>
-    <p class="text-center mb-4">Kisaan bhaiyo! Symptoms batao aur hum batayenge kya bimari hai aur kya ilaj hai.</p>
+  <div class="container text-center">
+    <h2>🧑‍⚕️ AI Crop Doctor</h2>
+    <p class="mb-4">Apne faslon ka health check-up karein! Yeh AI tool symptoms ke basis par disease identify karega aur treatment suggest karega.</p>
 
     <form id="cropDoctorForm" class="row g-3 justify-content-center">
       <div class="col-md-4">
-        <label class="form-label">Crop</label>
-        <input type="text" class="form-control" id="cropType" placeholder="e.g., Wheat, Tomato" required>
+        <label class="form-label">Vegetable</label>
+        <select class="form-select" id="vegetable" required>
+          <option value="">Choose...</option>
+          <option>Tomato</option>
+          <option>Potato</option>
+          <option>Onion</option>
+          <option>Chili</option>
+          <option>Cabbage</option>
+          <option>Cauliflower</option>
+          <option>Brinjal</option>
+          <option>Lady Finger</option>
+          <option>Spinach</option>
+          <option>Carrot</option>
+          <option>Cucumber</option>
+          <option>Pumpkin</option>
+          <option>Bitter Gourd</option>
+          <option>Bottle Gourd</option>
+          <option>Peas</option>
+          <option>Beans</option>
+        </select>
       </div>
       <div class="col-md-4">
-        <label class="form-label">Symptoms</label>
-        <input type="text" class="form-control" id="symptoms" placeholder="e.g., yellow leaves, wilting" required>
+        <label class="form-label">Symptom</label>
+        <select class="form-select" id="symptom" required>
+          <option value="">Choose...</option>
+          <option>Yellowing Leaves</option>
+          <option>Leaf Spots</option>
+          <option>Wilting</option>
+          <option>Fruits Rotting</option>
+          <option>White Powder on Leaves</option>
+          <option>Stunted Growth</option>
+          <option>Holes in Leaves</option>
+        </select>
       </div>
       <div class="col-md-12 text-center">
         <button type="submit" class="btn btn-success btn-lg">🩺 Diagnose</button>
       </div>
     </form>
 
-    <div id="diagnosisResult" class="mt-5 text-center" style="display: none;">
-      <h4>🧾 Diagnosis Result:</h4>
-      <p id="diagnosisText" class="lead mt-3"></p>
+    <div id="diagnosisResult" class="mt-5 text-center" style="display:none;">
+      <h4>🧪 Diagnosis Result:</h4>
+      <p id="diseaseOutput" class="lead mt-3"></p>
     </div>
   </div>
 </section>
 
 <script>
-  const cropDiseases = [
-    {
-      crop: "Tomato",
-      symptomKeywords: ["yellow", "leaf", "wilt"],
-      disease: "Bacterial Wilt",
-      treatment: "Use copper-based fungicide, ensure proper drainage."
+  const cropDiseases = {
+    "Tomato": {
+      "Yellowing Leaves": "Possible cause: Nutrient Deficiency or Fusarium Wilt. Treatment: Apply balanced fertilizer, avoid waterlogging.",
+      "Leaf Spots": "Possible cause: Early Blight. Treatment: Use Mancozeb-based fungicide.",
+      "White Powder on Leaves": "Powdery Mildew. Treatment: Use sulfur-based fungicide."
     },
-    {
-      crop: "Wheat",
-      symptomKeywords: ["rust", "orange"],
-      disease: "Wheat Rust",
-      treatment: "Use resistant varieties, apply Mancozeb fungicide."
+    "Potato": {
+      "Wilting": "Bacterial Wilt. Treatment: Remove affected plants, improve drainage.",
+      "Leaf Spots": "Late Blight. Treatment: Spray with Metalaxyl fungicide."
     },
-    {
-      crop: "Rice",
-      symptomKeywords: ["brown", "spot"],
-      disease: "Brown Spot Disease",
-      treatment: "Spray with Propiconazole and maintain field hygiene."
+    "Onion": {
+      "Yellowing Leaves": "Downy Mildew. Treatment: Spray fungicide and avoid overcrowding.",
+      "Stunted Growth": "Mite Infestation. Treatment: Use recommended acaricide."
+    },
+    "Cabbage": {
+      "Holes in Leaves": "Cabbage Worms. Treatment: Use neem oil or Bt pesticide."
+    },
+    "Cauliflower": {
+      "Yellowing Leaves": "Boron deficiency. Treatment: Spray borax solution."
+    },
+    "Brinjal": {
+      "Leaf Spots": "Bacterial Leaf Spot. Treatment: Copper-based fungicide.",
+      "Wilting": "Root-knot Nematode. Treatment: Use neem cake in soil."
+    },
+    "Lady Finger": {
+      "White Powder on Leaves": "Powdery Mildew. Treatment: Use sulfur-based fungicide."
+    },
+    "Chili": {
+      "Fruits Rotting": "Anthracnose. Treatment: Spray fungicide before fruiting."
+    },
+    "Spinach": {
+      "Yellowing Leaves": "Downy Mildew. Treatment: Avoid overhead watering."
+    },
+    "Carrot": {
+      "Stunted Growth": "Nematodes. Treatment: Solarize the soil before sowing."
+    },
+    "Cucumber": {
+      "White Powder on Leaves": "Powdery Mildew. Treatment: Spray potassium bicarbonate."
+    },
+    "Pumpkin": {
+      "Leaf Spots": "Angular Leaf Spot. Treatment: Use copper oxychloride spray."
+    },
+    "Bitter Gourd": {
+      "Fruits Rotting": "Fruit Fly. Treatment: Use pheromone traps."
+    },
+    "Bottle Gourd": {
+      "Yellowing Leaves": "Nutrient deficiency or fungal rot. Treat accordingly."
+    },
+    "Peas": {
+      "Wilting": "Fusarium Wilt. Treatment: Crop rotation and clean seeds."
+    },
+    "Beans": {
+      "Leaf Spots": "Rust. Treatment: Mancozeb spray every 10 days."
     }
-  ];
+  };
 
   document.getElementById("cropDoctorForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    const crop = document.getElementById("cropType").value.toLowerCase();
-    const symptoms = document.getElementById("symptoms").value.toLowerCase();
-    let result = "Sorry, koi diagnosis nahi mila. Please try different symptoms.";
+    const vegetable = document.getElementById("vegetable").value;
+    const symptom = document.getElementById("symptom").value;
+    const diagnosis = cropDiseases[vegetable]?.[symptom] || "⚠️ Sorry, koi data nahi mila. Try different combination.";
 
-    for (let entry of cropDiseases) {
-      if (crop.includes(entry.crop.toLowerCase()) && entry.symptomKeywords.some(keyword => symptoms.includes(keyword))) {
-        result = `🦠 <strong>${entry.disease}</strong><br>💊 Treatment: ${entry.treatment}`;
-        break;
-      }
-    }
-
-    document.getElementById("diagnosisText").innerHTML = result;
+    document.getElementById("diseaseOutput").innerText = diagnosis;
     document.getElementById("diagnosisResult").style.display = "block";
   });
 </script>
+
 
 
 </body>
