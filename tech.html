@@ -101,29 +101,73 @@
 </script>
 
 
-  <!-- Crop Doctor Tool -->
-  <section class="py-5 bg-light">
-    <div class="container text-center">
-      <h2>🧑‍⚕️ AI Crop Doctor</h2>
-      <p class="mb-4">Apne faslon ka health check-up karein! Yeh AI tool symptoms ke basis par disease identify karega aur treatment suggest karega.</p>
-      <a href="#" class="btn btn-outline-success btn-lg">Use Crop Doctor</a>
-    </div>
-  </section>
+ <!-- Crop Doctor Tool -->
+<section class="py-5 bg-light" id="crop-doctor">
+  <div class="container">
+    <h2 class="text-center mb-4">🧑‍⚕️ AI Crop Doctor</h2>
+    <p class="text-center mb-4">Kisaan bhaiyo! Symptoms batao aur hum batayenge kya bimari hai aur kya ilaj hai.</p>
 
-  <!-- Footer -->
-  <footer class="py-4 bg-success text-white text-center">
-    <div class="container">
-      <p class="mb-0">© 2025 WEFARM | Smart Krishi Solutions 💚</p>
-    </div>
-  </footer>
+    <form id="cropDoctorForm" class="row g-3 justify-content-center">
+      <div class="col-md-4">
+        <label class="form-label">Crop</label>
+        <input type="text" class="form-control" id="cropType" placeholder="e.g., Wheat, Tomato" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Symptoms</label>
+        <input type="text" class="form-control" id="symptoms" placeholder="e.g., yellow leaves, wilting" required>
+      </div>
+      <div class="col-md-12 text-center">
+        <button type="submit" class="btn btn-success btn-lg">🩺 Diagnose</button>
+      </div>
+    </form>
 
-  <!-- JavaScript to toggle tool -->
-  <script>
-    document.getElementById("crop-planner-btn").addEventListener("click", function () {
-      const tool = document.getElementById("crop-planner-tool");
-      tool.style.display = tool.style.display === "none" ? "block" : "none";
-    });
-  </script>
+    <div id="diagnosisResult" class="mt-5 text-center" style="display: none;">
+      <h4>🧾 Diagnosis Result:</h4>
+      <p id="diagnosisText" class="lead mt-3"></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const cropDiseases = [
+    {
+      crop: "Tomato",
+      symptomKeywords: ["yellow", "leaf", "wilt"],
+      disease: "Bacterial Wilt",
+      treatment: "Use copper-based fungicide, ensure proper drainage."
+    },
+    {
+      crop: "Wheat",
+      symptomKeywords: ["rust", "orange"],
+      disease: "Wheat Rust",
+      treatment: "Use resistant varieties, apply Mancozeb fungicide."
+    },
+    {
+      crop: "Rice",
+      symptomKeywords: ["brown", "spot"],
+      disease: "Brown Spot Disease",
+      treatment: "Spray with Propiconazole and maintain field hygiene."
+    }
+  ];
+
+  document.getElementById("cropDoctorForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const crop = document.getElementById("cropType").value.toLowerCase();
+    const symptoms = document.getElementById("symptoms").value.toLowerCase();
+    let result = "Sorry, koi diagnosis nahi mila. Please try different symptoms.";
+
+    for (let entry of cropDiseases) {
+      if (crop.includes(entry.crop.toLowerCase()) && entry.symptomKeywords.some(keyword => symptoms.includes(keyword))) {
+        result = `🦠 <strong>${entry.disease}</strong><br>💊 Treatment: ${entry.treatment}`;
+        break;
+      }
+    }
+
+    document.getElementById("diagnosisText").innerHTML = result;
+    document.getElementById("diagnosisResult").style.display = "block";
+  });
+</script>
+
 
 </body>
 </html>
