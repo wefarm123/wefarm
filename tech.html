@@ -222,6 +222,105 @@
   });
 </script>
 
+<section class="py-5 bg-success text-white" id="ai-crop-doctor">
+  <div class="container">
+    <h2 class="text-center mb-4">🌾 WEFARM AI Crop Doctor</h2>
+    <p class="text-center">Upload karo ya symptoms batao – hum batayenge kaunsa rog hai aur kya ilaaj hai!</p>
+
+    <div class="row mt-4">
+      <!-- Image Upload Panel -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow">
+          <div class="card-body text-dark">
+            <h5>📸 Image-Based Disease Detection</h5>
+            <p>Apne paudhe ka photo upload karein:</p>
+            <input type="file" class="form-control mb-2" id="plantImage" accept="image/*">
+            <button class="btn btn-success w-100" onclick="detectByImage()">🔍 Diagnose</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Symptom-Based Panel -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow">
+          <div class="card-body text-dark">
+            <h5>📝 Symptom-Based Disease Detection</h5>
+            <select class="form-select mb-2" id="cropSelect">
+              <option value="">Crop Choose Karo</option>
+              <option>Tomato</option>
+              <option>Potato</option>
+              <option>Capsicum</option>
+              <option>Cabbage</option>
+              <option>Cauliflower</option>
+              <!-- Add more crops -->
+            </select>
+            <textarea class="form-control mb-2" rows="3" id="symptomInput" placeholder="Likho symptoms jaise – yellow spots, wilting, black patches..."></textarea>
+            <button class="btn btn-success w-100" onclick="detectBySymptoms()">🧠 Diagnose</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Display -->
+    <div id="diagnosisResult" class="mt-4 text-dark"></div>
+  </div>
+</section>
+
+<script>
+function detectByImage() {
+  const file = document.getElementById("plantImage").files[0];
+  const result = document.getElementById("diagnosisResult");
+
+  if (!file) {
+    alert("Please upload an image.");
+    return;
+  }
+
+  result.innerHTML = `
+    <div class="alert alert-warning">
+      📡 Image uploaded. AI analysis in progress... (demo)
+    </div>
+  `;
+
+  setTimeout(() => {
+    result.innerHTML = `
+      <div class="alert alert-success">
+        ✅ <strong>Detected Disease:</strong> Late Blight<br>
+        🩺 <strong>Recommended Treatment:</strong><br>
+        • Spray with Metalaxyl + Mancozeb<br>
+        • Avoid overhead irrigation<br>
+        • Ensure proper drainage
+      </div>
+    `;
+  }, 2000);
+}
+
+function detectBySymptoms() {
+  const crop = document.getElementById("cropSelect").value;
+  const symptoms = document.getElementById("symptomInput").value.trim();
+  const result = document.getElementById("diagnosisResult");
+
+  if (!crop || !symptoms) {
+    alert("Please select crop and enter symptoms.");
+    return;
+  }
+
+  result.innerHTML = `
+    <div class="alert alert-info">
+      🔍 Diagnosing symptoms for <strong>${crop}</strong>... (demo)
+    </div>
+  `;
+
+  setTimeout(() => {
+    result.innerHTML = `
+      <div class="alert alert-success">
+        ✅ <strong>Probable Disease:</strong> Early Blight<br>
+        💊 <strong>Treatment:</strong> Use Chlorothalonil or Copper fungicides. Rotate crops regularly and avoid wet leaves.
+      </div>
+    `;
+  }, 2000);
+}
+</script>
 
 
 </body>
