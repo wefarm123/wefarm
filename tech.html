@@ -230,7 +230,7 @@
         <input type="file" id="imageUpload" class="form-control mb-3" accept="image/*">
 
 <div class="text-center mt-3">
-<button onclick="aiDiagnoseBtn" class="btn btn-success mt-3" style="width: 200px;">
+<button id="aiDiagnoseBtn" class="btn btn-success mt-3" style="width: 200px;">
   🌿 AI Se Jaane, Bimari Pehchaane!
 </button>
         <div id="result" class="text-center mt-3 fs-5 fw-bold text-success"></div>
@@ -336,6 +336,9 @@
   window.onload = loadModel;
 </script>
 
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("aiDiagnoseBtn").addEventListener("click", classifyImage);
+});
 
 
 
