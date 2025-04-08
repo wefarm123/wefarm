@@ -222,20 +222,24 @@
   });
 </script>
 
-
-    <!-- Image-Based AI Diagnosis -->
-    <div class="card p-4 shadow">
-      <h4 class="text-center mb-3">📸 Diagnose with Image (AI)</h4>
-      <input type="file" id="imageUpload" class="form-control mb-3" accept="image/*">
-      <button onclick="classifyImage()" class="btn btn-primary w-100">Diagnose via AI</button>
-      <div id="diagnosisResultAI" class="mt-4 text-dark w-100 text-center"></div>
+<!-- Image-Based AI Diagnosis -->
+  <section class="py-5" id="ai-diagnosis">
+    <div class="container">
+      <div class="card p-4 shadow">
+        <h4 class="text-center mb-3">📸 Diagnose with Image (AI)</h4>
+        <input type="file" id="imageUpload" class="form-control mb-3" accept="image/*">
+        <button onclick="classifyImage()" class="btn btn-primary w-100">Diagnose via AI</button>
+        <div id="diagnosisResultAI" class="mt-4 text-dark w-100 text-center"></div>
+        <img id="previewImage" class="mt-3 img-fluid mx-auto d-block" style="max-height: 300px; display: none;" />
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Teachable Machine Script -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script type="text/javascript">
-    const modelURL = "https://teachablemachine.withgoogle.com/models/xyz123/"; // replace with your model link
+  <!-- TensorFlow.js & Teachable Machine -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
+  <script>
+    const modelURL = "model";
     let model, maxPredictions;
 
     async function loadModel() {
@@ -245,23 +249,32 @@
     }
 
     async function classifyImage() {
-      const file = document.getElementById("imageUpload").files[0];
-      if (!file) {
+      const fileInput = document.getElementById("imageUpload");
+      const resultDiv = document.getElementById("diagnosisResultAI");
+      const preview = document.getElementById("previewImage");
+
+      if (!fileInput.files.length) {
         alert("Please upload an image first!");
         return;
       }
 
+      const file = fileInput.files[0];
       const reader = new FileReader();
+
       reader.onload = async function () {
         const img = new Image();
         img.src = reader.result;
         img.onload = async function () {
+          preview.src = reader.result;
+          preview.style.display = "block";
+
           await loadModel();
           const prediction = await model.predict(img);
           prediction.sort((a, b) => b.probability - a.probability);
+
           const predictedClass = prediction[0].className;
           const treatment = getTreatment(predictedClass);
-          document.getElementById("diagnosisResultAI").innerText = `🦠 Disease: ${predictedClass.replace(/___/g, " → ")}\n💊 Treatment: ${treatment}`;
+          resultDiv.innerHTML = `<strong>🦠 Disease:</strong> ${predictedClass.replace(/___/g, " → ")}<br><strong>💊 Treatment:</strong> ${treatment}`;
         };
       };
       reader.readAsDataURL(file);
@@ -278,25 +291,6 @@
       };
       return treatments[disease] || "Consult local agri expert.";
     }
-
-    // Manual Diagnosis
-    document.getElementById("symptomForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const crop = document.getElementById("crop").value.toLowerCase();
-      const symptoms = document.getElementById("symptoms").value.toLowerCase();
-
-      let diagnosis = "Unable to determine disease. Please consult an expert.";
-      if (crop.includes("tomato") && symptoms.includes("yellow")) {
-        diagnosis = "Possible Nutrient Deficiency or Early Blight.";
-      } else if (crop.includes("potato") && symptoms.includes("black")) {
-        diagnosis = "Possible Late Blight. Apply fungicide immediately.";
-      } else if (crop.includes("bell pepper") && symptoms.includes("spots")) {
-        diagnosis = "Bacterial Spot. Use copper sprays.";
-      }
-
-      document.getElementById("diseaseOutput").innerText = diagnosis;
-      document.getElementById("diagnosisResultSymptoms").style.display = "block";
-    });
   </script>
 
 
