@@ -244,9 +244,76 @@
     <div id="diagnosisResult" class="mt-4 text-dark w-100 text-center"></div>
   </div>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.2.0"></script>
+
 
 <script>
-function detectByImage() {
+let model;
+const labels = [
+  "Apple___Apple_scab",
+  "Apple___Black_rot",
+  "Apple___Cedar_apple_rust",
+  "Apple___healthy",
+  // (Add all class labels from the trained model here)
+];
+
+async function loadModel() {
+  model = await tf.loadLayersModel('assets/model/model.json');
+  console.log("✅ Model loaded successfully");
+}
+
+loadModel();
+
+async function detectByImage() {
+  const imageUpload = document.getElementById('plantImage');
+  if (!imageUpload.files.length) {
+    alert("📸 Pehle image upload karo!");
+    return;
+  }
+
+  const image = document.createElement('img');
+  image.src = URL.createObjectURL(imageUpload.files[0]);
+  await new Promise(resolve => image.onload = resolve);
+
+  const tensor = tf.browser.fromPixels(image)
+    .resizeNearestNeighbor([224, 224])
+    .toFloat()
+    .div(255.0)
+    .expandDims();
+
+  const prediction = model.predict(tensor);
+  const predictionArray = await prediction.data();
+  const maxIndex = predictionArray.indexOf(Math.max(...predictionArray));
+  const predictedClass = labels[maxIndex];
+
+  const treatment = getTreatment(predictedClass);
+
+  alert(`🦠 Disease: ${predictedClass.replace(/___/g, " → ")}\n💊 Treatment: ${treatment}`);
+}
+
+function getTreatment(disease) {
+  if (disease.includes("healthy")) return "✅ Paudha bilkul sahi hai!";
+  if (disease.includes("Black_rot")) return "🧴 Fungicide ka spray karein (jaise Mancozeb).";
+  if (disease.includes("Leaf_mold")) return "🌿 Neem oil ya copper-based fungicide lagayein.";
+  if (disease.includes("Bacterial_spot")) return "🚿 Pani kam karein aur bactericide spray karein.";
+  // Add more treatment mappings here
+  return "⚠️ General treatment: Pani ki safai, neem oil spray, aur healthy khad.";
+}
+</script>
+<script>
+let model;
+let labels = [];
+
+async function loadModel() {
+  model = await tf.loadLayersModel("model/model.json");
+  const response = await fetch("model/labels.json");
+  labels = await response.json();
+  console.log("✅ Model & labels loaded.");
+}
+
+loadModel(); // Load model on page load
+
+async function detectByImage() {
   const file = document.getElementById("plantImage").files[0];
   const result = document.getElementById("diagnosisResult");
 
@@ -257,24 +324,40 @@ function detectByImage() {
 
   result.innerHTML = `
     <div class="alert alert-warning">
-      📡 Image uploaded. AI analysis in progress... (demo)
+      📡 Image uploaded. AI analysis in progress...
     </div>
   `;
 
-  setTimeout(() => {
+  const img = document.createElement("img");
+  img.src = URL.createObjectURL(file);
+
+  img.onload = async () => {
+    const tensor = tf.browser.fromPixels(img)
+      .resizeNearestNeighbor([224, 224])
+      .toFloat()
+      .expandDims();
+
+    const prediction = model.predict(tensor);
+    const predictionArray = await prediction.data();
+    const maxIdx = predictionArray.indexOf(Math.max(...predictionArray));
+    const detectedDisease = labels[maxIdx];
+
+    // Example treatments - customize this later
+    const treatments = {
+      "Tomato___Late_blight": "• Spray with Metalaxyl + Mancozeb<br>• Ensure proper drainage<br>• Avoid overhead irrigation",
+      "Tomato___Bacterial_spot": "• Apply copper-based bactericide<br>• Remove infected leaves",
+      "Pepper,_bell___healthy": "• No disease detected. Plant looks healthy!"
+    };
+
     result.innerHTML = `
       <div class="alert alert-success">
-        ✅ <strong>Detected Disease:</strong> Late Blight<br>
+        ✅ <strong>Detected Disease:</strong> ${detectedDisease}<br>
         🩺 <strong>Recommended Treatment:</strong><br>
-        • Spray with Metalaxyl + Mancozeb<br>
-        • Avoid overhead irrigation<br>
-        • Ensure proper drainage
+        ${treatments[detectedDisease] || "• Treatment info not available."}
       </div>
     `;
-  }, 2000);
+  };
 }
-
-
 </script>
 
 
