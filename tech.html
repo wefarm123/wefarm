@@ -222,143 +222,82 @@
   });
 </script>
 
-<section class="py-5 bg-success text-white" id="ai-crop-doctor">
-  <div class="container d-flex flex-column align-items-center justify-content-center text-center">
-    <h2 class="mb-4">🌾 WEFARM AI Crop Doctor</h2>
-    <p>Upload karo hum batayenge kaunsa rog hai aur kya ilaaj hai!</p>
 
-    <div class="row mt-4 justify-content-center w-100">
-      <!-- Image Upload Panel -->
-      <div class="col-md-6 col-lg-5 mb-4">
-        <div class="card shadow">
-          <div class="card-body text-dark">
-            <h5 class="text-center">📸 Image-Based Disease Detection</h5>
-            <p class="text-center">Apne paudhe ka photo upload karein:</p>
-            <input type="file" class="form-control mb-2" id="plantImage" accept="image/*">
-            <button class="btn btn-success w-100" onclick="detectByImage()">🔍 Diagnose</button>
-          </div>
-        </div>
-      </div>
+    <!-- Image-Based AI Diagnosis -->
+    <div class="card p-4 shadow">
+      <h4 class="text-center mb-3">📸 Diagnose with Image (AI)</h4>
+      <input type="file" id="imageUpload" class="form-control mb-3" accept="image/*">
+      <button onclick="classifyImage()" class="btn btn-primary w-100">Diagnose via AI</button>
+      <div id="diagnosisResultAI" class="mt-4 text-dark w-100 text-center"></div>
     </div>
-
-    <div id="diagnosisResult" class="mt-4 text-dark w-100 text-center"></div>
   </div>
-</section>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.2.0"></script>
 
+  <!-- Teachable Machine Script -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script type="text/javascript">
+    const modelURL = "https://teachablemachine.withgoogle.com/models/xyz123/"; // replace with your model link
+    let model, maxPredictions;
 
-<script>
-let model;
-const labels = [
-  "Apple___Apple_scab",
-  "Apple___Black_rot",
-  "Apple___Cedar_apple_rust",
-  "Apple___healthy",
-  // (Add all class labels from the trained model here)
-];
+    async function loadModel() {
+      const tmImage = window.tmImage;
+      model = await tmImage.load(modelURL + "model.json", modelURL + "metadata.json");
+      maxPredictions = model.getTotalClasses();
+    }
 
-async function loadModel() {
-  model = await tf.loadLayersModel('assets/model/model.json');
-  console.log("✅ Model loaded successfully");
-}
+    async function classifyImage() {
+      const file = document.getElementById("imageUpload").files[0];
+      if (!file) {
+        alert("Please upload an image first!");
+        return;
+      }
 
-loadModel();
+      const reader = new FileReader();
+      reader.onload = async function () {
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = async function () {
+          await loadModel();
+          const prediction = await model.predict(img);
+          prediction.sort((a, b) => b.probability - a.probability);
+          const predictedClass = prediction[0].className;
+          const treatment = getTreatment(predictedClass);
+          document.getElementById("diagnosisResultAI").innerText = `🦠 Disease: ${predictedClass.replace(/___/g, " → ")}\n💊 Treatment: ${treatment}`;
+        };
+      };
+      reader.readAsDataURL(file);
+    }
 
-async function detectByImage() {
-  const imageUpload = document.getElementById('plantImage');
-  if (!imageUpload.files.length) {
-    alert("📸 Pehle image upload karo!");
-    return;
-  }
+    function getTreatment(disease) {
+      const treatments = {
+        "Tomato___Early_blight": "Spray Mancozeb 2g/L weekly for 2 weeks.",
+        "Tomato___Late_blight": "Use Copper Oxychloride or Ridomil Gold.",
+        "Potato___Late_blight": "Spray with Metalaxyl-based fungicides.",
+        "Bell_Pepper___Bacterial_spot": "Apply copper-based bactericides.",
+        "Chili___Anthracnose": "Use carbendazim or azoxystrobin.",
+        "Brinjal___Shoot_and_fruit_borer": "Spray neem oil or Spinosad."
+      };
+      return treatments[disease] || "Consult local agri expert.";
+    }
 
-  const image = document.createElement('img');
-  image.src = URL.createObjectURL(imageUpload.files[0]);
-  await new Promise(resolve => image.onload = resolve);
+    // Manual Diagnosis
+    document.getElementById("symptomForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const crop = document.getElementById("crop").value.toLowerCase();
+      const symptoms = document.getElementById("symptoms").value.toLowerCase();
 
-  const tensor = tf.browser.fromPixels(image)
-    .resizeNearestNeighbor([224, 224])
-    .toFloat()
-    .div(255.0)
-    .expandDims();
+      let diagnosis = "Unable to determine disease. Please consult an expert.";
+      if (crop.includes("tomato") && symptoms.includes("yellow")) {
+        diagnosis = "Possible Nutrient Deficiency or Early Blight.";
+      } else if (crop.includes("potato") && symptoms.includes("black")) {
+        diagnosis = "Possible Late Blight. Apply fungicide immediately.";
+      } else if (crop.includes("bell pepper") && symptoms.includes("spots")) {
+        diagnosis = "Bacterial Spot. Use copper sprays.";
+      }
 
-  const prediction = model.predict(tensor);
-  const predictionArray = await prediction.data();
-  const maxIndex = predictionArray.indexOf(Math.max(...predictionArray));
-  const predictedClass = labels[maxIndex];
-
-  const treatment = getTreatment(predictedClass);
-
-  alert(`🦠 Disease: ${predictedClass.replace(/___/g, " → ")}\n💊 Treatment: ${treatment}`);
-}
-
-function getTreatment(disease) {
-  if (disease.includes("healthy")) return "✅ Paudha bilkul sahi hai!";
-  if (disease.includes("Black_rot")) return "🧴 Fungicide ka spray karein (jaise Mancozeb).";
-  if (disease.includes("Leaf_mold")) return "🌿 Neem oil ya copper-based fungicide lagayein.";
-  if (disease.includes("Bacterial_spot")) return "🚿 Pani kam karein aur bactericide spray karein.";
-  // Add more treatment mappings here
-  return "⚠️ General treatment: Pani ki safai, neem oil spray, aur healthy khad.";
-}
-</script>
-<script>
-let model;
-let labels = [];
-
-async function loadModel() {
-  model = await tf.loadLayersModel("model/model.json");
-  const response = await fetch("model/labels.json");
-  labels = await response.json();
-  console.log("✅ Model & labels loaded.");
-}
-
-loadModel(); // Load model on page load
-
-async function detectByImage() {
-  const file = document.getElementById("plantImage").files[0];
-  const result = document.getElementById("diagnosisResult");
-
-  if (!file) {
-    alert("Please upload an image.");
-    return;
-  }
-
-  result.innerHTML = `
-    <div class="alert alert-warning">
-      📡 Image uploaded. AI analysis in progress...
-    </div>
-  `;
-
-  const img = document.createElement("img");
-  img.src = URL.createObjectURL(file);
-
-  img.onload = async () => {
-    const tensor = tf.browser.fromPixels(img)
-      .resizeNearestNeighbor([224, 224])
-      .toFloat()
-      .expandDims();
-
-    const prediction = model.predict(tensor);
-    const predictionArray = await prediction.data();
-    const maxIdx = predictionArray.indexOf(Math.max(...predictionArray));
-    const detectedDisease = labels[maxIdx];
-
-    // Example treatments - customize this later
-    const treatments = {
-      "Tomato___Late_blight": "• Spray with Metalaxyl + Mancozeb<br>• Ensure proper drainage<br>• Avoid overhead irrigation",
-      "Tomato___Bacterial_spot": "• Apply copper-based bactericide<br>• Remove infected leaves",
-      "Pepper,_bell___healthy": "• No disease detected. Plant looks healthy!"
-    };
-
-    result.innerHTML = `
-      <div class="alert alert-success">
-        ✅ <strong>Detected Disease:</strong> ${detectedDisease}<br>
-        🩺 <strong>Recommended Treatment:</strong><br>
-        ${treatments[detectedDisease] || "• Treatment info not available."}
-      </div>
-    `;
-  };
-}
-</script>
+      document.getElementById("diseaseOutput").innerText = diagnosis;
+      document.getElementById("diagnosisResultSymptoms").style.display = "block";
+    });
+  </script>
 
 
 </body>
