@@ -18,18 +18,88 @@
   </section>
 
   <!-- Crop Planner Tool -->
-  <section class="py-5">
-    <div class="container text-center">
-      <h2>🌱 AI Crop Planning Tool</h2>
-      <p class="mb-4">Kisaan bhaiyo! Yeh tool aapke farm ke liye best crop plan suggest karega based on season, soil aur mandi rates.</p>
-      <button id="crop-planner-btn" class="btn btn-outline-success btn-lg">Use Crop Planner</button>
+<section class="py-5" id="crop-planner">
+  <div class="container">
+    <h2 class="text-center mb-4">🌱 AI Crop Planning Tool</h2>
+    <p class="text-center mb-5">Kisaan bhaiyo! Yeh tool aapke farm ke liye best crop plan suggest karega based on season, soil aur mandi rates.</p>
 
-      <!-- Hidden tool section -->
-      <div id="crop-planner-tool" style="display: none; margin-top: 30px;">
-        <iframe src="https://ccari.res.in/cropcalendar.html" width="100%" height="600" frameborder="0"></iframe>
+    <form id="cropPlannerForm" class="row g-3 justify-content-center">
+      <div class="col-md-3">
+        <label class="form-label">Location</label>
+        <input type="text" class="form-control" id="location" placeholder="e.g., Patna, Bihar" required>
       </div>
+      <div class="col-md-3">
+        <label class="form-label">Season</label>
+        <select class="form-select" id="season" required>
+          <option value="">Choose...</option>
+          <option>Rabi</option>
+          <option>Kharif</option>
+          <option>Zaid</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Soil Type</label>
+        <select class="form-select" id="soil" required>
+          <option value="">Choose...</option>
+          <option>Alluvial</option>
+          <option>Black</option>
+          <option>Red</option>
+          <option>Laterite</option>
+          <option>Sandy</option>
+          <option>Clay</option>
+        </select>
+      </div>
+      <div class="col-md-12 text-center">
+        <button type="submit" class="btn btn-success btn-lg">🚀 Suggest Crops</button>
+      </div>
+    </form>
+
+    <div id="cropResults" class="mt-5 text-center" style="display:none;">
+      <h4>🌾 Suggested Crops:</h4>
+      <p id="suggestionText" class="lead mt-3"></p>
     </div>
-  </section>
+  </div>
+</section>
+
+<script>
+  const cropSuggestions = {
+    "Rabi": {
+      "Alluvial": ["Wheat", "Mustard", "Barley"],
+      "Black": ["Chickpea", "Lentil", "Wheat"],
+      "Red": ["Wheat", "Mustard"],
+      "Laterite": ["Pea", "Mustard"],
+      "Sandy": ["Carrot", "Onion"],
+      "Clay": ["Wheat", "Barley"]
+    },
+    "Kharif": {
+      "Alluvial": ["Paddy", "Maize", "Cotton"],
+      "Black": ["Soybean", "Pigeon Pea", "Cotton"],
+      "Red": ["Millets", "Groundnut"],
+      "Laterite": ["Paddy", "Sesame"],
+      "Sandy": ["Moong", "Bajra"],
+      "Clay": ["Paddy", "Maize"]
+    },
+    "Zaid": {
+      "Alluvial": ["Watermelon", "Cucumber"],
+      "Black": ["Sunflower", "Moong"],
+      "Red": ["Melon", "Pumpkin"],
+      "Laterite": ["Cucumber", "Gourd"],
+      "Sandy": ["Watermelon", "Muskmelon"],
+      "Clay": ["Cucumber", "Bitter Gourd"]
+    }
+  };
+
+  document.getElementById("cropPlannerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const season = document.getElementById("season").value;
+    const soil = document.getElementById("soil").value;
+    const crops = cropSuggestions[season]?.[soil] || ["Data unavailable. Try different inputs."];
+
+    document.getElementById("suggestionText").innerText = crops.join(", ");
+    document.getElementById("cropResults").style.display = "block";
+  });
+</script>
+
 
   <!-- Crop Doctor Tool -->
   <section class="py-5 bg-light">
