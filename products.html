@@ -257,8 +257,12 @@
           );
         }
       }).catch(err => {
-        resultBox.innerHTML = `<span class="text-danger">❌ Camera Error: ${err}</span>`;
-      });
+       resultBox.innerHTML = `
+    <div class="alert alert-danger">
+      ❌ <strong>Camera Access Failed:</strong> ${err}<br>
+      🔁 Please allow camera access or try refreshing the page.
+      <br><button class="btn btn-outline-success mt-2" onclick="startQRScanner()">🔄 Retry Scanner</button>
+    </div>`;
     }
 
     const trackModal = document.getElementById('trackModal');
