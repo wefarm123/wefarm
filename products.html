@@ -247,12 +247,27 @@
           backCam.id,
           { fps: 10, qrbox: 250 },
           (decodedText) => {
-            html5QrCode.stop();
-            resultBox.innerHTML = `<strong>Scanned:</strong> ${decodedText}`;
-            if (decodedText.startsWith("http")) {
-              resultBox.innerHTML += `<br><a href="${decodedText}" target="_blank" class="btn btn-success mt-2">🔗 View Blockchain Info</a>`;
-            }
-          },
+  html5QrCode.stop();
+  fetch(decodedText)
+    .then(res => res.json())
+    .then(data => {
+      resultBox.innerHTML = `
+        <h5>📦 Batch ID: ${data.batchId}</h5>
+        <p><strong>Product:</strong> ${data.product}</p>
+        <p><strong>Harvest Date:</strong> ${data.harvestDate}</p>
+        <p><strong>Farmer Name:</strong> ${data.farmer.name}</p>
+        <p><strong>Location:</strong> ${data.farmer.location}</p>
+        <p><strong>Farmer Story:</strong><br> ${data.farmer.story}</p>
+        <p><strong>Pesticides Used:</strong> ${data.pesticides.join(', ')}</p>
+        <p><strong>Fertilizers Used:</strong> ${data.fertilizers.join(', ')}</p>
+        <video controls width="100%" src="${data.farmVideo}"></video>
+      `;
+    })
+    .catch(err => {
+      resultBox.innerHTML = `<div class="alert alert-danger">❌ Error: Blockchain data fetch failed.</div>`;
+    });
+}
+,
           () => {}
         );
       }
