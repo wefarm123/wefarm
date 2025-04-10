@@ -916,94 +916,54 @@
 </head>
 <body>
       
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container">
-           <a class="navbar-brand" href="index.html">
-  <img src="logo.png" alt="WEFARM Logo" style="height: 200px;">
+   <!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <img src="logo.png" alt="WEFARM Logo" class="logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="products.html">🌱Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="#vision">Vision</a></li>
+        <li class="nav-item"><a class="nav-link" href="tech.html">⚙️Tech</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Logo Styling -->
 <style>
-  .navbar-brand img {
-    max-height: 50px;
-    height: auto;
+  .navbar-brand img.logo {
+    height: 70px;     /* Increase for bigger logo */
     width: auto;
+    transition: all 0.3s ease-in-out;
+  }
+
+  @media (max-width: 768px) {
+    .navbar-brand img.logo {
+      height: 45px;   /* Smaller logo on phone */
+    }
+
+    .navbar {
+      padding: 5px 10px;
+    }
   }
 
   .navbar {
     padding-top: 5px;
     padding-bottom: 5px;
   }
-
-  @media (max-width: 768px) {
-    .navbar-brand img {
-      max-height: 40px;
-    }
-
-    .navbar {
-      padding: 3px 10px;
-    }
-  }
 </style>
-
-
-</a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                   <li class="nav-item">
-                    <a class="nav-link" href="products.html">🌱Products</a>
-                   </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#vision">Vision</a>
-                    </li>
-                     <li class="nav-item">
-                     <a class="nav-link" href="tech.html">⚙️Tech </a>
-                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-        <div class="container">
-            <a class="navbar-brand" href="#home">WE<span>FARM</span></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button><nav
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#vision">Vision</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
     <!-- Hero Section with Dynamic Background -->
     <section id="home">
