@@ -12,10 +12,11 @@
       font-family: 'Poppins', sans-serif;
       background: url('image.png') no-repeat center center fixed;
       background-size: cover;
+      min-height: 100vh;
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
     }
 
     .container {
@@ -25,33 +26,29 @@
       box-shadow: 0 8px 30px rgba(0, 128, 0, 0.3);
       width: 90%;
       max-width: 420px;
+      position: relative;
     }
 
     .container h2 {
       text-align: center;
-      color: green;
+      color: #2E7D32;
       margin-bottom: 20px;
     }
 
-    .container h2 span {
-      font-size: 1.3rem;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"] {
+    input {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 10px;
-      background: #eaf1ff;
+      background: #f0f7ff;
+      font-size: 14px;
     }
 
     button {
       width: 100%;
       padding: 14px;
-      margin-top: 15px;
+      margin-top: 10px;
       background-color: #2e7d32;
       color: white;
       font-weight: bold;
@@ -68,35 +65,48 @@
 
     .error {
       color: red;
-      font-size: 0.9rem;
+      font-size: 13px;
       margin-top: 5px;
+      display: none;
     }
 
     #otp-section {
       display: none;
-      margin-top: 20px;
+    }
+
+    #recaptcha-wrapper {
+      text-align: center;
+      margin-top: 10px;
     }
 
     #language-select {
       position: absolute;
       top: 15px;
       right: 20px;
+      z-index: 10;
+    }
+
+    #language-select select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
 
+<!-- 🌐 Language Selector -->
 <div id="language-select">
   🌐
-  <select>
-    <option>English</option>
-    <option>हिंदी</option>
-    <option>ગુજરાતી</option>
+  <select onchange="changeLang(this.value)">
+    <option value="en" selected>English</option>
+    <option value="hi">हिंदी</option>
+    <option value="gu">ગુજરાતી</option>
   </select>
 </div>
 
 <div class="container">
-  <h2>👨‍🌾 <span>WEFARM Sign Up</span></h2>
+  <h2>👨‍🌾 WEFARM Sign Up</h2>
 
   <input type="text" id="first" placeholder="First Name">
   <input type="text" id="last" placeholder="Last Name">
@@ -104,7 +114,10 @@
   <input type="tel" id="phone" placeholder="Phone Number">
   <div id="error-message" class="error"></div>
 
-  <div id="recaptcha-container"></div>
+  <div id="recaptcha-wrapper">
+    <div id="recaptcha-container"></div>
+  </div>
+
   <button id="sendOtpBtn" onclick="sendOTP()">📩 Send OTP</button>
 
   <div id="otp-section">
@@ -113,6 +126,46 @@
   </div>
 </div>
 
+<!-- 🌍 Language Switch Script -->
+<script>
+  const langMap = {
+    en: {
+      first: "First Name",
+      last: "Last Name",
+      email: "Email Address",
+      phone: "Phone Number",
+      otp: "Enter OTP"
+    },
+    hi: {
+      first: "पहला नाम",
+      last: "अंतिम नाम",
+      email: "ईमेल पता",
+      phone: "फोन नंबर",
+      otp: "OTP दर्ज करें"
+    },
+    gu: {
+      first: "પ્રથમ નામ",
+      last: "છેલ્લું નામ",
+      email: "ઈમેઈલ સરનામું",
+      phone: "ફોન નંબર",
+      otp: "OTP દાખલ કરો"
+    }
+  };
+
+  function changeLang(lang) {
+    document.getElementById("first").placeholder = langMap[lang].first;
+    document.getElementById("last").placeholder = langMap[lang].last;
+    document.getElementById("email").placeholder = langMap[lang].email;
+    document.getElementById("phone").placeholder = langMap[lang].phone;
+    document.getElementById("otp").placeholder = langMap[lang].otp;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    changeLang("en");
+  });
+</script>
+
+<!-- 🔥 Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -139,16 +192,22 @@
 
     if (!phone || phone.length !== 10) {
       errorDiv.textContent = "Please enter a valid 10-digit phone number.";
+      errorDiv.style.display = "block";
       return;
     }
 
-    errorDiv.textContent = "";
+    errorDiv.style.display = "none";
 
     if (!recaptchaInitialized) {
-      window.recaptchaVerifier = new RecaptchaVerifier('sendOtpBtn', {
-        'size': 'invisible',
-        'callback': () => sendOTP()
+      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+        'size': 'normal',
+        'callback': () => console.log("Captcha verified ✅")
       }, auth);
+
+      recaptchaVerifier.render().then(widgetId => {
+        window.recaptchaWidgetId = widgetId;
+      });
+
       recaptchaInitialized = true;
     }
 
@@ -158,10 +217,10 @@
       .then(confirmationResult => {
         window.confirmationResult = confirmationResult;
         document.getElementById("otp-section").style.display = "block";
-        errorDiv.textContent = "";
       })
       .catch(error => {
-        errorDiv.textContent = "Firebase: " + error.message;
+        errorDiv.textContent = "Firebase Error: " + error.message;
+        errorDiv.style.display = "block";
       });
   }
 
@@ -175,6 +234,7 @@
 
     if (!code) {
       errorDiv.textContent = "Please enter the OTP.";
+      errorDiv.style.display = "block";
       return;
     }
 
@@ -190,9 +250,9 @@
       }).then(() => {
         window.location.href = "profile.html";
       });
-
     }).catch(err => {
       errorDiv.textContent = "OTP Verification Failed: " + err.message;
+      errorDiv.style.display = "block";
     });
   }
 
