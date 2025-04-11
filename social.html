@@ -12,37 +12,80 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #edf0f5;
       background: url('signuplogo.png') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
     }
+
     .left-box {
       padding: 40px;
     }
+
     .left-box h1 {
       font-size: 3rem;
-      color: #2E7D32;
+      color: #fff;
       font-weight: 800;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.6);
     }
+
     .left-box p {
       font-size: 1.2rem;
-      color: #333;
+      color: #f2f2f2;
       margin-top: 20px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     }
+
     .right-box {
-      background-color: white;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.1);
       position: relative;
     }
-    .btn-primary {
-      background-color: #2E7D32;
-      border: none;
-    }
+
     .form-control {
       height: 45px;
       margin-bottom: 15px;
+      background: #ffffffcc;
+      border-radius: 10px;
     }
+
+    .btn-shiny {
+      position: relative;
+      display: inline-block;
+      background-color: transparent;
+      color: #2E7D32;
+      border: 2px solid #2E7D32;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      font-weight: bold;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .btn-shiny::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+      transition: left 0.7s ease;
+    }
+
+    .btn-shiny:hover::before {
+      left: 100%;
+    }
+
+    .btn-shiny:hover {
+      background-color: #2E7D32;
+      color: white;
+    }
+
     .lang-select {
       position: absolute;
       top: 10px;
@@ -55,13 +98,13 @@
 <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
   <div class="row w-100 align-items-center justify-content-center">
     
-    <!-- 🌾 Branding -->
+    <!-- Branding -->
     <div class="col-md-6 left-box text-center text-md-start">
       <h1>WEFARM</h1>
       <p>🌱 Kheti ki duniya, ab online! <br> Connect with farmers. Share your farm. Grow together. 🚜</p>
     </div>
 
-    <!-- 👤 Login Box -->
+    <!-- Login Box -->
     <div class="col-md-4 right-box">
       <div class="lang-select">
         <select id="language" onchange="changeLang(this.value)">
@@ -71,18 +114,15 @@
         </select>
       </div>
 
-      <!-- Login Fields -->
-<h3 id="formTitle">👨‍🌾 Login</h3>
-<input type="text" id="loginEmailPhone" placeholder="Email or Phone" class="form-control" />
-<input type="password" id="loginPassword" placeholder="Password" class="form-control" />
+      <h3 id="formTitle">👨‍🌾 Login</h3>
+      <input type="text" id="farmerEmail" placeholder="Email or Phone" class="form-control" />
+      <input type="password" id="farmerPassword" placeholder="Password" class="form-control" />
 
-<button onclick="loginFarmer()" class="btn btn-primary w-100 mb-2">🔐 Login</button>
+      <button onclick="loginFarmer()" class="btn-shiny">🔐 Login</button>
 
-<!-- Link to Sign Up -->
-<p class="mt-2 text-center">
-  👤 New here? <a href="signup.html">Or Sign Up Now</a>
-</p>
-
+      <p class="mt-2 text-center">
+        👤 New here? <a href="signup.html">Or Sign Up Now</a>
+      </p>
     </div>
   </div>
 </div>
@@ -90,43 +130,20 @@
 <!-- Firebase SDK (v9 Modular) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
     authDomain: "wefarmproject.firebaseapp.com",
     projectId: "wefarmproject",
-    storageBucket: "wefarmproject.firebasestorage.app",
+    storageBucket: "wefarmproject.appspot.com",
     messagingSenderId: "260514820964",
     appId: "1:260514820964:web:400135c256ed2554388071"
   };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
 
-  // Signup Function
-  window.signUpFarmer = async function () {
-    const name = document.getElementById("farmerName").value;
-    const email = document.getElementById("farmerEmail").value;
-    const password = document.getElementById("farmerPassword").value;
-
-    try {
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      await setDoc(doc(db, "farmers", userCred.user.uid), {
-        name,
-        email,
-        createdAt: new Date().toISOString()
-      });
-      alert("✅ Account created! Redirecting...");
-      window.location.href = "dashboard.html";
-    } catch (error) {
-      alert("❌ " + error.message);
-    }
-  };
-
-  // Login Function
   window.loginFarmer = async function () {
     const email = document.getElementById("farmerEmail").value;
     const password = document.getElementById("farmerPassword").value;
@@ -140,41 +157,17 @@
     }
   };
 
-  // 🌐 Language Switcher
+  // Language switching
   const langContent = {
-    en: {
-      formTitle: "👨‍🌾 Login / Signup",
-      name: "Full Name",
-      email: "Email",
-      password: "Password",
-      signup: "Sign Up",
-      login: "Login"
-    },
-    hi: {
-      formTitle: "👨‍🌾 लॉगिन / साइनअप",
-      name: "पूरा नाम",
-      email: "ईमेल",
-      password: "पासवर्ड",
-      signup: "साइनअप करें",
-      login: "लॉगिन करें"
-    },
-    hinglish: {
-      formTitle: "👨‍🌾 Login / Signup",
-      name: "Full Name / पूरा नाम",
-      email: "Email",
-      password: "Password / पासवर्ड",
-      signup: "Sign Up / साइनअप",
-      login: "Login / लॉगिन"
-    }
+    en: { formTitle: "👨‍🌾 Login", email: "Email", password: "Password" },
+    hi: { formTitle: "👨‍🌾 लॉगिन", email: "ईमेल", password: "पासवर्ड" },
+    hinglish: { formTitle: "👨‍🌾 Login", email: "Email / ईमेल", password: "Password / पासवर्ड" }
   };
 
   window.changeLang = function (lang) {
     document.getElementById("formTitle").textContent = langContent[lang].formTitle;
-    document.getElementById("farmerName").placeholder = langContent[lang].name;
     document.getElementById("farmerEmail").placeholder = langContent[lang].email;
     document.getElementById("farmerPassword").placeholder = langContent[lang].password;
-    document.getElementById("signupBtn").textContent = langContent[lang].signup;
-    document.getElementById("loginBtn").textContent = langContent[lang].login;
   };
 
   document.addEventListener("DOMContentLoaded", () => {
