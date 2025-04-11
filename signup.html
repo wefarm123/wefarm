@@ -9,14 +9,13 @@
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_BUCKET",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID",
-      databaseURL: "YOUR_DB_URL"
-    };
+  apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+  authDomain: "wefarmproject.firebaseapp.com",
+  projectId: "wefarmproject",
+  storageBucket: "wefarmproject.firebasestorage.app",
+  messagingSenderId: "260514820964",
+  appId: "1:260514820964:web:400135c256ed2554388071"
+};
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -75,7 +74,7 @@
   <input type="email" id="email" placeholder="Email" /><br>
   <input type="tel" id="phone" placeholder="Phone Number" /><br>
   <div id="recaptcha-container"></div>
-  <button onclick="sendOTP()">Send OTP</button>
+  <button onclick="sendOTP()">Signup now </button>
 
   <div id="otp-section" style="display:none;">
     <input type="text" id="otp" placeholder="Enter OTP" /><br>
