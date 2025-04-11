@@ -14,7 +14,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f7;
+            background-color: #9AC18B;
         }
 
         .profile-container {
@@ -29,71 +29,85 @@
 
         .cover-photo img {
             width: 100%;
-            height: 250px;
+            height: 350px;
             object-fit: cover;
         }
 
         .profile-info {
             position: absolute;
-            bottom: 10px;
-            left: 20px;
+            bottom: 20px;
+            left: 30px;
             display: flex;
             align-items: center;
+            color: white;
         }
 
         .profile-picture img {
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             border: 4px solid white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             margin-right: 20px;
         }
 
         .user-name h1 {
-            color: white;
             font-size: 28px;
+            font-weight: bold;
         }
 
         /* Navigation Tabs */
         .nav-tabs {
             background-color: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
 
         .nav-tabs ul {
             display: flex;
             justify-content: space-around;
-            padding: 10px;
+            padding: 15px 0;
+            list-style: none;
+            border-bottom: 1px solid #ddd;
         }
 
         .nav-tabs ul li {
-            list-style: none;
+            margin: 0 20px;
         }
 
         .nav-tabs ul li a {
             text-decoration: none;
             color: #333;
+            font-size: 18px;
             font-weight: bold;
+            padding-bottom: 10px;
+            transition: 0.3s;
+        }
+
+        .nav-tabs ul li a:hover {
+            border-bottom: 3px solid #0078d4;
         }
 
         /* Left Sidebar (Intro Section) */
         .left-sidebar {
-            width: 25%;
+            width: 30%;
             float: left;
             background-color: white;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-right: 20px;
+            margin-top: 20px;
         }
 
         .intro-section h2 {
             font-size: 22px;
             margin-bottom: 10px;
+            font-weight: bold;
         }
 
         .intro-section p {
             margin: 5px 0;
+            font-size: 16px;
         }
 
         .edit-btn {
@@ -104,6 +118,7 @@
             cursor: pointer;
             margin-top: 20px;
             border-radius: 5px;
+            font-size: 16px;
         }
 
         .edit-btn:hover {
@@ -112,15 +127,19 @@
 
         /* Main Content Area (Posts) */
         .main-content {
-            width: 70%;
+            width: 65%;
             float: left;
             background-color: white;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
 
         .post-box {
             margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
         }
 
         .post-box textarea {
@@ -129,6 +148,8 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            height: 100px;
+            resize: none;
         }
 
         .post-options {
@@ -180,6 +201,19 @@
 
             .user-name h1 {
                 font-size: 24px;
+            }
+
+            .nav-tabs ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-tabs ul li {
+                margin: 10px 0;
+            }
+
+            .post-box textarea {
+                height: 120px;
             }
         }
     </style>
