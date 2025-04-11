@@ -160,7 +160,9 @@ const db = firebase.firestore();
         email,
         createdAt: new Date().toISOString()
       });
-      alert("✅ Signup successful!");
+      alert(alert("✅ Login successful! Redirecting to feed...");
+window.location.href = "dashboard.html";
+);
     } catch (error) {
       alert("❌ " + error.message);
     }
