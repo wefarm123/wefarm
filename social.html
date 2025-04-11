@@ -14,20 +14,20 @@
     }
 
     body {
-      background: url('signuplogo.png') no-repeat center center fixed;
+background: url('signuplogo.png') no-repeat center center fixed;
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
     }
 
     .container {
+      perspective: 1000px;
+      width: 90%;
+      max-width: 1200px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: 90%;
-      max-width: 1200px;
     }
 
     .left-box {
@@ -46,64 +46,68 @@
       margin-top: 10px;
     }
 
-    .login-box {
+    .flip-card {
       width: 100%;
       max-width: 400px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+    }
+
+    .flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      backface-visibility: hidden;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
-      padding: 30px;
       border-radius: 15px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      padding: 30px;
       color: white;
     }
 
-    .login-box h2 {
-      text-align: center;
-      margin-bottom: 20px;
+    .card-back {
+      transform: rotateY(180deg);
     }
 
-    .login-box select {
-      float: right;
-      margin-bottom: 10px;
-      padding: 5px;
-    }
-
-    .login-box input {
+    input, select, button {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      border: none;
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.7);
+      border: none;
+      font-size: 16px;
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.8);
       color: black;
     }
 
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 8px;
+    button {
       background: #2e7d32;
       color: white;
-      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s ease;
     }
 
-    .login-box button:hover {
+    button:hover {
       background: #1b5e20;
     }
 
     .spinner {
-      display: inline-block;
       width: 18px;
       height: 18px;
       border: 2px solid #fff;
       border-top: 2px solid #2e7d32;
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
+      display: inline-block;
       margin-right: 8px;
       vertical-align: middle;
     }
@@ -121,91 +125,115 @@
       text-align: center;
     }
 
-    .login-box p {
-      text-align: center;
-      margin-top: 15px;
+    .forgot {
+      text-align: right;
+      font-size: 14px;
     }
 
-    .login-box a {
-      color: #90caf9;
+    .forgot a {
+      color: #ffc107;
       text-decoration: none;
+      cursor: pointer;
     }
 
-    .login-box a:hover {
+    .forgot a:hover {
       text-decoration: underline;
     }
 
-@media screen and (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
+    .small-link {
+      text-align: center;
+      color: black;
+      font-size: 14px;
+    }
 
-  .left-box {
-    text-align: center;
-    padding: 20px;
-  }
+    .small-link a {
+      font-weight: bold;
+      color: #fff176;
+    }
 
-  .left-box h1 {
-    font-size: 40px;
-  }
+    @media screen and (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
 
-  .left-box p {
-    font-size: 16px;
-  }
+      .left-box {
+        text-align: center;
+        padding: 20px;
+      }
 
-  .login-box {
-    margin-top: 20px;
-    width: 100%;
-  }
+      .left-box h1 {
+        font-size: 40px;
+      }
 
-  .login-box input,
-  .login-box button,
-  .login-box select {
-    font-size: 16px;
-  }
-}
+      .left-box p {
+        font-size: 16px;
+      }
 
+      .flip-card {
+        margin-top: 20px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <!-- Branding -->
-    <div class="left-box text-center text-md-start">
+    <div class="left-box">
       <h1>WEFARM</h1>
       <p>🌱 Kheti ki duniya, ab online!<br>Connect with farmers. Share your farm. Grow together. 🚜</p>
     </div>
 
-    <!-- Login Form -->
-    <div class="login-box">
-      <form id="loginForm">
-        <select>
-          <option>Hinglish</option>
-          <option>English</option>
-          <option>Hindi</option>
-        </select>
-        <h2>👨‍🌾 Login</h2>
-        <input type="email" id="email" placeholder="Enter email" required />
-        <input type="password" id="password" placeholder="Enter password" required />
-        <button id="loginBtn" type="submit"><i class="fas fa-lock"></i> Login</button>
-        <div id="errorMessage"></div>
-        <p style="color: black;">👤 New here? <a href="signup.html" style="font-weight: bold;">Or Sign Up Now</a></p>
+    <!-- Flip Card -->
+    <div class="flip-card" id="flipCard">
+      <!-- Login Form -->
+      <div class="card-face card-front">
+        <form id="loginForm">
+          <select>
+            <option>Hinglish</option>
+            <option>English</option>
+            <option>Hindi</option>
+          </select>
+          <h2>👨‍🌾 Login</h2>
+          <input type="email" id="email" placeholder="Enter email" required />
+          <input type="password" id="password" placeholder="Enter password" required />
+          <div class="forgot">
+            <a onclick="flipToReset()">🔒 Forgot your password?</a>
+          </div>
+          <button id="loginBtn" type="submit"><i class="fas fa-lock"></i> Login</button>
+          <div id="errorMessage"></div>
+          <p class="small-link">👤 New here? <a href="signup.html">Or Sign Up Now</a></p>
+        </form>
+      </div>
 
-      </form>
+      <!-- Password Reset Form -->
+      <div class="card-face card-back">
+        <form id="resetForm">
+          <h2>🔐 Reset Password</h2>
+          <input type="email" id="resetEmail" placeholder="Enter your email" required />
+          <button type="submit">📧 Send Reset Link</button>
+          <div id="resetMessage" style="font-size:14px; margin-top:10px; color:#fff;"></div>
+          <p class="forgot"><a onclick="flipToLogin()">← Back to Login</a></p>
+        </form>
+      </div>
     </div>
   </div>
 
   <!-- Firebase Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
       authDomain: "wefarmproject.firebaseapp.com",
       projectId: "wefarmproject",
-      storageBucket: "wefarmproject.firebasestorage.app",
+      storageBucket: "wefarmproject.appspot.com",
       messagingSenderId: "260514820964",
       appId: "1:260514820964:web:400135c256ed2554388071"
     };
@@ -213,13 +241,14 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const loginForm = document.getElementById("loginForm");
+    const loginBtn = document.getElementById("loginBtn");
+    const errorMsg = document.getElementById("errorMessage");
 
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const loginBtn = document.getElementById("loginBtn");
-      const errorMsg = document.getElementById("errorMessage");
 
       loginBtn.disabled = true;
       loginBtn.innerHTML = `<span class="spinner"></span> Logging in...`;
@@ -227,12 +256,35 @@
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "dashboard.html"; // Redirect on success
+        window.location.href = "profile.html";
       } catch (error) {
         errorMsg.textContent = "❌ " + error.message;
       } finally {
         loginBtn.disabled = false;
         loginBtn.innerHTML = `<i class="fas fa-lock"></i> Login`;
+      }
+    });
+
+    // Flip card logic
+    window.flipToReset = () => document.getElementById("flipCard").classList.add("flipped");
+    window.flipToLogin = () => {
+      document.getElementById("flipCard").classList.remove("flipped");
+      document.getElementById("resetMessage").textContent = "";
+    };
+
+    // Password reset logic
+    document.getElementById("resetForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const resetEmail = document.getElementById("resetEmail").value.trim();
+      const msgBox = document.getElementById("resetMessage");
+
+      if (resetEmail) {
+        try {
+          await sendPasswordResetEmail(auth, resetEmail);
+          msgBox.textContent = "✅ Reset link sent! Please check your inbox.";
+        } catch (error) {
+          msgBox.textContent = "❌ " + error.message;
+        }
       }
     });
   </script>
