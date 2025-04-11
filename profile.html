@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WEFARM Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #9AC18B;
+      font-family: 'Poppins', sans-serif;
+      padding: 20px;
+    }
+
+    .profile-container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffffd9;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid #2e7d32;
+      margin-bottom: 15px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+
+<div class="profile-container">
+  <h2>👨‍🌾 Welcome, <span id="profileName">Farmer</span></h2>
+  <img src="https://via.placeholder.com/120" id="profileImage" class="profile-pic" />
+  <input type="file" id="uploadPic" accept="image/*" />
+
+  <input type="text" id="location" placeholder="Your Location" />
+  <select id="age">
+    <option disabled selected>Age</option>
+    ${Array.from({length: 80}, (_, i) => `<option>${i + 18}</option>`).join('')}
+  </select>
+  <select id="dobYear">
+    <option disabled selected>Year of Birth</option>
+    ${Array.from({length: 80}, (_, i) => `<option>${2025 - i}</option>`).join('')}
+  </select>
+  <textarea id="bio" rows="3" placeholder="Tell us something about yourself..."></textarea>
+
+  <button onclick="saveProfile()">💾 Save Profile</button>
+</div>
+
+<!-- Firebase Script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    update,
+    get
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  import {
+    getStorage,
+    ref as storageRef,
+    uploadBytes,
+    getDownloadURL
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+    authDomain: "wefarmproject.firebaseapp.com",
+    projectId: "wefarmproject",
+    storageBucket: "wefarmproject.appspot.com",
+    messagingSenderId: "260514820964",
+    appId: "1:260514820964:web:400135c256ed2554388071"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+  const storage = getStorage(app);
+
+  let currentUserId = null;
+
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      currentUserId = user.uid;
+      const userRef = ref(db, 'users/' + currentUserId);
+      const snap = await get(userRef);
+      const data = snap.val();
+      document.getElementById("profileName").textContent = data.firstName + " " + data.lastName;
+    } else {
+      window.location.href = "social.html";
+    }
+  });
+
+  document.getElementById("uploadPic").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const path = `profilePics/${currentUserId}.jpg`;
+    const storageReference = storageRef(storage, path);
+    await uploadBytes(storageReference, file);
+    const url = await getDownloadURL(storageReference);
+    document.getElementById("profileImage").src = url;
+    await update(ref(db, 'users/' + currentUserId), { profilePic: url });
+  });
+
+  window.saveProfile = async function () {
+    const location = document.getElementById("location").value;
+    const age = document.getElementById("age").value;
+    const year = document.getElementById("dobYear").value;
+    const bio = document.getElementById("bio").value;
+
+    await update(ref(db, 'users/' + currentUserId), {
+      location,
+      age,
+      dobYear: year,
+      bio
+    });
+
+    alert("✅ Profile updated!");
+  }
+</script>
+</body>
+</html>
