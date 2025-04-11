@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WEFARM Social</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap + Firebase + Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js"></script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f3f8f4;
+    }
+    .navbar {
+      background-color: #2E7D32;
+    }
+    .navbar-brand, .nav-link {
+      color: white !important;
+      font-weight: 600;
+    }
+    .hero-section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .hero-section h1 {
+      color: #2E7D32;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+    .section-tabs .nav-link {
+      color: #2E7D32;
+      font-weight: 500;
+    }
+    .tab-pane {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 🔝 Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">🌱 WEFARM Social</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#socialNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="socialNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#profile">Profile</a></li>
+        <li class="nav-item"><a class="nav-link" href="#feed">Feed</a></li>
+        <li class="nav-item"><a class="nav-link" href="#upload">Upload</a></li>
+        <li class="nav-item"><a class="nav-link" href="#chat">Chat</a></li>
+        <li class="nav-item"><a class="nav-link" href="#groups">Groups</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- 🎉 Welcome Banner -->
+<div class="hero-section">
+  <h1>Welcome to WEFARM Social 🌾</h1>
+  <p class="text-muted">Share Ideas, Connect with Farmers, and Grow Together — खेती की बात अब ऑनलाइन!</p>
+</div>
+
+<!-- 🚀 Section Tabs -->
+<div class="container">
+  <ul class="nav nav-tabs section-tabs" id="socialTabs" role="tablist">
+    <li class="nav-item"><button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile">👤 Profile</button></li>
+    <li class="nav-item"><button class="nav-link" id="feed-tab" data-bs-toggle="tab" data-bs-target="#feed">📢 Feed</button></li>
+    <li class="nav-item"><button class="nav-link" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload">📸 Upload</button></li>
+    <li class="nav-item"><button class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat">💬 Chat</button></li>
+    <li class="nav-item"><button class="nav-link" id="groups-tab" data-bs-toggle="tab" data-bs-target="#groups">👥 Groups</button></li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="profile" role="tabpanel">🚧 Profile content coming soon...</div>
+    <div class="tab-pane fade" id="feed" role="tabpanel">🚧 Feed content coming soon...</div>
+    <div class="tab-pane fade" id="upload" role="tabpanel">🚧 Upload content coming soon...</div>
+    <div class="tab-pane fade" id="chat" role="tabpanel">🚧 Chat content coming soon...</div>
+    <div class="tab-pane fade" id="groups" role="tabpanel">🚧 Groups content coming soon...</div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
