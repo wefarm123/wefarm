@@ -229,13 +229,15 @@
   import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-    authDomain: "wefarmproject.firebaseapp.com",
-    projectId: "wefarmproject",
-    storageBucket: "wefarmproject.appspot.com",
-    messagingSenderId: "260514820964",
-    appId: "1:260514820964:web:400135c256ed2554388071"
-  };
+  apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+  authDomain: "wefarmproject.firebaseapp.com",
+  databaseURL: "https://wefarmproject-default-rtdb.firebaseio.com", // ✅ REQUIRED
+  projectId: "wefarmproject",
+  storageBucket: "wefarmproject.appspot.com",
+  messagingSenderId: "260514820964",
+  appId: "1:260514820964:web:400135c256ed2554388071"
+};
+
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
