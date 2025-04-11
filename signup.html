@@ -225,19 +225,27 @@
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  import {
+    getAuth,
+    RecaptchaVerifier,
+    signInWithPhoneNumber
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    set
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
+  // ✅ Include correct URL based on region (after enabling Realtime DB in Singapore)
   const firebaseConfig = {
-  apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-  authDomain: "wefarmproject.firebaseapp.com",
-  databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app"
-  projectId: "wefarmproject",
-  storageBucket: "wefarmproject.appspot.com",
-  messagingSenderId: "260514820964",
-  appId: "1:260514820964:web:400135c256ed2554388071"
-};
-
+    apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+    authDomain: "wefarmproject.firebaseapp.com",
+    projectId: "wefarmproject",
+    storageBucket: "wefarmproject.appspot.com",
+    messagingSenderId: "260514820964",
+    appId: "1:260514820964:web:400135c256ed2554388071",
+    databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app"  // ✅ Add this
+  };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -246,7 +254,8 @@
   let recaptchaInitialized = false;
   let resendTimeout = null;
 
-  function sendOTP() {
+  // ✅ Expose functions to global scope
+  window.sendOTP = async function () {
     const phone = document.getElementById("phone").value.trim();
     const errorDiv = document.getElementById("error-message");
     const sendBtn = document.getElementById("sendOtpBtn");
@@ -261,49 +270,47 @@
 
     if (!recaptchaInitialized) {
       window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-        'size': 'normal',
-        'callback': () => console.log("Captcha verified ✅")
+        size: 'normal',
+        callback: () => console.log("Captcha verified ✅")
       }, auth);
 
-      recaptchaVerifier.render().then(widgetId => {
+      await recaptchaVerifier.render().then(widgetId => {
         window.recaptchaWidgetId = widgetId;
       });
 
       recaptchaInitialized = true;
     }
 
-    // Spinner show
     sendBtn.innerHTML = `<span class="spinner"></span> Sending...`;
     sendBtn.disabled = true;
 
     const appVerifier = window.recaptchaVerifier;
 
-    signInWithPhoneNumber(auth, "+91" + phone, appVerifier)
-      .then(confirmationResult => {
-        window.confirmationResult = confirmationResult;
-        document.getElementById("otp-section").style.display = "block";
+    try {
+      const confirmationResult = await signInWithPhoneNumber(auth, "+91" + phone, appVerifier);
+      window.confirmationResult = confirmationResult;
+      document.getElementById("otp-section").style.display = "block";
 
-        let seconds = 30;
-        resendTimeout = setInterval(() => {
-          seconds--;
-          if (seconds > 0) {
-            sendBtn.innerHTML = `⏳ Resend in ${seconds}s`;
-          } else {
-            clearInterval(resendTimeout);
-            sendBtn.disabled = false;
-            sendBtn.innerHTML = "📩 Resend OTP";
-          }
-        }, 1000);
-      })
-      .catch(error => {
-        errorDiv.textContent = "Firebase Error: " + error.message;
-        errorDiv.style.display = "block";
-        sendBtn.innerHTML = "📩 Send OTP";
-        sendBtn.disabled = false;
-      });
-  }
+      let seconds = 30;
+      resendTimeout = setInterval(() => {
+        seconds--;
+        if (seconds > 0) {
+          sendBtn.innerHTML = `⏳ Resend in ${seconds}s`;
+        } else {
+          clearInterval(resendTimeout);
+          sendBtn.disabled = false;
+          sendBtn.innerHTML = "📩 Resend OTP";
+        }
+      }, 1000);
+    } catch (error) {
+      errorDiv.textContent = "Firebase Error: " + error.message;
+      errorDiv.style.display = "block";
+      sendBtn.innerHTML = "📩 Send OTP";
+      sendBtn.disabled = false;
+    }
+  };
 
-  function verifyOTP() {
+  window.verifyOTP = async function () {
     const code = document.getElementById("otp").value;
     const firstName = document.getElementById("first").value.trim();
     const lastName = document.getElementById("last").value.trim();
@@ -317,27 +324,27 @@
       return;
     }
 
-    confirmationResult.confirm(code).then(result => {
+    try {
+      const result = await window.confirmationResult.confirm(code);
       const user = result.user;
 
-      set(ref(database, 'users/' + user.uid), {
+      await set(ref(database, 'users/' + user.uid), {
         firstName,
         lastName,
         email,
         phone,
         uid: user.uid
-      }).then(() => {
-        window.location.href = "profile.html";
       });
-    }).catch(err => {
+
+      // ✅ Redirect after success
+      window.location.href = "profile.html";
+    } catch (err) {
       errorDiv.textContent = "OTP Verification Failed: " + err.message;
       errorDiv.style.display = "block";
-    });
-  }
-
-  window.sendOTP = sendOTP;
-  window.verifyOTP = verifyOTP;
+    }
+  };
 </script>
+
 
 </body>
 </html>
