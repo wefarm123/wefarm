@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WEFARM - Sign Up</title>
+  <script type="module">
+    // Firebase v9 Modular SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID",
+      databaseURL: "YOUR_DB_URL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    window.onload = () => {
+      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible',
+        'callback': () => sendOTP()
+      }, auth);
+    }
+
+    function sendOTP() {
+      const phone = document.getElementById("phone").value;
+      const appVerifier = window.recaptchaVerifier;
+
+      signInWithPhoneNumber(auth, "+91" + phone, appVerifier)
+        .then(confirmationResult => {
+          window.confirmationResult = confirmationResult;
+          alert("OTP Sent Successfully!");
+          document.getElementById("otp-section").style.display = "block";
+        }).catch(error => alert(error.message));
+    }
+
+    function verifyOTP() {
+      const code = document.getElementById("otp").value;
+      const firstName = document.getElementById("first").value;
+      const lastName = document.getElementById("last").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+
+      confirmationResult.confirm(code).then(result => {
+        const user = result.user;
+
+        set(ref(database, 'users/' + user.uid), {
+          firstName,
+          lastName,
+          email,
+          phone,
+          uid: user.uid
+        }).then(() => {
+          alert("Signup Successful! Redirecting...");
+          window.location.href = "profile.html";
+        });
+      }).catch(err => alert("OTP Verification Failed: " + err.message));
+    }
+
+    window.sendOTP = sendOTP;
+    window.verifyOTP = verifyOTP;
+  </script>
+</head>
+<body>
+  <h2>WEFARM - Sign Up</h2>
+  <input type="text" id="first" placeholder="First Name" /><br>
+  <input type="text" id="last" placeholder="Last Name" /><br>
+  <input type="email" id="email" placeholder="Email" /><br>
+  <input type="tel" id="phone" placeholder="Phone Number" /><br>
+  <div id="recaptcha-container"></div>
+  <button onclick="sendOTP()">Send OTP</button>
+
+  <div id="otp-section" style="display:none;">
+    <input type="text" id="otp" placeholder="Enter OTP" /><br>
+    <button onclick="verifyOTP()">Verify & Sign Up</button>
+  </div>
+</body>
+</html>
