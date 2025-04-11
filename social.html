@@ -5,14 +5,9 @@
   <title>WEFARM Social</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Bootstrap + Google Fonts -->
+  <!-- Bootstrap + Fonts -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-  <!-- Firebase App (CDN) -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
 
   <style>
     body {
@@ -59,15 +54,14 @@
 <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
   <div class="row w-100 align-items-center justify-content-center">
     
-    <!-- 🌾 Left Branding -->
+    <!-- 🌾 Branding -->
     <div class="col-md-6 left-box text-center text-md-start">
       <h1>WEFARM</h1>
       <p>🌱 Kheti ki duniya, ab online! <br> Connect with farmers. Share your farm. Grow together. 🚜</p>
     </div>
 
-    <!-- 👤 Right Login Box -->
+    <!-- 👤 Login Box -->
     <div class="col-md-4 right-box">
-      <!-- 🌐 Language Dropdown -->
       <div class="lang-select">
         <select id="language" onchange="changeLang(this.value)">
           <option value="en">English</option>
@@ -75,7 +69,7 @@
           <option value="hinglish" selected>Hinglish</option>
         </select>
       </div>
-      
+
       <h3 id="formTitle">👨‍🌾 Login / Signup</h3>
       <input type="text" id="farmerName" placeholder="Full Name / पूरा नाम" class="form-control" />
       <input type="email" id="farmerEmail" placeholder="Email" class="form-control" />
@@ -87,8 +81,12 @@
   </div>
 </div>
 
-<!-- 🔥 Firebase Config -->
-<script>
+<!-- Firebase SDK (v9 Modular) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
     authDomain: "wefarmproject.firebaseapp.com",
@@ -98,13 +96,45 @@
     appId: "1:260514820964:web:400135c256ed2554388071"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-<!-- 🌐 Language Switch Script -->
-<script>
+  // Signup Function
+  window.signUpFarmer = async function () {
+    const name = document.getElementById("farmerName").value;
+    const email = document.getElementById("farmerEmail").value;
+    const password = document.getElementById("farmerPassword").value;
+
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, "farmers", userCred.user.uid), {
+        name,
+        email,
+        createdAt: new Date().toISOString()
+      });
+      alert("✅ Account created! Redirecting...");
+      window.location.href = "dashboard.html";
+    } catch (error) {
+      alert("❌ " + error.message);
+    }
+  };
+
+  // Login Function
+  window.loginFarmer = async function () {
+    const email = document.getElementById("farmerEmail").value;
+    const password = document.getElementById("farmerPassword").value;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("✅ Login successful! Redirecting...");
+      window.location.href = "dashboard.html";
+    } catch (error) {
+      alert("❌ " + error.message);
+    }
+  };
+
+  // 🌐 Language Switcher
   const langContent = {
     en: {
       formTitle: "👨‍🌾 Login / Signup",
@@ -132,54 +162,18 @@
     }
   };
 
-  function changeLang(lang) {
+  window.changeLang = function (lang) {
     document.getElementById("formTitle").textContent = langContent[lang].formTitle;
     document.getElementById("farmerName").placeholder = langContent[lang].name;
     document.getElementById("farmerEmail").placeholder = langContent[lang].email;
     document.getElementById("farmerPassword").placeholder = langContent[lang].password;
     document.getElementById("signupBtn").textContent = langContent[lang].signup;
     document.getElementById("loginBtn").textContent = langContent[lang].login;
-  }
+  };
 
   document.addEventListener("DOMContentLoaded", () => {
     changeLang("hinglish");
   });
-</script>
-
-<!-- 👤 Auth Scripts -->
-<script>
-  async function signUpFarmer() {
-    const name = document.getElementById("farmerName").value;
-    const email = document.getElementById("farmerEmail").value;
-    const password = document.getElementById("farmerPassword").value;
-
-    try {
-      const userCred = await auth.createUserWithEmailAndPassword(email, password);
-      const uid = userCred.user.uid;
-      await db.collection("farmers").doc(uid).set({
-        name,
-        email,
-        createdAt: new Date().toISOString()
-      });
-      alert("✅ Account created! Redirecting...");
-      window.location.href = "dashboard.html";
-    } catch (error) {
-      alert("❌ " + error.message);
-    }
-  }
-
-  async function loginFarmer() {
-    const email = document.getElementById("farmerEmail").value;
-    const password = document.getElementById("farmerPassword").value;
-
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
-      alert("✅ Login successful! Redirecting...");
-      window.location.href = "dashboard.html";
-    } catch (error) {
-      alert("❌ " + error.message);
-    }
-  }
 </script>
 
 </body>
