@@ -28,7 +28,20 @@
       max-width: 420px;
       position: relative;
     }
+.zoom-link {
+  color: white;
+  font-weight: 600;
+  margin-left: 5px;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
 
+.zoom-link:hover {
+  transform: scale(1.1);
+  text-decoration: underline;
+}
+
+    
     .container h2 {
       text-align: center;
       color: #2E7D32;
@@ -179,6 +192,11 @@
   <div id="otp-section">
     <input type="text" id="otp" placeholder="Enter OTP">
     <button class="verify-button" onclick="verifyOTP()">✅ Verify & Sign Up</button>
+
+<div style="text-align:center; margin-top: 15px;">
+  <span style="color: #333;">Already have an account?</span>
+  <a href="social.html" class="zoom-link">Back to Login</a>
+</div>
   </div>
 </div>
 
