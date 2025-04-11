@@ -8,7 +8,6 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Poppins', sans-serif;
       background: url('signuplogo.png') no-repeat center center fixed;
       background-size: cover;
@@ -19,7 +18,9 @@
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 8px 30px rgba(0, 128, 0, 0.3);
@@ -40,7 +41,7 @@
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 10px;
-      background: #f0f7ff;
+      background: #ffffffcc;
       font-size: 14px;
     }
 
@@ -48,23 +49,72 @@
       width: 100%;
       padding: 14px;
       margin-top: 10px;
-      background-color: #2e7d32;
-      color: white;
       font-weight: bold;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
 
-    button:hover:enabled {
+    button:disabled {
+      background-color: #bbb;
+      cursor: not-allowed;
+    }
+
+    #sendOtpBtn {
+      background-color: #2e7d32;
+      color: white;
+    }
+
+    #sendOtpBtn:hover:enabled {
       background-color: #1b5e20;
       transform: scale(1.03);
     }
 
-    button:disabled {
-      background-color: #9e9e9e;
-      cursor: not-allowed;
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid #fff;
+      border-top: 3px solid #2e7d32;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .verify-button {
+      background-color: transparent;
+      color: #2e7d32;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #2e7d32;
+      transition: all 0.3s ease;
+    }
+
+    .verify-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+      transition: left 0.7s ease;
+    }
+
+    .verify-button:hover::before {
+      left: 100%;
+    }
+
+    .verify-button:hover {
+      color: white;
+      background-color: #2e7d32;
     }
 
     .error {
@@ -99,6 +149,7 @@
 </head>
 <body>
 
+<!-- 🌐 Language Selector -->
 <div id="language-select">
   🌐
   <select onchange="changeLang(this.value)">
@@ -121,38 +172,22 @@
     <div id="recaptcha-container"></div>
   </div>
 
-  <button id="sendOtpBtn" onclick="sendOTP()">📩 Send OTP</button>
+  <button id="sendOtpBtn" onclick="sendOTP()">
+    📩 Send OTP
+  </button>
 
   <div id="otp-section">
     <input type="text" id="otp" placeholder="Enter OTP">
-    <button onclick="verifyOTP()">✅ Verify & Sign Up</button>
+    <button class="verify-button" onclick="verifyOTP()">✅ Verify & Sign Up</button>
   </div>
 </div>
 
-<!-- Language Switch -->
+<!-- Language Switch Script -->
 <script>
   const langMap = {
-    en: {
-      first: "First Name",
-      last: "Last Name",
-      email: "Email Address",
-      phone: "Phone Number",
-      otp: "Enter OTP"
-    },
-    hi: {
-      first: "पहला नाम",
-      last: "अंतिम नाम",
-      email: "ईमेल पता",
-      phone: "फोन नंबर",
-      otp: "OTP दर्ज करें"
-    },
-    gu: {
-      first: "પ્રથમ નામ",
-      last: "છેલ્લું નામ",
-      email: "ઈમેઈલ સરનામું",
-      phone: "ફોન નંબર",
-      otp: "OTP દાખલ કરો"
-    }
+    en: { first: "First Name", last: "Last Name", email: "Email Address", phone: "Phone Number", otp: "Enter OTP" },
+    hi: { first: "पहला नाम", last: "अंतिम नाम", email: "ईमेल पता", phone: "फोन नंबर", otp: "OTP दर्ज करें" },
+    gu: { first: "પ્રથમ નામ", last: "છેલ્લું નામ", email: "ઈમેઈલ સરનામું", phone: "ફોન નંબર", otp: "OTP દાખલ કરો" }
   };
 
   function changeLang(lang) {
@@ -208,11 +243,17 @@
         'size': 'normal',
         'callback': () => console.log("Captcha verified ✅")
       }, auth);
+
       recaptchaVerifier.render().then(widgetId => {
         window.recaptchaWidgetId = widgetId;
       });
+
       recaptchaInitialized = true;
     }
+
+    // Spinner show
+    sendBtn.innerHTML = `<span class="spinner"></span> Sending...`;
+    sendBtn.disabled = true;
 
     const appVerifier = window.recaptchaVerifier;
 
@@ -221,25 +262,23 @@
         window.confirmationResult = confirmationResult;
         document.getElementById("otp-section").style.display = "block";
 
-        // Disable resend for 30 seconds
-        sendBtn.disabled = true;
         let seconds = 30;
-        sendBtn.innerText = `⏳ Resend in ${seconds}s`;
-
         resendTimeout = setInterval(() => {
           seconds--;
           if (seconds > 0) {
-            sendBtn.innerText = `⏳ Resend in ${seconds}s`;
+            sendBtn.innerHTML = `⏳ Resend in ${seconds}s`;
           } else {
             clearInterval(resendTimeout);
             sendBtn.disabled = false;
-            sendBtn.innerText = "📩 Resend OTP";
+            sendBtn.innerHTML = "📩 Resend OTP";
           }
         }, 1000);
       })
       .catch(error => {
         errorDiv.textContent = "Firebase Error: " + error.message;
         errorDiv.style.display = "block";
+        sendBtn.innerHTML = "📩 Send OTP";
+        sendBtn.disabled = false;
       });
   }
 
