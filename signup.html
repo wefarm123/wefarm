@@ -10,10 +10,9 @@
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
-      background: url('signuplogo.png')
+      background: url('signuplogo.png') no-repeat center center fixed;
       background-size: cover;
       min-height: 100vh;
-      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -58,9 +57,14 @@
       transition: 0.3s;
     }
 
-    button:hover {
+    button:hover:enabled {
       background-color: #1b5e20;
       transform: scale(1.03);
+    }
+
+    button:disabled {
+      background-color: #9e9e9e;
+      cursor: not-allowed;
     }
 
     .error {
@@ -95,7 +99,6 @@
 </head>
 <body>
 
-<!-- 🌐 Language Selector -->
 <div id="language-select">
   🌐
   <select onchange="changeLang(this.value)">
@@ -126,7 +129,7 @@
   </div>
 </div>
 
-<!-- 🌍 Language Switch Script -->
+<!-- Language Switch -->
 <script>
   const langMap = {
     en: {
@@ -165,7 +168,7 @@
   });
 </script>
 
-<!-- 🔥 Firebase SDK -->
+<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -185,10 +188,12 @@
   const database = getDatabase(app);
 
   let recaptchaInitialized = false;
+  let resendTimeout = null;
 
   function sendOTP() {
     const phone = document.getElementById("phone").value.trim();
     const errorDiv = document.getElementById("error-message");
+    const sendBtn = document.getElementById("sendOtpBtn");
 
     if (!phone || phone.length !== 10) {
       errorDiv.textContent = "Please enter a valid 10-digit phone number.";
@@ -203,11 +208,9 @@
         'size': 'normal',
         'callback': () => console.log("Captcha verified ✅")
       }, auth);
-
       recaptchaVerifier.render().then(widgetId => {
         window.recaptchaWidgetId = widgetId;
       });
-
       recaptchaInitialized = true;
     }
 
@@ -217,6 +220,22 @@
       .then(confirmationResult => {
         window.confirmationResult = confirmationResult;
         document.getElementById("otp-section").style.display = "block";
+
+        // Disable resend for 30 seconds
+        sendBtn.disabled = true;
+        let seconds = 30;
+        sendBtn.innerText = `⏳ Resend in ${seconds}s`;
+
+        resendTimeout = setInterval(() => {
+          seconds--;
+          if (seconds > 0) {
+            sendBtn.innerText = `⏳ Resend in ${seconds}s`;
+          } else {
+            clearInterval(resendTimeout);
+            sendBtn.disabled = false;
+            sendBtn.innerText = "📩 Resend OTP";
+          }
+        }, 1000);
       })
       .catch(error => {
         errorDiv.textContent = "Firebase Error: " + error.message;
