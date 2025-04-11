@@ -193,7 +193,7 @@
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "profile.html"; // Redirect on success
+        window.location.href = "dashboard.html"; // Redirect on success
       } catch (error) {
         errorMsg.textContent = "❌ " + error.message;
       } finally {
