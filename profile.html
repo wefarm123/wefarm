@@ -1,155 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>WEFARM Profile</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background-color: #9AC18B;
-      font-family: 'Poppins', sans-serif;
-      padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .profile-container {
-      max-width: 600px;
-      margin: auto;
-      background: #ffffffd9;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-      text-align: center;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f7;
+        }
 
-    .profile-pic {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 4px solid #2e7d32;
-      margin-bottom: 15px;
-    }
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
+        /* Header Section */
+        .header {
+            position: relative;
+        }
 
-    button {
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+        .cover-photo img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
 
-    button:hover {
-      background-color: #1b5e20;
-    }
-  </style>
-</head>
-<body>
+        .profile-info {
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+        }
 
-<div class="profile-container">
-  <h2>👨‍🌾 Welcome, <span id="profileName">Farmer</span></h2>
-  <img src="https://via.placeholder.com/120" id="profileImage" class="profile-pic" />
-  <input type="file" id="uploadPic" accept="image/*" />
+        .profile-picture img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-right: 20px;
+        }
 
-  <input type="text" id="location" placeholder="Your Location" />
-  <select id="age">
-    <option disabled selected>Age</option>
-    ${Array.from({length: 80}, (_, i) => `<option>${i + 18}</option>`).join('')}
-  </select>
-  <select id="dobYear">
-    <option disabled selected>Year of Birth</option>
-    ${Array.from({length: 80}, (_, i) => `<option>${2025 - i}</option>`).join('')}
-  </select>
-  <textarea id="bio" rows="3" placeholder="Tell us something about yourself..."></textarea>
+        .user-name h1 {
+            color: white;
+            font-size: 28px;
+        }
 
-  <button onclick="saveProfile()">💾 Save Profile</button>
-</div>
+        /* Navigation Tabs */
+        .nav-tabs {
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-<!-- Firebase Script -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    update,
-    get
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-  import {
-    getStorage,
-    ref as storageRef,
-    uploadBytes,
-    getDownloadURL
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+        .nav-tabs ul {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
 
-  const firebaseConfig = {
+        .nav-tabs ul li {
+            list-style: none;
+        }
+
+        .nav-tabs ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Left Sidebar (Intro Section) */
+        .left-sidebar {
+            width: 25%;
+            float: left;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+        }
+
+        .intro-section h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .intro-section p {
+            margin: 5px 0;
+        }
+
+        .edit-btn {
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .edit-btn:hover {
+            background-color: #005a8e;
+        }
+
+        /* Main Content Area (Posts) */
+        .main-content {
+            width: 70%;
+            float: left;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-box {
+            margin-bottom: 20px;
+        }
+
+        .post-box textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .post-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .post-options button {
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .post-options button:hover {
+            background-color: #005a8e;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 20px;
+            }
+
+            .left-sidebar,
+            .main-content {
+                width: 100%;
+                float: none;
+            }
+
+            .header {
+                text-align: center;
+            }
+
+            .profile-info {
+                position: relative;
+                display: block;
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .profile-picture img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .user-name h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-storage.js"></script>
+
+    <script>
+        // Firebase Configuration (replace with your own Firebase project credentials)
+       const firebaseConfig = {
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
     authDomain: "wefarmproject.firebaseapp.com",
     projectId: "wefarmproject",
     storageBucket: "wefarmproject.appspot.com",
     messagingSenderId: "260514820964",
-    appId: "1:260514820964:web:400135c256ed2554388071"
+    appId: "1:260514820964:web:400135c256ed2554388071",
+    databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app"  // ✅ Add this
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
-  const storage = getStorage(app);
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const storage = firebase.storage();
 
-  let currentUserId = null;
+        // Load User Data
+        const user = auth.currentUser;
 
-  onAuthStateChanged(auth, async user => {
-    if (user) {
-      currentUserId = user.uid;
-      const userRef = ref(db, 'users/' + currentUserId);
-      const snap = await get(userRef);
-      const data = snap.val();
-      document.getElementById("profileName").textContent = data.firstName + " " + data.lastName;
-    } else {
-      window.location.href = "social.html";
-    }
-  });
+        if (user) {
+            const userId = user.uid;
+            // Fetch user data from Firebase Realtime Database
+            db.ref('users/' + userId).once('value', function(snapshot) {
+                const userData = snapshot.val();
+                if (userData) {
+                    // Display user data
+                    document.getElementById('userName').textContent = userData.name;
+                    document.getElementById('profilePic').src = userData.profilePicURL || 'default-profile-pic.jpg';
+                    document.getElementById('coverPic').src = userData.coverPicURL || 'default-cover-pic.jpg';
+                    document.getElementById('worksAt').textContent = userData.worksAt || 'Not updated';
+                    document.getElementById('studiedAt').textContent = userData.studiedAt || 'Not updated';
+                    document.getElementById('livesIn').textContent = userData.livesIn || 'Not updated';
+                    document.getElementById('from').textContent = userData.from || 'Not updated';
+                }
+            });
+        }
 
-  document.getElementById("uploadPic").addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const path = `profilePics/${currentUserId}.jpg`;
-    const storageReference = storageRef(storage, path);
-    await uploadBytes(storageReference, file);
-    const url = await getDownloadURL(storageReference);
-    document.getElementById("profileImage").src = url;
-    await update(ref(db, 'users/' + currentUserId), { profilePic: url });
-  });
+        // Upload Profile Picture
+        function uploadProfilePicture(event) {
+            const file = event.target.files[0];
+            const storageRef = storage.ref('profile_pics/' + user.uid + '/profile_pic');
+            const uploadTask = storageRef.put(file);
 
-  window.saveProfile = async function () {
-    const location = document.getElementById("location").value;
-    const age = document.getElementById("age").value;
-    const year = document.getElementById("dobYear").value;
-    const bio = document.getElementById("bio").value;
+            uploadTask.on('state_changed', function(snapshot) {
+                // Progress
+            }, function(error) {
+                alert('Error uploading image: ' + error.message);
+            }, function() {
+                uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                    // Update profile picture URL in Firebase Realtime Database
+                    db.ref('users/' + user.uid).update({ profilePicURL: downloadURL });
+                });
+            });
+        }
+    </script>
+</head>
+<body>
 
-    await update(ref(db, 'users/' + currentUserId), {
-      location,
-      age,
-      dobYear: year,
-      bio
-    });
+    <div class="profile-container">
 
-    alert("✅ Profile updated!");
-  }
-</script>
+        <!-- Top Section (Header) -->
+        <div class="header">
+            <div class="cover-photo">
+                <img id="coverPic" src="default-cover-pic.jpg" alt="Cover Photo">
+            </div>
+            <div class="profile-info">
+                <div class="profile-picture">
+                    <img id="profilePic" src="default-profile-pic.jpg" alt="Profile Picture">
+                    <input type="file" id="profilePicInput" accept="image/*" onchange="uploadProfilePicture(event)">
+                </div>
+                <div class="user-name">
+                    <h1 id="userName">Loading...</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <ul>
+                <li><a href="#">Timeline</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Friends</a></li>
+                <li><a href="#">Photos</a></li>
+                <li><a href="#">Archive</a></li>
+                <li><a href="#">More</a></li>
+            </ul>
+        </div>
+
+        <!-- Intro Section (Left Sidebar) -->
+        <div class="left-sidebar">
+            <div class="intro-section">
+                <h2>Intro</h2>
+                <p><strong>Works at:</strong> <span id="worksAt">Loading...</span></p>
+                <p><strong>Studied at:</strong> <span id="studiedAt">Loading...</span></p>
+                <p><strong>Lives in:</strong> <span id="livesIn">Loading...</span></p>
+                <p><strong>From:</strong> <span id="from">Loading...</span></p>
+            </div>
+            <button class="edit-btn">Edit Details</button>
+        </div>
+
+        <!-- Main Content Area (Posts) -->
+        <div class="main-content">
+            <div class="post-box">
+                <textarea placeholder="What’s on your mind?" rows="4"></textarea>
+                <div class="post-options">
+                    <button>Photo/Video</button>
+                    <button>Tag Friends</button>
+                    <button>Check-in</button>
+                </div>
+            </div>
+
+            <!-- Future posts will appear here -->
+            <div class="posts">
+                <p>No posts yet.</p>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
