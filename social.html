@@ -14,15 +14,17 @@
     }
 
     body {
-background: url('signuplogo.png') no-repeat center center fixed;
+      background: url('signuplogo.png') no-repeat center center fixed;
+      background-size: cover;
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
 
     .container {
-      perspective: 1000px;
+      perspective: 1200px;
       width: 90%;
       max-width: 1200px;
       display: flex;
@@ -51,7 +53,7 @@ background: url('signuplogo.png') no-repeat center center fixed;
       max-width: 400px;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.8s ease;
+      transition: transform 0.9s ease-in-out;
     }
 
     .flipped {
@@ -63,11 +65,12 @@ background: url('signuplogo.png') no-repeat center center fixed;
       width: 100%;
       backface-visibility: hidden;
       background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
       border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       padding: 30px;
       color: white;
+      transition: all 0.3s ease;
     }
 
     .card-back {
@@ -84,7 +87,7 @@ background: url('signuplogo.png') no-repeat center center fixed;
     }
 
     input {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.9);
       color: black;
     }
 
@@ -93,11 +96,28 @@ background: url('signuplogo.png') no-repeat center center fixed;
       color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    button:hover {
-      background: #1b5e20;
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+      transform: skewX(-20deg);
+    }
+
+    button:hover::before {
+      animation: shine 0.8s forwards;
+    }
+
+    @keyframes shine {
+      0% { left: -75%; }
+      100% { left: 125%; }
     }
 
     .spinner {
@@ -113,9 +133,7 @@ background: url('signuplogo.png') no-repeat center center fixed;
     }
 
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      to { transform: rotate(360deg); }
     }
 
     #errorMessage {
@@ -142,13 +160,14 @@ background: url('signuplogo.png') no-repeat center center fixed;
 
     .small-link {
       text-align: center;
-      color: black;
       font-size: 14px;
+      color: white;
     }
 
     .small-link a {
       font-weight: bold;
       color: #fff176;
+      text-decoration: none;
     }
 
     @media screen and (max-width: 768px) {
@@ -190,10 +209,10 @@ background: url('signuplogo.png') no-repeat center center fixed;
       <!-- Login Form -->
       <div class="card-face card-front">
         <form id="loginForm">
-          <select>
-            <option>Hinglish</option>
-            <option>English</option>
-            <option>Hindi</option>
+          <select id="languageSelect">
+            <option value="en">Hinglish</option>
+            <option value="hi">Hindi</option>
+            <option value="en-only">English</option>
           </select>
           <h2>👨‍🌾 Login</h2>
           <input type="email" id="email" placeholder="Enter email" required />
@@ -265,7 +284,7 @@ background: url('signuplogo.png') no-repeat center center fixed;
       }
     });
 
-    // Flip card logic
+    // Flip logic
     window.flipToReset = () => document.getElementById("flipCard").classList.add("flipped");
     window.flipToLogin = () => {
       document.getElementById("flipCard").classList.remove("flipped");
@@ -286,6 +305,19 @@ background: url('signuplogo.png') no-repeat center center fixed;
           msgBox.textContent = "❌ " + error.message;
         }
       }
+    });
+
+    // Language switcher demo
+    document.getElementById("languageSelect").addEventListener("change", (e) => {
+      const lang = e.target.value;
+      const placeholders = {
+        en: ["Enter email", "Enter password", "Enter your email"],
+        hi: ["ईमेल डालें", "पासवर्ड डालें", "अपना ईमेल डालें"],
+        "en-only": ["Email", "Password", "Email"]
+      };
+      document.getElementById("email").placeholder = placeholders[lang][0];
+      document.getElementById("password").placeholder = placeholders[lang][1];
+      document.getElementById("resetEmail").placeholder = placeholders[lang][2];
     });
   </script>
 </body>
