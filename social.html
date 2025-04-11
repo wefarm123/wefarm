@@ -4,243 +4,195 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WEFARM Login</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", sans-serif;
-    }
-
     body {
       background: url('signuplogo.png') no-repeat center center fixed;
-      background-size: cover;
-      height: 100vh;
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #56ab2f, #a8e063);
       display: flex;
-      align-items: center;
       justify-content: center;
-      overflow: hidden;
+      align-items: center;
+      min-height: 100vh;
     }
 
     .container {
-      perspective: 1200px;
-      width: 90%;
-      max-width: 1200px;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
-      align-items: center;
+      max-width: 900px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
 
     .left-box {
       flex: 1;
-      color: white;
-      padding: 40px;
+      padding: 20px;
     }
 
     .left-box h1 {
-      font-size: 60px;
-      font-weight: 700;
+      font-size: 36px;
+      margin-bottom: 10px;
+      color: green;
     }
 
     .left-box p {
-      font-size: 20px;
-      margin-top: 10px;
+      font-size: 18px;
     }
 
-    .flip-card {
-      width: 100%;
+    .flip-container {
+      flex: 1;
+      perspective: 1000px;
       max-width: 400px;
-      position: relative;
+    }
+
+    .flipper {
+      transition: 0.6s;
       transform-style: preserve-3d;
-      transition: transform 0.9s ease-in-out;
+      position: relative;
+      width: 100%;
     }
 
-    .flipped {
-      transform: rotateY(180deg);
-    }
-
-    .card-face {
+    .login-box,
+    .reset-box {
+      backface-visibility: hidden;
       position: absolute;
       width: 100%;
-      backface-visibility: hidden;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(14px);
-      border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      top: 0;
+      left: 0;
+      background: rgba(255, 255, 255, 0.9);
       padding: 30px;
-      color: white;
-      transition: all 0.3s ease;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
-    .card-back {
+    .login-box {
+      z-index: 2;
+      transform: rotateY(0deg);
+    }
+
+    .reset-box {
       transform: rotateY(180deg);
     }
 
-    input, select, button {
-      width: 100%;
+    .flip-container.flip .flipper {
+      transform: rotateY(180deg);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input,
+    select {
       padding: 12px;
       margin: 10px 0;
+      border: 1px solid #ccc;
       border-radius: 8px;
-      border: none;
       font-size: 16px;
     }
 
-    input {
-      background: rgba(255, 255, 255, 0.9);
-      color: black;
-    }
-
     button {
-      background: #2e7d32;
+      padding: 12px;
+      background-color: #0288d1;
       color: white;
-      font-weight: bold;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-
-    button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -75%;
-      width: 50%;
-      height: 100%;
-      background: linear-gradient(120deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
-      transform: skewX(-20deg);
-    }
-
-    button:hover::before {
-      animation: shine 0.8s forwards;
-    }
-
-    @keyframes shine {
-      0% { left: -75%; }
-      100% { left: 125%; }
-    }
-
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid #fff;
-      border-top: 2px solid #2e7d32;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      display: inline-block;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    #errorMessage {
-      color: #ffdddd;
-      font-size: 14px;
+      font-weight: bold;
       margin-top: 10px;
-      text-align: center;
     }
 
-    .forgot {
-      text-align: right;
-      font-size: 14px;
+    button:hover {
+      background-color: #01579b;
     }
 
-    .forgot a {
-      color: #ffc107;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .forgot a:hover {
-      text-decoration: underline;
-    }
-
-    .small-link {
-      text-align: center;
-      font-size: 14px;
-      color: white;
-    }
-
-    .small-link a {
-      font-weight: bold;
-      color: #fff176;
+    a {
+      color: #0288d1;
       text-decoration: none;
     }
 
-    @media screen and (max-width: 768px) {
+    #errorMessage,
+    #resetMessage {
+      margin-top: 10px;
+      font-size: 14px;
+      text-align: center;
+      color: red;
+    }
+
+    @media (max-width: 768px) {
       .container {
         flex-direction: column;
         align-items: center;
-        padding: 20px;
       }
 
-      .left-box {
-        text-align: center;
-        padding: 20px;
-      }
-
-      .left-box h1 {
-        font-size: 40px;
-      }
-
-      .left-box p {
-        font-size: 16px;
-      }
-
-      .flip-card {
-        margin-top: 20px;
+      .left-box,
+      .flip-container {
+        max-width: 100%;
       }
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <!-- Branding -->
-    <div class="left-box">
+    <div class="left-box text-center text-md-start">
       <h1>WEFARM</h1>
       <p>🌱 Kheti ki duniya, ab online!<br>Connect with farmers. Share your farm. Grow together. 🚜</p>
     </div>
 
-    <!-- Flip Card -->
-    <div class="flip-card" id="flipCard">
-      <!-- Login Form -->
-      <div class="card-face card-front">
-        <form id="loginForm">
-          <select id="languageSelect">
-            <option value="en">Hinglish</option>
-            <option value="hi">Hindi</option>
-            <option value="en-only">English</option>
-          </select>
-          <h2>👨‍🌾 Login</h2>
-          <input type="email" id="email" placeholder="Enter email" required />
-          <input type="password" id="password" placeholder="Enter password" required />
-          <div class="forgot">
-            <a onclick="flipToReset()">🔒 Forgot your password?</a>
-          </div>
-          <button id="loginBtn" type="submit"><i class="fas fa-lock"></i> Login</button>
-          <div id="errorMessage"></div>
-          <p class="small-link">👤 New here? <a href="signup.html">Or Sign Up Now</a></p>
-        </form>
-      </div>
+    <!-- Flip Card Container -->
+    <div class="flip-container" id="flipCard">
+      <div class="flipper">
 
-      <!-- Password Reset Form -->
-      <div class="card-face card-back">
-        <form id="resetForm">
-          <h2>🔐 Reset Password</h2>
-          <input type="email" id="resetEmail" placeholder="Enter your email" required />
-          <button type="submit">📧 Send Reset Link</button>
-          <div id="resetMessage" style="font-size:14px; margin-top:10px; color:#fff;"></div>
-          <p class="forgot"><a onclick="flipToLogin()">← Back to Login</a></p>
-        </form>
+        <!-- Login Form -->
+        <div class="login-box">
+          <form id="loginForm">
+            <select>
+              <option>Hinglish</option>
+              <option>English</option>
+              <option>Hindi</option>
+            </select>
+            <h2>👨‍🌾 Login</h2>
+            <input type="email" id="email" placeholder="Enter email" required />
+            <input type="password" id="password" placeholder="Enter password" required />
+            <button id="loginBtn" type="submit"><i class="fas fa-lock"></i> Login</button>
+            <div id="errorMessage"></div>
+            <p style="color: black;">👤 New here? <a href="signup.html"><b>Sign Up Now</b></a></p>
+            <p><a href="#" onclick="flipToReset()">🔁 Forgot your password?</a></p>
+          </form>
+        </div>
+
+        <!-- Password Reset Form -->
+        <div class="reset-box">
+          <form id="resetForm">
+            <h2>🔐 Reset Password</h2>
+            <input type="email" id="resetEmail" placeholder="Enter your email" required />
+            <button type="submit">📩 Send Reset Email</button>
+            <button type="button" onclick="flipBack()">↩️ Cancel</button>
+            <div id="resetMessage"></div>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- Firebase Script -->
+  <!-- Firebase v9 SDK -->
   <script type="module">
+    // Your Firebase config here
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import {
       getAuth,
@@ -248,11 +200,11 @@
       sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
-    const firebaseConfig = {
+   const firebaseConfig = {
       apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
       authDomain: "wefarmproject.firebaseapp.com",
       projectId: "wefarmproject",
-      storageBucket: "wefarmproject.appspot.com",
+      storageBucket: "wefarmproject.firebasestorage.app",
       messagingSenderId: "260514820964",
       appId: "1:260514820964:web:400135c256ed2554388071"
     };
@@ -262,62 +214,49 @@
 
     const loginForm = document.getElementById("loginForm");
     const loginBtn = document.getElementById("loginBtn");
-    const errorMsg = document.getElementById("errorMessage");
+    const errorMessage = document.getElementById("errorMessage");
 
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = "Logging in...";
+
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
-      loginBtn.disabled = true;
-      loginBtn.innerHTML = `<span class="spinner"></span> Logging in...`;
-      errorMsg.textContent = "";
-
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "profile.html";
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "profile.html"; // ✅ Redirect
       } catch (error) {
-        errorMsg.textContent = "❌ " + error.message;
-      } finally {
+        errorMessage.textContent = error.message;
         loginBtn.disabled = false;
-        loginBtn.innerHTML = `<i class="fas fa-lock"></i> Login`;
+        loginBtn.innerHTML = "Login";
       }
     });
 
-    // Flip logic
-    window.flipToReset = () => document.getElementById("flipCard").classList.add("flipped");
-    window.flipToLogin = () => {
-      document.getElementById("flipCard").classList.remove("flipped");
+    const flipCard = document.getElementById("flipCard");
+
+    window.flipToReset = () => {
+      flipCard.classList.add("flip");
+    };
+
+    window.flipBack = () => {
+      flipCard.classList.remove("flip");
       document.getElementById("resetMessage").textContent = "";
     };
 
-    // Password reset logic
     document.getElementById("resetForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const resetEmail = document.getElementById("resetEmail").value.trim();
-      const msgBox = document.getElementById("resetMessage");
-
-      if (resetEmail) {
-        try {
-          await sendPasswordResetEmail(auth, resetEmail);
-          msgBox.textContent = "✅ Reset link sent! Please check your inbox.";
-        } catch (error) {
-          msgBox.textContent = "❌ " + error.message;
-        }
+      const email = document.getElementById("resetEmail").value.trim();
+      const resetMsg = document.getElementById("resetMessage");
+      resetMsg.textContent = "⏳ Sending reset email...";
+      try {
+        await sendPasswordResetEmail(auth, email);
+        resetMsg.textContent = "✅ Reset email sent! Check your inbox.";
+        setTimeout(flipBack, 2500);
+      } catch (error) {
+        resetMsg.textContent = "❌ " + error.message;
       }
-    });
-
-    // Language switcher demo
-    document.getElementById("languageSelect").addEventListener("change", (e) => {
-      const lang = e.target.value;
-      const placeholders = {
-        en: ["Enter email", "Enter password", "Enter your email"],
-        hi: ["ईमेल डालें", "पासवर्ड डालें", "अपना ईमेल डालें"],
-        "en-only": ["Email", "Password", "Email"]
-      };
-      document.getElementById("email").placeholder = placeholders[lang][0];
-      document.getElementById("password").placeholder = placeholders[lang][1];
-      document.getElementById("resetEmail").placeholder = placeholders[lang][2];
     });
   </script>
 </body>
