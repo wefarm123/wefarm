@@ -7,38 +7,56 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
     body {
-    
-      font-family: "Segoe UI", sans-serif;
       margin: 0;
-      padding: 0;
+      font-family: "Segoe UI", sans-serif;
       background: url('signuplogo.png') no-repeat center center fixed;
+      background-size: cover;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       min-height: 100vh;
     }
 
+    .lang-select {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      z-index: 10;
+    }
+
+    .lang-select select {
+      padding: 6px 10px;
+      font-size: 13px;
+      border-radius: 6px;
+      border: none;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      font-weight: 600;
+    }
+
     .container {
-      background: white;
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.15);
       padding: 30px;
-      border-radius: 15px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      max-width: 900px;
-      width: 100%;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      max-width: 1000px;
+      width: 90%;
     }
 
     .left-box {
       flex: 1;
       padding: 20px;
+      color: white;
     }
 
     .left-box h1 {
       font-size: 36px;
       margin-bottom: 10px;
-      color: green;
+      color: #ffffff;
     }
 
     .left-box p {
@@ -58,17 +76,16 @@
       width: 100%;
     }
 
-    .login-box,
-    .reset-box {
+    .login-box, .reset-box {
       backface-visibility: hidden;
       position: absolute;
       width: 100%;
       top: 0;
       left: 0;
       background: rgba(255, 255, 255, 0.9);
-      padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
 
     .login-box {
@@ -94,8 +111,7 @@
       color: #333;
     }
 
-    input,
-    select {
+    input, select {
       padding: 12px;
       margin: 10px 0;
       border: 1px solid #ccc;
@@ -105,22 +121,45 @@
 
     button {
       padding: 12px;
-      background-color: #0288d1;
+      background-color: #2e7d32;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
       margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    button:hover {
-      background-color: #01579b;
+    button .spinner {
+      border: 3px solid white;
+      border-top: 3px solid transparent;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    button.loading .spinner {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     a {
-      color: #0288d1;
+      color: #2e7d32;
       text-decoration: none;
+      text-align: center;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     #errorMessage,
@@ -135,20 +174,34 @@
       .container {
         flex-direction: column;
         align-items: center;
+        padding: 20px;
       }
 
-      .left-box,
+      .left-box {
+        text-align: center;
+        padding: 20px;
+      }
+
       .flip-container {
-        max-width: 100%;
+        margin-top: 20px;
       }
     }
   </style>
 </head>
 <body>
 
+  <!-- 🌐 Language Selector -->
+  <div class="lang-select">
+    <select id="languageSelect">
+      <option>Hinglish</option>
+      <option>English</option>
+      <option>Hindi</option>
+    </select>
+  </div>
+
   <div class="container">
     <!-- Branding -->
-    <div class="left-box text-center text-md-start">
+    <div class="left-box">
       <h1>WEFARM</h1>
       <p>🌱 Kheti ki duniya, ab online!<br>Connect with farmers. Share your farm. Grow together. 🚜</p>
     </div>
@@ -160,17 +213,15 @@
         <!-- Login Form -->
         <div class="login-box">
           <form id="loginForm">
-            <select>
-              <option>Hinglish</option>
-              <option>English</option>
-              <option>Hindi</option>
-            </select>
             <h2>👨‍🌾 Login</h2>
             <input type="email" id="email" placeholder="Enter email" required />
             <input type="password" id="password" placeholder="Enter password" required />
-            <button id="loginBtn" type="submit"><i class="fas fa-lock"></i> Login</button>
+            <button id="loginBtn" type="submit">
+              <span class="spinner"></span>
+              <span class="btn-text">Login</span>
+            </button>
             <div id="errorMessage"></div>
-            <p style="color: black;">👤 New here? <a href="signup.html"><b>Sign Up Now</b></a></p>
+            <p>👤 New here? <a href="signup.html"><b>Sign Up Now</b></a></p>
             <p><a href="#" onclick="flipToReset()">🔁 Forgot your password?</a></p>
           </form>
         </div>
@@ -190,9 +241,8 @@
     </div>
   </div>
 
-  <!-- Firebase v9 SDK -->
+  <!-- 🔥 Firebase SDK -->
   <script type="module">
-    // Your Firebase config here
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import {
       getAuth,
@@ -200,11 +250,11 @@
       sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
-   const firebaseConfig = {
+    const firebaseConfig = {
       apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
       authDomain: "wefarmproject.firebaseapp.com",
       projectId: "wefarmproject",
-      storageBucket: "wefarmproject.firebasestorage.app",
+      storageBucket: "wefarmproject.appspot.com",
       messagingSenderId: "260514820964",
       appId: "1:260514820964:web:400135c256ed2554388071"
     };
@@ -214,32 +264,38 @@
 
     const loginForm = document.getElementById("loginForm");
     const loginBtn = document.getElementById("loginBtn");
+    const spinner = loginBtn.querySelector(".spinner");
+    const btnText = loginBtn.querySelector(".btn-text");
     const errorMessage = document.getElementById("errorMessage");
 
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      loginBtn.classList.add("loading");
+      spinner.style.display = "inline-block";
+      btnText.textContent = "Logging in...";
       loginBtn.disabled = true;
-      loginBtn.innerHTML = "Logging in...";
+      errorMessage.textContent = "";
 
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "profile.html"; // ✅ Redirect
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "profile.html";
       } catch (error) {
-        errorMessage.textContent = error.message;
+        errorMessage.textContent = "❌ " + error.message;
+      } finally {
         loginBtn.disabled = false;
-        loginBtn.innerHTML = "Login";
+        loginBtn.classList.remove("loading");
+        spinner.style.display = "none";
+        btnText.textContent = "Login";
       }
     });
 
+    // Flip card logic
     const flipCard = document.getElementById("flipCard");
 
-    window.flipToReset = () => {
-      flipCard.classList.add("flip");
-    };
-
+    window.flipToReset = () => flipCard.classList.add("flip");
     window.flipBack = () => {
       flipCard.classList.remove("flip");
       document.getElementById("resetMessage").textContent = "";
@@ -248,14 +304,14 @@
     document.getElementById("resetForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("resetEmail").value.trim();
-      const resetMsg = document.getElementById("resetMessage");
-      resetMsg.textContent = "⏳ Sending reset email...";
+      const msg = document.getElementById("resetMessage");
+      msg.textContent = "⏳ Sending reset email...";
       try {
         await sendPasswordResetEmail(auth, email);
-        resetMsg.textContent = "✅ Reset email sent! Check your inbox.";
+        msg.textContent = "✅ Reset email sent! Check your inbox.";
         setTimeout(flipBack, 2500);
       } catch (error) {
-        resetMsg.textContent = "❌ " + error.message;
+        msg.textContent = "❌ " + error.message;
       }
     });
   </script>
