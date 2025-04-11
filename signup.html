@@ -1,132 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>WEFARM - Sign Up</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1505575967455-8a2fa686963a?auto=format&fit=crop&w=1350&q=80');
+      background: url('image.png') no-repeat center center fixed;
       background-size: cover;
-      background-attachment: fixed;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
 
-    .signup-box {
-      background: white;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      width: 100%;
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 128, 0, 0.3);
+      width: 90%;
       max-width: 420px;
-      position: relative;
     }
 
-    .signup-box h2 {
+    .container h2 {
       text-align: center;
+      color: green;
       margin-bottom: 20px;
-      color: #2E7D32;
     }
 
-    .form-group {
-      margin-bottom: 15px;
+    .container h2 span {
+      font-size: 1.3rem;
     }
 
-    label {
-      font-weight: 600;
-      color: #374151;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    .btn {
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"] {
       width: 100%;
       padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background-color: #2E7D32;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 15px;
-      margin-top: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #eaf1ff;
     }
 
-    .btn:hover {
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      background-color: #2e7d32;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
       background-color: #1b5e20;
+      transform: scale(1.03);
     }
 
     .error {
-      color: #d32f2f;
-      font-size: 13px;
+      color: red;
+      font-size: 0.9rem;
       margin-top: 5px;
-      display: none;
     }
 
-    .otp-section {
-      margin-top: 20px;
+    #otp-section {
       display: none;
+      margin-top: 20px;
+    }
+
+    #language-select {
+      position: absolute;
+      top: 15px;
+      right: 20px;
     }
   </style>
 </head>
 <body>
 
-<div class="signup-box">
-  <h2>🧑‍🌾 WEFARM Sign Up</h2>
+<div id="language-select">
+  🌐
+  <select>
+    <option>English</option>
+    <option>हिंदी</option>
+    <option>ગુજરાતી</option>
+  </select>
+</div>
 
-  <div class="form-group">
-    <label for="first">First Name</label>
-    <input type="text" id="first" placeholder="Enter your first name">
-    <div id="firstError" class="error">First name is required</div>
-  </div>
+<div class="container">
+  <h2>👨‍🌾 <span>WEFARM Sign Up</span></h2>
 
-  <div class="form-group">
-    <label for="last">Last Name</label>
-    <input type="text" id="last" placeholder="Enter your last name">
-    <div id="lastError" class="error">Last name is required</div>
-  </div>
-
-  <div class="form-group">
-    <label for="email">Email Address</label>
-    <input type="email" id="email" placeholder="you@example.com">
-    <div id="emailError" class="error">Valid email is required</div>
-  </div>
-
-  <div class="form-group">
-    <label for="phone">Phone Number</label>
-    <input type="tel" id="phone" placeholder="10-digit phone number">
-    <div id="phoneError" class="error">Phone number is required</div>
-  </div>
+  <input type="text" id="first" placeholder="First Name">
+  <input type="text" id="last" placeholder="Last Name">
+  <input type="email" id="email" placeholder="Email Address">
+  <input type="tel" id="phone" placeholder="Phone Number">
+  <div id="error-message" class="error"></div>
 
   <div id="recaptcha-container"></div>
-  <button class="btn" onclick="sendOTP()">📩 Send OTP</button>
+  <button id="sendOtpBtn" onclick="sendOTP()">📩 Send OTP</button>
 
-  <div class="otp-section" id="otp-section">
-    <div class="form-group">
-      <label for="otp">Enter OTP</label>
-      <input type="text" id="otp" placeholder="Enter OTP received">
-      <div id="otpError" class="error">OTP is required</div>
-    </div>
-    <button class="btn" onclick="verifyOTP()">✅ Verify & Sign Up</button>
+  <div id="otp-section">
+    <input type="text" id="otp" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">✅ Verify & Sign Up</button>
   </div>
 </div>
 
-<!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -136,84 +122,82 @@
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
     authDomain: "wefarmproject.firebaseapp.com",
     projectId: "wefarmproject",
-    storageBucket: "wefarmproject.firebasestorage.app",
+    storageBucket: "wefarmproject.appspot.com",
     messagingSenderId: "260514820964",
     appId: "1:260514820964:web:400135c256ed2554388071"
   };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getDatabase(app);
+  const database = getDatabase(app);
 
-  window.onload = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': () => sendOTP()
-    }, auth);
-  }
+  let recaptchaInitialized = false;
 
-  window.sendOTP = async function () {
-    const phone = document.getElementById("phone").value;
-    const phoneError = document.getElementById("phoneError");
-    phoneError.style.display = phone.trim() === "" ? "block" : "none";
+  function sendOTP() {
+    const phone = document.getElementById("phone").value.trim();
+    const errorDiv = document.getElementById("error-message");
 
-    if (phone.trim() === "") return;
+    if (!phone || phone.length !== 10) {
+      errorDiv.textContent = "Please enter a valid 10-digit phone number.";
+      return;
+    }
+
+    errorDiv.textContent = "";
+
+    if (!recaptchaInitialized) {
+      window.recaptchaVerifier = new RecaptchaVerifier('sendOtpBtn', {
+        'size': 'invisible',
+        'callback': () => sendOTP()
+      }, auth);
+      recaptchaInitialized = true;
+    }
 
     const appVerifier = window.recaptchaVerifier;
-    try {
-      const confirmationResult = await signInWithPhoneNumber(auth, "+91" + phone, appVerifier);
-      window.confirmationResult = confirmationResult;
-      document.getElementById("otp-section").style.display = "block";
-    } catch (error) {
-      phoneError.innerText = error.message;
-      phoneError.style.display = "block";
+
+    signInWithPhoneNumber(auth, "+91" + phone, appVerifier)
+      .then(confirmationResult => {
+        window.confirmationResult = confirmationResult;
+        document.getElementById("otp-section").style.display = "block";
+        errorDiv.textContent = "";
+      })
+      .catch(error => {
+        errorDiv.textContent = "Firebase: " + error.message;
+      });
+  }
+
+  function verifyOTP() {
+    const code = document.getElementById("otp").value;
+    const firstName = document.getElementById("first").value.trim();
+    const lastName = document.getElementById("last").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const errorDiv = document.getElementById("error-message");
+
+    if (!code) {
+      errorDiv.textContent = "Please enter the OTP.";
+      return;
     }
-  };
 
-  window.verifyOTP = async function () {
-    const otp = document.getElementById("otp").value;
-    const firstName = document.getElementById("first").value;
-    const lastName = document.getElementById("last").value;
-    const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
-
-    let valid = true;
-    const showError = (id, condition) => {
-      const el = document.getElementById(id);
-      if (condition) {
-        el.style.display = "block";
-        valid = false;
-      } else {
-        el.style.display = "none";
-      }
-    };
-
-    showError("firstError", firstName.trim() === "");
-    showError("lastError", lastName.trim() === "");
-    showError("emailError", email.trim() === "" || !email.includes("@"));
-    showError("otpError", otp.trim() === "");
-
-    if (!valid) return;
-
-    try {
-      const result = await window.confirmationResult.confirm(otp);
+    confirmationResult.confirm(code).then(result => {
       const user = result.user;
 
-      await set(ref(db, 'users/' + user.uid), {
+      set(ref(database, 'users/' + user.uid), {
         firstName,
         lastName,
         email,
         phone,
         uid: user.uid
+      }).then(() => {
+        window.location.href = "profile.html";
       });
 
-      alert("🎉 Signup successful!");
-      window.location.href = "profile.html";
-    } catch (err) {
-      document.getElementById("otpError").innerText = "Invalid OTP or expired. Try again.";
-      document.getElementById("otpError").style.display = "block";
-    }
-  };
+    }).catch(err => {
+      errorDiv.textContent = "OTP Verification Failed: " + err.message;
+    });
+  }
+
+  window.sendOTP = sendOTP;
+  window.verifyOTP = verifyOTP;
 </script>
 
 </body>
