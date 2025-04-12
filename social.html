@@ -144,6 +144,24 @@
   transform-origin: top left;
 }
 
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
   </style>
 </head>
 <body>
@@ -271,35 +289,59 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-window.sendOTP = function () {
-  const phone = document.getElementById("signupPhone").value;
-  if (!phone.startsWith("+91")) {
-    showPopup("Please enter phone in +91 format");
-    return;
-  }
+// ✅ Then your sendOTP function as-is
+  window.sendOTP = function () {
+    const phone = document.getElementById("signupPhone").value;
+    const btn = document.getElementById("sendOtpBtn");
+    if (!phone.startsWith("+91")) {
+      showPopup("Please enter phone in +91 format");
+      return;
+    }
 
-  if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'normal',
-      callback: (response) => {
-        // CAPTCHA solved
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.innerHTML = 'Sending... <span class="spinner"></span>';
+
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+        size: 'normal',
+        callback: () => {}
+      }, auth);
+      window.recaptchaVerifier.render();
+    }
+
+    signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+      .then((res) => {
+        confirmationResult = res;
+        document.getElementById("otpSection").style.display = "block";
+        showPopup("OTP sent successfully!");
+        startResendCountdown(); // ✅ now works perfectly
+      })
+      .catch((err) => showPopup(err.message))
+      .finally(() => {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      });
+  };
+function startResendCountdown() {
+    const btn = document.getElementById("resendBtn");
+    let timeLeft = 30;
+    btn.disabled = true;
+    btn.classList.add("resend-disabled");
+    btn.innerHTML = `Resend OTP (${timeLeft}s) <span class="spinner"></span>`;
+
+    resendTimer = setInterval(() => {
+      timeLeft--;
+      btn.innerHTML = `Resend OTP (${timeLeft}s) <span class="spinner"></span>`;
+      if (timeLeft <= 0) {
+        clearInterval(resendTimer);
+        btn.disabled = false;
+        btn.textContent = "Resend OTP";
+        btn.classList.remove("resend-disabled");
       }
-    });
-    window.recaptchaVerifier.render(); // render only once
+    }, 1000);
   }
-
-  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-    .then((res) => {
-      confirmationResult = res;
-      document.getElementById("otpSection").style.display = "block";
-      showPopup("OTP sent successfully!");
-      startResendCountdown();
-    })
-    .catch((err) => showPopup(err.message));
-};
-
-
-
+  
 window.signupUser = function () {
   const email = document.getElementById("signupEmail").value;
   const password = document.getElementById("signupPassword").value;
