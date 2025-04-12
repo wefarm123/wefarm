@@ -298,6 +298,18 @@ window.sendOTP = function () {
     .catch((err) => showPopup(err.message));
 };
 
+window.verifyOTP = function () {
+  const code = document.getElementById("otpCode").value;
+  confirmationResult.confirm(code)
+    .then((result) => {
+      showPopup("Phone verified!");
+    })
+    .catch((err) => showPopup("Invalid OTP"));
+};
+
+window.resendOTP = function () {
+  window.sendOTP(); // Just re-call the sendOTP function
+};
 
 
 window.signupUser = function () {
