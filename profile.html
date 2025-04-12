@@ -206,13 +206,13 @@
       <h2>Intro</h2>
       <p><strong>Occupation:</strong> <span id="occupation">Loading...</span></p>
       <p>
-        <strong>Lives in:</strong>
+        <strong>Lives in:</strong> 
         <span id="livesIn">Loading...</span> 
-        <i class="fas fa-pencil-alt" style="cursor:pointer; color:#007bff;" onclick="openLocationModal()"></i>
+        <i class="fas fa-pencil-alt" style="cursor:pointer; color:#007bff;" onclick="window.openLocationModal()"></i>
       </p>
       <p><strong>Age:</strong> <span id="age">Loading...</span></p>
     </div>
-    <button class="edit-btn" onclick="openModal()">Edit Details</button>
+    <button class="edit-btn" onclick="window.openModal()">Edit Details</button>
   </div>
 
   <div class="main-content" data-aos="fade-left">
@@ -255,11 +255,11 @@
       <option value="">-- Select Year --</option>
     </select>
     
-    <button onclick="saveIntro()">💾 Save</button>
+    <button onclick="window.saveIntro()">💾 Save</button>
   </div>
 </div>
 
-<!-- Location Modal for editing "Lives in" field via pencil icon -->
+<!-- Location Modal for editing "Lives in" via pencil icon -->
 <div class="modal" id="locationModal">
   <div class="modal-content">
     <label>Select State</label>
@@ -276,8 +276,8 @@
     <select id="locDistrict">
       <option value="">-- Select District --</option>
     </select>
-    <button onclick="saveLocation()">Save Location</button>
-    <button onclick="closeLocationModal()">Cancel</button>
+    <button onclick="window.saveLocation()">Save Location</button>
+    <button onclick="window.closeLocationModal()">Cancel</button>
   </div>
 </div>
 
@@ -372,7 +372,7 @@
   });
 
   // Save updated location from the Location Modal
-  function saveLocation() {
+  window.saveLocation = () => {
     const state = document.getElementById("locState").value;
     const district = document.getElementById("locDistrict").value;
     const locationString = (state && district) ? `${district}, ${state}` : "";
@@ -380,17 +380,18 @@
     update(userRef, { livesIn: locationString })
       .then(() => {
         document.getElementById("livesIn").textContent = locationString || "—";
-        closeLocationModal();
+        window.closeLocationModal();
       })
       .catch(error => console.error("Error updating location:", error));
-  }
-  
-  function openLocationModal() {
-    document.getElementById("locationModal").style.display = "block";
-  }
-  function closeLocationModal() {
-    document.getElementById("locationModal").style.display = "none";
-  }
+  };
+
+  // Expose location modal functions globally so they can be called in the inline onclick:
+  window.openLocationModal = function() {
+    locationModal.style.display = "block";
+  };
+  window.closeLocationModal = function() {
+    locationModal.style.display = "none";
+  };
 
   // Auth and data loading
   onAuthStateChanged(auth, (user) => {
@@ -433,20 +434,19 @@
   }
 
   // Intro Modal for editing intro fields
-  window.openModal = () => {
+  window.openModal = function() {
     modal.style.display = "block";
   };
 
   window.saveIntro = async () => {
-    const occupation = document.getElementById("editOccupation").value;
-    const stateVal = document.getElementById("editState").value;
-    const districtVal = document.getElementById("editDistrict").value;
-    const ageVal = document.getElementById("editAge").value;
+    const occupation = editOccupation.value;
+    const stateVal = editState.value;
+    const districtVal = editDistrict.value;
+    const ageVal = editAge.value;
     let livesIn = "";
     if (stateVal && districtVal) {
       livesIn = `${districtVal}, ${stateVal}`;
     }
-    // Fetch existing data to preserve unchanged fields
     const userRef = dbRef(db, `users/${currentUID}`);
     const snapshot = await get(userRef);
     const existingData = snapshot.exists() ? snapshot.val() : {};
