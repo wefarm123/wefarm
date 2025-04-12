@@ -1,234 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <style>
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WEFARM Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f2f2f2;
+    }
+    .profile-header {
+      position: relative;
+      height: 250px;
+      background: url('profileD.png') center/cover no-repeat;
+    }
+    .profile-pic {
+      position: absolute;
+      bottom: -50px;
+      left: 20px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      background-color: #fff;
+      object-fit: cover;
+    }
+    .user-name {
+      margin-left: 160px;
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .nav-tabs ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      padding: 10px 20px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+    .nav-tabs ul li a {
+      text-decoration: none;
+      color: #444;
+      font-weight: bold;
+    }
+    .container {
+      display: flex;
+      padding: 20px;
+    }
+    .left-sidebar {
+      width: 30%;
+      background: #fff;
+      padding: 15px;
+      margin-right: 20px;
+      border-radius: 10px;
+    }
+    .main-content {
+      flex: 1;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .post-box textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
+    .post-box input[type="file"] {
+      margin-top: 10px;
+    }
+    .post-box button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .post {
+      background: #f9f9f9;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 8px;
+    }
+    .post img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .timestamp {
+      color: #888;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #9AC18B;
-        }
+  <div class="profile-header">
+    <img src="profileD.png" alt="Profile" class="profile-pic" id="profilePic" />
+  </div>
+  <div class="user-name" id="userName">Loading...</div>
 
-        .profile-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <ul>
+      <li><a href="#">Timeline</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Friends</a></li>
+      <li><a href="#">Photos</a></li>
+      <li><a href="#">Archive</a></li>
+      <li><a href="#">More</a></li>
+    </ul>
+  </div>
 
-        /* Header Section */
-        .header {
-            position: relative;
-        }
+  <div class="container">
+    <!-- Intro Section (Left Sidebar) -->
+    <div class="left-sidebar">
+      <div class="intro-section">
+        <h2>Intro</h2>
+        <p><strong>Works at:</strong> <span id="worksAt">Loading...</span></p>
+        <p><strong>Studied at:</strong> <span id="studiedAt">Loading...</span></p>
+        <p><strong>Lives in:</strong> <span id="livesIn">Loading...</span></p>
+        <p><strong>From:</strong> <span id="from">Loading...</span></p>
+      </div>
+      <button class="edit-btn">Edit Details</button>
+    </div>
 
-        .cover-photo img {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-        }
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <div class="post-box">
+        <textarea id="postText" placeholder="What’s on your mind?" rows="4"></textarea>
+        <input type="file" id="postImage" accept="image/*">
+        <button onclick="submitPost()">Post</button>
+      </div>
 
-        .profile-info {
-            position: absolute;
-            bottom: 20px;
-            left: 30px;
-            display: flex;
-            align-items: center;
-            color: white;
-        }
+      <div class="posts" id="postsContainer">
+        <p>Loading posts...</p>
+      </div>
+    </div>
+  </div>
 
-        .profile-picture img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            margin-right: 20px;
-        }
-
-        .user-name h1 {
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        /* Navigation Tabs */
-        .nav-tabs {
-            background-color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        .nav-tabs ul {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            list-style: none;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .nav-tabs ul li {
-            margin: 0 20px;
-        }
-
-        .nav-tabs ul li a {
-            text-decoration: none;
-            color: #333;
-            font-size: 18px;
-            font-weight: bold;
-            padding-bottom: 10px;
-            transition: 0.3s;
-        }
-
-        .nav-tabs ul li a:hover {
-            border-bottom: 3px solid #0078d4;
-        }
-
-        /* Left Sidebar (Intro Section) */
-        .left-sidebar {
-            width: 30%;
-            float: left;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-right: 20px;
-            margin-top: 20px;
-        }
-
-        .intro-section h2 {
-            font-size: 22px;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .intro-section p {
-            margin: 5px 0;
-            font-size: 16px;
-        }
-
-        .edit-btn {
-            background-color: #0078d4;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            margin-top: 20px;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .edit-btn:hover {
-            background-color: #005a8e;
-        }
-
-        /* Main Content Area (Posts) */
-        .main-content {
-            width: 65%;
-            float: left;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        .post-box {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-        }
-
-        .post-box textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            height: 100px;
-            resize: none;
-        }
-
-        .post-options {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-
-        .post-options button {
-            background-color: #0078d4;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .post-options button:hover {
-            background-color: #005a8e;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .profile-container {
-                padding: 20px;
-            }
-
-            .left-sidebar,
-            .main-content {
-                width: 100%;
-                float: none;
-            }
-
-            .header {
-                text-align: center;
-            }
-
-            .profile-info {
-                position: relative;
-                display: block;
-                text-align: center;
-                margin-top: 20px;
-            }
-
-            .profile-picture img {
-                width: 100px;
-                height: 100px;
-            }
-
-            .user-name h1 {
-                font-size: 24px;
-            }
-
-            .nav-tabs ul {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .nav-tabs ul li {
-                margin: 10px 0;
-            }
-
-            .post-box textarea {
-                height: 120px;
-            }
-        }
-    </style>
-
-    <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js';
-  import { getAuth } from 'https://www.gstatic.com/firebasejs/9.18.0/firebase-auth.js';
-  import { getDatabase } from 'https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js';
-  import { getStorage } from 'https://www.gstatic.com/firebasejs/9.18.0/firebase-storage.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
 
-
-    <script>
-        // Firebase Configuration (replace with your own Firebase project credentials)
-       const firebaseConfig = {
+    const firebaseConfig = {
+     const firebaseConfig = {
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
     authDomain: "wefarmproject.firebaseapp.com",
     projectId: "wefarmproject",
@@ -238,113 +162,71 @@
     databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app"  // ✅ Add this
   };
 
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
-        const storage = firebase.storage();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
 
-        // Load User Data
-        const user = auth.currentUser;
+    const userName = document.getElementById("userName");
+    const postsContainer = document.getElementById("postsContainer");
 
-        if (user) {
-            const userId = user.uid;
-            // Fetch user data from Firebase Realtime Database
-            db.ref('users/' + userId).once('value', function(snapshot) {
-                const userData = snapshot.val();
-                if (userData) {
-                    // Display user data
-                    document.getElementById('userName').textContent = userData.name;
-                    document.getElementById('profilePic').src = userData.profilePicURL || 'default-profile-pic.jpg';
-                    document.getElementById('coverPic').src = userData.coverPicURL || 'default-cover-pic.jpg';
-                    document.getElementById('worksAt').textContent = userData.worksAt || 'Not updated';
-                    document.getElementById('studiedAt').textContent = userData.studiedAt || 'Not updated';
-                    document.getElementById('livesIn').textContent = userData.livesIn || 'Not updated';
-                    document.getElementById('from').textContent = userData.from || 'Not updated';
-                }
-            });
+    let currentUser = null;
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        currentUser = user;
+        userName.innerText = user.displayName || "Anonymous User";
+        loadPosts();
+      } else {
+        alert("Please login to access profile.");
+      }
+    });
+
+    window.submitPost = async () => {
+      const text = document.getElementById("postText").value;
+      const imageFile = document.getElementById("postImage").files[0];
+      const postRef = push(ref(db, "posts/" + currentUser.uid));
+
+      let imageUrl = "";
+      if (imageFile) {
+        const imgRef = sRef(storage, `posts/${currentUser.uid}/${Date.now()}-${imageFile.name}`);
+        const snapshot = await uploadBytes(imgRef, imageFile);
+        imageUrl = await getDownloadURL(snapshot.ref);
+      }
+
+      await set(postRef, {
+        text,
+        imageUrl,
+        timestamp: new Date().toISOString()
+      });
+
+      document.getElementById("postText").value = "";
+      document.getElementById("postImage").value = "";
+    };
+
+    function loadPosts() {
+      onValue(ref(db, "posts/" + currentUser.uid), snapshot => {
+        postsContainer.innerHTML = "";
+        const data = snapshot.val();
+        if (!data) {
+          postsContainer.innerHTML = "<p>No posts yet.</p>";
+          return;
         }
 
-        // Upload Profile Picture
-        function uploadProfilePicture(event) {
-            const file = event.target.files[0];
-            const storageRef = storage.ref('profile_pics/' + user.uid + '/profile_pic');
-            const uploadTask = storageRef.put(file);
+        const postsArray = Object.values(data).reverse();
+        postsArray.forEach(post => {
+          const postDiv = document.createElement("div");
+          postDiv.classList.add("post");
 
-            uploadTask.on('state_changed', function(snapshot) {
-                // Progress
-            }, function(error) {
-                alert('Error uploading image: ' + error.message);
-            }, function() {
-                uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                    // Update profile picture URL in Firebase Realtime Database
-                    db.ref('users/' + user.uid).update({ profilePicURL: downloadURL });
-                });
-            });
-        }
-    </script>
-</head>
-<body>
-
-    <div class="profile-container">
-
-        <!-- Top Section (Header) -->
-        <div class="header">
-            <div class="cover-photo">
-                <img id="coverPic" src="default-cover-pic.jpg" alt="Cover Photo">
-            </div>
-            <div class="profile-info">
-                <div class="profile-picture">
-                    <img id="profilePic" src="default-profile-pic.jpg" alt="Profile Picture">
-                    <input type="file" id="profilePicInput" accept="image/*" onchange="uploadProfilePicture(event)">
-                </div>
-                <div class="user-name">
-                    <h1 id="userName">Loading...</h1>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <ul>
-                <li><a href="#">Timeline</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Friends</a></li>
-                <li><a href="#">Photos</a></li>
-                <li><a href="#">Archive</a></li>
-                <li><a href="#">More</a></li>
-            </ul>
-        </div>
-
-        <!-- Intro Section (Left Sidebar) -->
-        <div class="left-sidebar">
-            <div class="intro-section">
-                <h2>Intro</h2>
-                <p><strong>Works at:</strong> <span id="worksAt">Loading...</span></p>
-                <p><strong>Studied at:</strong> <span id="studiedAt">Loading...</span></p>
-                <p><strong>Lives in:</strong> <span id="livesIn">Loading...</span></p>
-                <p><strong>From:</strong> <span id="from">Loading...</span></p>
-            </div>
-            <button class="edit-btn">Edit Details</button>
-        </div>
-
-        <!-- Main Content Area (Posts) -->
-        <div class="main-content">
-            <div class="post-box">
-                <textarea placeholder="What’s on your mind?" rows="4"></textarea>
-                <div class="post-options">
-                    <button>Photo/Video</button>
-                    <button>Tag Friends</button>
-                    <button>Check-in</button>
-                </div>
-            </div>
-
-            <!-- Future posts will appear here -->
-            <div class="posts">
-                <p>No posts yet.</p>
-            </div>
-        </div>
-    </div>
-
+          postDiv.innerHTML = `
+            <p>${post.text || ""}</p>
+            ${post.imageUrl ? `<img src="${post.imageUrl}" />` : ""}
+            <p class="timestamp">${new Date(post.timestamp).toLocaleString()}</p>
+          `;
+          postsContainer.appendChild(postDiv);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
