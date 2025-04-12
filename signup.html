@@ -20,7 +20,6 @@
     .container {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 8px 30px rgba(0, 128, 0, 0.3);
@@ -28,20 +27,7 @@
       max-width: 420px;
       position: relative;
     }
-.zoom-link {
-  color: white;
-  font-weight: 600;
-  margin-left: 5px;
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
 
-.zoom-link:hover {
-  transform: scale(1.1);
-  text-decoration: underline;
-}
-
-    
     .container h2 {
       text-align: center;
       color: #2E7D32;
@@ -101,6 +87,26 @@
       100% { transform: rotate(360deg); }
     }
 
+    .zoom-link {
+      color: white;
+      font-weight: 600;
+      margin-left: 5px;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .zoom-link:hover {
+      transform: scale(1.1);
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin-top: 5px;
+      display: none;
+    }
+
     .verify-button {
       background-color: transparent;
       color: #2e7d32;
@@ -130,22 +136,6 @@
       background-color: #2e7d32;
     }
 
-    .error {
-      color: red;
-      font-size: 13px;
-      margin-top: 5px;
-      display: none;
-    }
-
-    #otp-section {
-      display: none;
-    }
-
-    #recaptcha-wrapper {
-      text-align: center;
-      margin-top: 10px;
-    }
-
     #language-select {
       position: absolute;
       top: 15px;
@@ -162,7 +152,7 @@
 </head>
 <body>
 
-<!-- 🌐 Language Selector -->
+<!-- Language Switch -->
 <div id="language-select">
   🌐
   <select onchange="changeLang(this.value)">
@@ -172,49 +162,37 @@
   </select>
 </div>
 
+<!-- Signup Form -->
 <div class="container">
   <h2>👨‍🌾 WEFARM Sign Up</h2>
-
   <input type="text" id="first" placeholder="First Name">
   <input type="text" id="last" placeholder="Last Name">
   <input type="email" id="email" placeholder="Email Address">
-  <input type="tel" id="phone" placeholder="Phone Number">
+  <input type="password" id="password" placeholder="Create Password">
+  <input type="password" id="confirm" placeholder="Confirm Password">
   <div id="error-message" class="error"></div>
+  <button id="sendOtpBtn" onclick="registerUser()">📩 Sign Up</button>
 
-  <div id="recaptcha-wrapper">
-    <div id="recaptcha-container"></div>
+  <div style="text-align:center; margin-top: 15px;">
+    <span style="color: #333;">Already have an account?</span>
+    <a href="social.html" class="zoom-link">Back to Login</a>
   </div>
-
-  <button id="sendOtpBtn" onclick="sendOTP()">
-    📩 Send OTP
-  </button>
-
-  <div id="otp-section">
-    <input type="text" id="otp" placeholder="Enter OTP">
-    <button class="verify-button" onclick="verifyOTP()">✅ Verify & Sign Up</button>
 </div>
 
-<div style="text-align:center; margin-top: 15px;">
-  <span style="color: #333;">Already have an account?</span>
-  <a href="social.html" class="zoom-link">Back to Login</a>
-</div>
-  
-</div>
-
-<!-- Language Switch Script -->
+<!-- Language Script -->
 <script>
   const langMap = {
-    en: { first: "First Name", last: "Last Name", email: "Email Address", phone: "Phone Number", otp: "Enter OTP" },
-    hi: { first: "पहला नाम", last: "अंतिम नाम", email: "ईमेल पता", phone: "फोन नंबर", otp: "OTP दर्ज करें" },
-    gu: { first: "પ્રથમ નામ", last: "છેલ્લું નામ", email: "ઈમેઈલ સરનામું", phone: "ફોન નંબર", otp: "OTP દાખલ કરો" }
+    en: { first: "First Name", last: "Last Name", email: "Email Address", password: "Create Password", confirm: "Confirm Password" },
+    hi: { first: "पहला नाम", last: "अंतिम नाम", email: "ईमेल पता", password: "पासवर्ड बनाएं", confirm: "पासवर्ड पुष्टि करें" },
+    gu: { first: "પ્રથમ નામ", last: "છેલ્લું નામ", email: "ઈમેઈલ સરનામું", password: "પાસવર્ડ બનાવો", confirm: "પાસવર્ડ પુષ્ટિ કરો" }
   };
 
   function changeLang(lang) {
     document.getElementById("first").placeholder = langMap[lang].first;
     document.getElementById("last").placeholder = langMap[lang].last;
     document.getElementById("email").placeholder = langMap[lang].email;
-    document.getElementById("phone").placeholder = langMap[lang].phone;
-    document.getElementById("otp").placeholder = langMap[lang].otp;
+    document.getElementById("password").placeholder = langMap[lang].password;
+    document.getElementById("confirm").placeholder = langMap[lang].confirm;
   }
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -225,126 +203,60 @@
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import {
-    getAuth,
-    RecaptchaVerifier,
-    signInWithPhoneNumber
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    set
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-  // ✅ Include correct URL based on region (after enabling Realtime DB in Singapore)
- const firebaseConfig = {
-  apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-  authDomain: "wefarmproject.firebaseapp.com",
-  databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "wefarmproject",
-  storageBucket: "wefarmproject.firebasestorage.app",
-  messagingSenderId: "260514820964",
-  appId: "1:260514820964:web:400135c256ed2554388071"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+    authDomain: "wefarmproject.firebaseapp.com",
+    projectId: "wefarmproject",
+    databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
+    storageBucket: "wefarmproject.firebasestorage.app",
+    messagingSenderId: "260514820964",
+    appId: "1:260514820964:web:400135c256ed2554388071"
+  };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const database = getDatabase(app);
+  const db = getDatabase(app);
 
-  let recaptchaInitialized = false;
-  let resendTimeout = null;
-
-  // ✅ Expose functions to global scope
-  window.sendOTP = async function () {
-    const phone = document.getElementById("phone").value.trim();
-    const errorDiv = document.getElementById("error-message");
-    const sendBtn = document.getElementById("sendOtpBtn");
-
-    if (!phone || phone.length !== 10) {
-      errorDiv.textContent = "Please enter a valid 10-digit phone number.";
-      errorDiv.style.display = "block";
-      return;
-    }
-
-    errorDiv.style.display = "none";
-
-    if (!recaptchaInitialized) {
-      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-        size: 'normal',
-        callback: () => console.log("Captcha verified ✅")
-      }, auth);
-
-      await recaptchaVerifier.render().then(widgetId => {
-        window.recaptchaWidgetId = widgetId;
-      });
-
-      recaptchaInitialized = true;
-    }
-
-    sendBtn.innerHTML = `<span class="spinner"></span> Sending...`;
-    sendBtn.disabled = true;
-
-    const appVerifier = window.recaptchaVerifier;
-
-    try {
-      const confirmationResult = await signInWithPhoneNumber(auth, "+91" + phone, appVerifier);
-      window.confirmationResult = confirmationResult;
-      document.getElementById("otp-section").style.display = "block";
-
-      let seconds = 30;
-      resendTimeout = setInterval(() => {
-        seconds--;
-        if (seconds > 0) {
-          sendBtn.innerHTML = `⏳ Resend in ${seconds}s`;
-        } else {
-          clearInterval(resendTimeout);
-          sendBtn.disabled = false;
-          sendBtn.innerHTML = "📩 Resend OTP";
-        }
-      }, 1000);
-    } catch (error) {
-      errorDiv.textContent = "Firebase Error: " + error.message;
-      errorDiv.style.display = "block";
-      sendBtn.innerHTML = "📩 Send OTP";
-      sendBtn.disabled = false;
-    }
-  };
-
-  window.verifyOTP = async function () {
-    const code = document.getElementById("otp").value;
-    const firstName = document.getElementById("first").value.trim();
-    const lastName = document.getElementById("last").value.trim();
+  window.registerUser = async function () {
+    const first = document.getElementById("first").value.trim();
+    const last = document.getElementById("last").value.trim();
     const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirm").value;
     const errorDiv = document.getElementById("error-message");
 
-    if (!code) {
-      errorDiv.textContent = "Please enter the OTP.";
+    if (!first || !last || !email || !password || !confirm) {
+      errorDiv.textContent = "Please fill all fields.";
+      errorDiv.style.display = "block";
+      return;
+    }
+
+    if (password !== confirm) {
+      errorDiv.textContent = "Passwords do not match.";
       errorDiv.style.display = "block";
       return;
     }
 
     try {
-      const result = await window.confirmationResult.confirm(code);
-      const user = result.user;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-      await set(ref(database, 'users/' + user.uid), {
-        firstName,
-        lastName,
-        email,
-        phone,
-        uid: user.uid
+      await set(ref(db, 'users/' + user.uid), {
+        uid: user.uid,
+        firstName: first,
+        lastName: last,
+        email: email
       });
 
-      // ✅ Redirect after success
       window.location.href = "profile.html";
-    } catch (err) {
-      errorDiv.textContent = "OTP Verification Failed: " + err.message;
+    } catch (error) {
+      errorDiv.textContent = error.message;
       errorDiv.style.display = "block";
     }
-  };
+  }
 </script>
-
-
 </body>
 </html>
