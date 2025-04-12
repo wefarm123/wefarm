@@ -287,7 +287,8 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 let recaptchaVerifier;
-let recaptchaInitialized = false; // ✅ Declare it globally
+let recaptchaInitialized = false; 
+let confirmationResult;
 
 
 window.sendOTP = function () {
@@ -304,18 +305,15 @@ window.sendOTP = function () {
   btn.innerHTML = 'Sending... <span class="spinner"></span>';
 
   setTimeout(() => {
-    // ✅ Initialize reCAPTCHA only once
+   
     if (!recaptchaInitialized) {
-      recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-        size: 'normal',
-        callback: () => {
-          // reCAPTCHA solved
-        }
-      }, auth);
-      recaptchaVerifier.render();
-      recaptchaInitialized = true; // ✅ Mark as initialized
-    }
-
+  recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+    size: 'normal',
+    callback: () => {}
+  }, auth);
+  recaptchaVerifier.render();
+  recaptchaInitialized = true;
+}
     signInWithPhoneNumber(auth, phone, recaptchaVerifier)
       .then((res) => {
         confirmationResult = res;  // ✅ LINE 308 — now won't error
@@ -329,6 +327,23 @@ window.sendOTP = function () {
         btn.textContent = originalText;
       });
   }, 3000);
+};
+window.verifyOTP = function () {
+  const code = document.getElementById("otpCode").value;
+
+  if (!confirmationResult) {
+    showPopup("Please request OTP first.");
+    return;
+  }
+
+  confirmationResult.confirm(code)
+    .then((result) => {
+      showPopup("Phone verified successfully!");
+      // You can proceed to next steps here (e.g., enable sign up, hide OTP section, etc.)
+    })
+    .catch((err) => {
+      showPopup("Invalid OTP. Please try again.");
+    });
 };
 
 
