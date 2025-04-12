@@ -165,25 +165,26 @@
 </head>
 <body>
 
-  <!-- Cover Section -->
-  <div class="cover-container">
-    <img id="coverPhoto" src="profileD.png" alt="Cover Photo" />
-    <input type="file" id="coverInput" accept="image/*" hidden />
-    <button class="cover-btn" onclick="document.getElementById('coverInput').click()">Change Cover Pic</button>
-    <button class="logout-btn" onclick="logoutUser()">Logout</button>
-  </div>
+  <!-- HTML: Cover Section -->
+<div class="cover-container">
+  <img id="coverPhoto" src="profileD.png" alt="Cover Photo" />
+  <input type="file" id="coverInput" accept="image/*" hidden />
+  <button class="cover-btn" id="changeCoverBtn">Change Cover Pic</button>
+  <button class="logout-btn" id="logoutBtn">Logout</button>
+</div>
 
-  <!-- Profile Info -->
-  <div class="profile-section">
-    <div class="profile-pic-container">
-      <img id="profilePic" src="profileD.png" alt="Profile Picture" />
-      <input type="file" id="profileInput" accept="image/*" hidden />
-      <div class="profile-pic-btn" onclick="document.getElementById('profileInput').click()">Change Profile Pic</div>
-    </div>
-    <div class="user-info">
-      <h2 id="userName">Your Name</h2>
-    </div>
+<!-- HTML: Profile Pic -->
+<div class="profile-section">
+  <div class="profile-pic-container">
+    <img id="profilePic" src="profileD.png" alt="Profile Picture" />
+    <input type="file" id="profileInput" accept="image/*" hidden />
+    <div class="profile-pic-btn" id="changeProfileBtn">Change Profile Pic</div>
   </div>
+  <div class="user-info">
+    <h2 id="userName">Your Name</h2>
+  </div>
+</div>
+
 
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
@@ -228,11 +229,11 @@
   </div>
 
   <!-- Firebase Scripts -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-    import { getDatabase, ref as dbRef, set, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  import { getDatabase, ref as dbRef, set, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
     const firebaseConfig = {
 const firebaseConfig = {
@@ -245,65 +246,92 @@ const firebaseConfig = {
     databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app"  // ✅ Add this
   };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-    const storage = getStorage(app);
+const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+  const storage = getStorage(app);
 
-    const profileInput = document.getElementById("profileInput");
-    const coverInput = document.getElementById("coverInput");
-    const profilePic = document.getElementById("profilePic");
-    const coverPhoto = document.getElementById("coverPhoto");
-    const userName = document.getElementById("userName");
+  const profileInput = document.getElementById("profileInput");
+  const coverInput = document.getElementById("coverInput");
+  const profilePic = document.getElementById("profilePic");
+  const coverPhoto = document.getElementById("coverPhoto");
+  const userName = document.getElementById("userName");
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
+  const changeCoverBtn = document.getElementById("changeCoverBtn");
+  const changeProfileBtn = document.getElementById("changeProfileBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-        // Load existing data
-        get(child(dbRef(db), `users/${uid}`)).then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            if (data.name) userName.textContent = data.name;
-            if (data.profileURL) profilePic.src = data.profileURL;
-            if (data.coverURL) coverPhoto.src = data.coverURL;
-          }
-        });
+  let currentUID = null;
 
-        // Upload Profile Pic
-        profileInput.addEventListener("change", (e) => {
-          const file = e.target.files[0];
-          const storageRef = ref(storage, `users/${uid}/profile.jpg`);
-          uploadBytes(storageRef, file).then(() => {
-            getDownloadURL(storageRef).then((url) => {
-              set(dbRef(db, `users/${uid}/profileURL`), url);
-              profilePic.src = url;
-            });
-          });
-        });
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUID = user.uid;
 
-        // Upload Cover Pic
-        coverInput.addEventListener("change", (e) => {
-          const file = e.target.files[0];
-          const storageRef = ref(storage, `users/${uid}/cover.jpg`);
-          uploadBytes(storageRef, file).then(() => {
-            getDownloadURL(storageRef).then((url) => {
-              set(dbRef(db, `users/${uid}/coverURL`), url);
-              coverPhoto.src = url;
-            });
-          });
-        });
-
-      } else {
-        alert("Please log in first.");
-      }
-    });
-
-    window.logoutUser = () => {
-      signOut(auth).then(() => {
-        window.location.href = "social.html"; // Or your desired redirect
+      // Load existing data
+      get(child(dbRef(db), `users/${currentUID}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          if (data.name) userName.textContent = data.name;
+          if (data.profileURL) profilePic.src = data.profileURL;
+          if (data.coverURL) coverPhoto.src = data.coverURL;
+        }
       });
-    };
-  </script>
+
+      // Enable Cover Photo Change
+      changeCoverBtn.addEventListener("click", () => {
+        coverInput.click();
+      });
+
+      coverInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const coverRef = ref(storage, `users/${currentUID}/cover.jpg`);
+        uploadBytes(coverRef, file).then(() => {
+          getDownloadURL(coverRef).then((url) => {
+            set(dbRef(db, `users/${currentUID}/coverURL`), url);
+            coverPhoto.src = url;
+          });
+        });
+      });
+
+      // Enable Profile Pic Change
+      changeProfileBtn.addEventListener("click", () => {
+        profileInput.click();
+      });
+
+      profileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const profileRef = ref(storage, `users/${currentUID}/profile.jpg`);
+        uploadBytes(profileRef, file).then(() => {
+          getDownloadURL(profileRef).then((url) => {
+            set(dbRef(db, `users/${currentUID}/profileURL`), url);
+            profilePic.src = url;
+          });
+        });
+      });
+
+    } else {
+      alert("Please log in.");
+      window.location.href = "login.html";
+    }
+  });
+
+  // ✅ Logout (Now properly scoped)
+  window.logoutUser = () => {
+    signOut(auth).then(() => {
+      window.location.href = "login.html";
+    }).catch((error) => {
+      alert("Logout failed: " + error.message);
+    });
+  };
+
+  // Attach logout function properly to button
+  logoutBtn.addEventListener("click", () => {
+    logoutUser();
+  });
+</script>
 </body>
 </html>
