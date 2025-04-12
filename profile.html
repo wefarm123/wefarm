@@ -4,27 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WEFARM Profile</title>
-  <!-- Font Awesome for Pencil Icon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Animate.css and AOS for animations -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #9AC18B;
-    }
-    .cover-container {
-      position: relative;
-      height: 250px;
-      overflow: hidden;
-    }
-    .cover-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; background: #9AC18B; }
+    .cover-container { position: relative; height: 250px; overflow: hidden; }
+    .cover-container img { width: 100%; height: 100%; object-fit: cover; }
     .cover-btn, .logout-btn {
       position: absolute;
       padding: 8px 12px;
@@ -33,17 +19,8 @@
       cursor: pointer;
       border: none;
     }
-    .cover-btn {
-      bottom: 10px;
-      right: 10px;
-      background-color: #ffffffcc;
-    }
-    .logout-btn {
-      top: 10px;
-      right: 10px;
-      background: #dc3545;
-      color: white;
-    }
+    .cover-btn { bottom: 10px; right: 10px; background-color: #ffffffcc; }
+    .logout-btn { top: 10px; right: 10px; background: #dc3545; color: white; }
     .profile-section {
       display: flex;
       align-items: flex-end;
@@ -98,22 +75,14 @@
       color: #333;
       font-weight: bold;
     }
-    .container {
-      display: flex;
-      gap: 20px;
-      padding: 20px;
-    }
+    .container { display: flex; gap: 20px; padding: 20px; }
     .left-sidebar, .main-content {
       background: white;
       padding: 15px;
       border-radius: 10px;
     }
-    .left-sidebar {
-      width: 25%;
-    }
-    .main-content {
-      flex: 1;
-    }
+    .left-sidebar { width: 25%; }
+    .main-content { flex: 1; }
     .edit-btn {
       margin-top: 10px;
       padding: 8px 12px;
@@ -123,7 +92,6 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    /* Modal for editing Intro fields */
     .modal {
       display: none;
       position: fixed;
@@ -167,7 +135,6 @@
 </head>
 <body>
 
-<!-- Cover Section -->
 <div class="cover-container" data-aos="fade-down">
   <img id="coverPhoto" src="profileD.png" alt="Cover Photo" />
   <input type="file" id="coverInput" accept="image/*" hidden />
@@ -175,7 +142,6 @@
   <button class="logout-btn" id="logoutBtn">Logout</button>
 </div>
 
-<!-- Profile Section -->
 <div class="profile-section" data-aos="fade-up">
   <div class="profile-pic-container">
     <img id="profilePic" src="profileD.png" alt="Profile Picture" />
@@ -187,7 +153,6 @@
   </div>
 </div>
 
-<!-- Navigation Tabs -->
 <div class="nav-tabs">
   <ul>
     <li><a href="#">Timeline</a></li>
@@ -199,7 +164,6 @@
   </ul>
 </div>
 
-<!-- Main Container -->
 <div class="container">
   <div class="left-sidebar" data-aos="fade-right">
     <div class="intro-section">
@@ -230,7 +194,6 @@
   </div>
 </div>
 
-<!-- Intro Modal for editing Intro fields -->
 <div class="modal" id="editModal">
   <div class="modal-content">
     <label>Occupation</label>
@@ -258,7 +221,6 @@
   </div>
 </div>
 
-<!-- Location Modal for editing "Lives in" via pencil icon -->
 <div class="modal" id="locationModal">
   <div class="modal-content">
     <label>Select State</label>
@@ -269,7 +231,6 @@
       <option value="Uttar Pradesh">Uttar Pradesh</option>
       <option value="Delhi">Delhi</option>
       <option value="Karnataka">Karnataka</option>
-      <!-- Add remaining Indian states as needed -->
     </select>
     <label>Select District</label>
     <select id="locDistrict">
@@ -283,7 +244,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getDatabase, ref as dbRef, get, update, child, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  import { getDatabase, ref as dbRef, get, update, child } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
   const firebaseConfig = {
@@ -291,7 +252,7 @@
     authDomain: "wefarmproject.firebaseapp.com",
     databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "wefarmproject",
-    storageBucket: "wefarmproject.firebasestorage.app",
+    storageBucket: "wefarmproject.appspot.com",
     messagingSenderId: "260514820964",
     appId: "1:260514820964:web:400135c256ed2554388071"
   };
@@ -306,23 +267,16 @@
   const profilePic = document.getElementById("profilePic");
   const coverPhoto = document.getElementById("coverPhoto");
   const userName = document.getElementById("userName");
-
   const changeCoverBtn = document.getElementById("changeCoverBtn");
   const changeProfileBtn = document.getElementById("changeProfileBtn");
   const logoutBtn = document.getElementById("logoutBtn");
-
   const modal = document.getElementById("editModal");
   const locationModal = document.getElementById("locationModal");
-
-  // For Intro Modal fields
   const editOccupation = document.getElementById("editOccupation");
   const editState = document.getElementById("editState");
   const editDistrict = document.getElementById("editDistrict");
   const editAge = document.getElementById("editAge");
 
-  let currentUID = null;
-
-  // Populate editAge dropdown (Birth Year) for past 100 years
   const currentYear = new Date().getFullYear();
   for (let y = currentYear; y > currentYear - 100; y--) {
     const opt = document.createElement("option");
@@ -331,20 +285,6 @@
     editAge.appendChild(opt);
   }
 
-  // Populate editDistrict based on selected state in Intro Modal
-  editState.addEventListener("change", function () {
-    const state = this.value;
-    const districts = getDistricts(state);
-    editDistrict.innerHTML = '<option value="">-- Select District --</option>';
-    districts.forEach(dist => {
-      const option = document.createElement("option");
-      option.value = dist;
-      option.textContent = dist;
-      editDistrict.appendChild(option);
-    });
-  });
-
-  // Helper: Returns sample districts for a given state
   function getDistricts(state) {
     const data = {
       "Bihar": ["Patna", "Gaya", "Bhagalpur"],
@@ -356,111 +296,104 @@
     return data[state] || [];
   }
 
-  // Populate locDistrict when a state is selected in the Location Modal
-  document.getElementById("locState").addEventListener("change", function () {
-    const state = this.value;
-    const districts = getDistricts(state);
-    const locDistrict = document.getElementById("locDistrict");
-    locDistrict.innerHTML = '<option value="">-- Select District --</option>';
+  editState.addEventListener("change", function () {
+    const districts = getDistricts(this.value);
+    editDistrict.innerHTML = '<option value="">-- Select District --</option>';
     districts.forEach(dist => {
-      const option = document.createElement("option");
-      option.value = dist;
-      option.textContent = dist;
-      locDistrict.appendChild(option);
+      const opt = document.createElement("option");
+      opt.value = dist;
+      opt.textContent = dist;
+      editDistrict.appendChild(opt);
     });
   });
 
-  // Save updated location from the Location Modal
-  window.saveLocation = () => {
-    const state = document.getElementById("locState").value;
-    const district = document.getElementById("locDistrict").value;
-    const locationString = (state && district) ? `${district}, ${state}` : "";
-    const userRef = dbRef(db, `users/${currentUID}`);
-    update(userRef, { livesIn: locationString })
-      .then(() => {
-        document.getElementById("livesIn").textContent = locationString || "—";
-        window.closeLocationModal();
-      })
-      .catch(error => console.error("Error updating location:", error));
-  };
-
-  // Expose location modal functions globally
-  window.openLocationModal = function() {
-    locationModal.style.display = "block";
-  };
-  window.closeLocationModal = function() {
-    locationModal.style.display = "none";
-  };
-
-  // Auth state and data loading
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUID = user.uid;
-      get(child(dbRef(db), `users/${currentUID}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          userName.textContent = (data.firstName || "") + " " + (data.lastName || "");
-          if (data.profileURL) profilePic.src = data.profileURL;
-          if (data.coverURL) coverPhoto.src = data.coverURL;
-          document.getElementById("occupation").textContent = data.occupation || "—";
-          document.getElementById("livesIn").textContent = data.livesIn || "—";
-          document.getElementById("age").textContent = data.age || "—";
-        }
-      });
-      // Ensure cover button is enabled and add a log for debugging
-      changeCoverBtn.disabled = false;
-      changeCoverBtn.onclick = () => { console.log("Cover button clicked"); coverInput.click(); };
-      coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
-      changeProfileBtn.onclick = () => profileInput.click();
-      profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
-    } else {
-      window.location.href = "social.html";
-    }
+  document.getElementById("locState").addEventListener("change", function () {
+    const districts = getDistricts(this.value);
+    const locDistrict = document.getElementById("locDistrict");
+    locDistrict.innerHTML = '<option value="">-- Select District --</option>';
+    districts.forEach(dist => {
+      const opt = document.createElement("option");
+      opt.value = dist;
+      opt.textContent = dist;
+      locDistrict.appendChild(opt);
+    });
   });
 
-  logoutBtn.onclick = () => {
-    signOut(auth).then(() => window.location.href = "social.html");
+  window.openLocationModal = () => locationModal.style.display = "block";
+  window.closeLocationModal = () => locationModal.style.display = "none";
+
+  window.onload = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        get(child(dbRef(db), `users/${uid}`)).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            userName.textContent = (data.firstName || "") + " " + (data.lastName || "");
+            if (data.profileURL) profilePic.src = data.profileURL;
+            if (data.coverURL) coverPhoto.src = data.coverURL;
+            document.getElementById("occupation").textContent = data.occupation || "—";
+            document.getElementById("livesIn").textContent = data.livesIn || "—";
+            document.getElementById("age").textContent = data.age || "—";
+          }
+        });
+        changeProfileBtn.onclick = () => profileInput.click();
+        profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
+        changeCoverBtn.onclick = () => coverInput.click();
+        coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
+      } else {
+        window.location.href = "social.html";
+      }
+    });
+
+    logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = "social.html");
   };
 
   function uploadAndSet(event, key, imgElement) {
     const file = event.target.files[0];
     if (!file) return;
-    const fileRef = ref(storage, `users/${currentUID}/${key}.jpg`);
+    const fileRef = ref(storage, `users/${auth.currentUser.uid}/${key}.jpg`);
     uploadBytes(fileRef, file)
       .then(() => getDownloadURL(fileRef))
       .then((url) => {
-        update(dbRef(db, `users/${currentUID}`), { [key]: url });
+        update(dbRef(db, `users/${auth.currentUser.uid}`), { [key]: url });
         imgElement.src = url;
-      })
-      .catch(error => console.error("Error uploading and setting image:", error));
+      });
   }
 
-  // Intro Modal for editing intro fields
-  window.openModal = function() {
-    modal.style.display = "block";
-  };
+  window.openModal = () => modal.style.display = "block";
 
   window.saveIntro = async () => {
+    const uid = auth.currentUser.uid;
     const occupation = editOccupation.value;
-    const stateVal = editState.value;
-    const districtVal = editDistrict.value;
-    const ageVal = editAge.value;
-    let livesIn = "";
-    if (stateVal && districtVal) {
-      livesIn = `${districtVal}, ${stateVal}`;
-    }
-    const userRef = dbRef(db, `users/${currentUID}`);
+    const state = editState.value;
+    const district = editDistrict.value;
+    const age = editAge.value;
+    const livesIn = state && district ? `${district}, ${state}` : "";
+    const userRef = dbRef(db, `users/${uid}`);
     const snapshot = await get(userRef);
-    const existingData = snapshot.exists() ? snapshot.val() : {};
-    const updatedData = {
-      ...existingData,
-      occupation: occupation || existingData.occupation,
-      livesIn: livesIn || existingData.livesIn,
-      age: ageVal || existingData.age
+    const existing = snapshot.exists() ? snapshot.val() : {};
+    const updated = {
+      ...existing,
+      occupation: occupation || existing.occupation,
+      livesIn: livesIn || existing.livesIn,
+      age: age || existing.age
     };
-    update(userRef, updatedData)
-      .then(() => { modal.style.display = "none"; location.reload(); })
-      .catch(error => console.error("Failed to update user intro:", error));
+    update(userRef, updated).then(() => {
+      modal.style.display = "none";
+      location.reload();
+    });
+  };
+
+  window.saveLocation = () => {
+    const state = document.getElementById("locState").value;
+    const district = document.getElementById("locDistrict").value;
+    const location = state && district ? `${district}, ${state}` : "";
+    update(dbRef(db, `users/${auth.currentUser.uid}`), { livesIn: location })
+      .then(() => {
+        document.getElementById("livesIn").textContent = location || "—";
+        window.closeLocationModal();
+      });
   };
 
   window.onclick = (e) => {
@@ -469,10 +402,8 @@
   };
 </script>
 
-<!-- AOS Initialization -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-  AOS.init();
-</script>
+<script>AOS.init();</script>
+
 </body>
 </html>
