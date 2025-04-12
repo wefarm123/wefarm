@@ -143,7 +143,6 @@
   transform: scale(0.90);
   transform-origin: top left;
 }
-
 .spinner {
   display: inline-block;
   width: 14px;
@@ -160,7 +159,6 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 
   </style>
 </head>
@@ -270,18 +268,11 @@ function startResendCountdown() {
   }, 1000);
 }
 </script>
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
-// Prevent reinitialization
 const firebaseConfig = {
   apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
   authDomain: "wefarmproject.firebaseapp.com",
@@ -292,35 +283,29 @@ const firebaseConfig = {
   appId: "1:260514820964:web:400135c256ed2554388071"
 };
 
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
 window.sendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
-  const btn = document.getElementById("sendOtpBtn");
-
   if (!phone.startsWith("+91")) {
     showPopup("Please enter phone in +91 format");
     return;
   }
-
-  btn.disabled = true;
+btn.disabled = true;
   const originalText = btn.textContent;
   btn.innerHTML = 'Sending... <span class="spinner"></span>';
 
-  // ✅ Initialize recaptchaVerifier only if not already initialized
+
   if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
       size: 'normal',
       callback: (response) => {
         // CAPTCHA solved
       }
-    }, auth);
-
-    window.recaptchaVerifier.render().then(widgetId => {
-      window.recaptchaWidgetId = widgetId;
     });
+    window.recaptchaVerifier.render(); // render only once
   }
 
   signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
@@ -330,33 +315,11 @@ window.sendOTP = function () {
       showPopup("OTP sent successfully!");
       startResendCountdown();
     })
-    .catch((err) => showPopup(err.message))
-    .finally(() => {
-      btn.disabled = false;
-      btn.textContent = originalText;
-    });
+    .catch((err) => showPopup(err.message));
 };
 
 
-function startResendCountdown() {
-    const btn = document.getElementById("resendBtn");
-    let timeLeft = 30;
-    btn.disabled = true;
-    btn.classList.add("resend-disabled");
-    btn.innerHTML = `Resend OTP (${timeLeft}s) <span class="spinner"></span>`;
 
-    resendTimer = setInterval(() => {
-      timeLeft--;
-      btn.innerHTML = `Resend OTP (${timeLeft}s) <span class="spinner"></span>`;
-      if (timeLeft <= 0) {
-        clearInterval(resendTimer);
-        btn.disabled = false;
-        btn.textContent = "Resend OTP";
-        btn.classList.remove("resend-disabled");
-      }
-    }, 1000);
-  }
-  
 window.signupUser = function () {
   const email = document.getElementById("signupEmail").value;
   const password = document.getElementById("signupPassword").value;
