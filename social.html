@@ -287,7 +287,8 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 let recaptchaVerifier;
-let confirmationResult;
+let recaptchaInitialized = false; // ✅ Declare it globally
+
 
 window.sendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
@@ -303,9 +304,21 @@ window.sendOTP = function () {
   btn.innerHTML = 'Sending... <span class="spinner"></span>';
 
   setTimeout(() => {
+    // ✅ Initialize reCAPTCHA only once
+    if (!recaptchaInitialized) {
+      recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+        size: 'normal',
+        callback: () => {
+          // reCAPTCHA solved
+        }
+      }, auth);
+      recaptchaVerifier.render();
+      recaptchaInitialized = true; // ✅ Mark as initialized
+    }
+
     signInWithPhoneNumber(auth, phone, recaptchaVerifier)
       .then((res) => {
-        confirmationResult = res;
+        confirmationResult = res;  // ✅ LINE 308 — now won't error
         document.getElementById("otpSection").style.display = "block";
         showPopup("OTP sent successfully!");
         startResendCountdown();
@@ -317,6 +330,7 @@ window.sendOTP = function () {
       });
   }, 3000);
 };
+
 
 window.resendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
