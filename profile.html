@@ -123,7 +123,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    /* Modal for editing Intro fields */
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -206,15 +206,15 @@
       <h2>Intro</h2>
       <p><strong>Occupation:</strong> <span id="occupation">Loading...</span></p>
       <p>
-        <strong>Lives in:</strong> 
-        <span id="livesIn">Loading...</span> 
+        <strong>Lives in:</strong>
+        <span id="livesIn">Loading...</span>
         <i class="fas fa-pencil-alt" style="cursor:pointer; color:#007bff;" onclick="window.openLocationModal()"></i>
       </p>
       <p><strong>Age:</strong> <span id="age">Loading...</span></p>
     </div>
     <button class="edit-btn" onclick="window.openModal()">Edit Details</button>
   </div>
-
+  
   <div class="main-content" data-aos="fade-left">
     <div class="post-box">
       <textarea placeholder="What’s on your mind?" rows="4"></textarea>
@@ -315,7 +315,7 @@
   const modal = document.getElementById("editModal");
   const locationModal = document.getElementById("locationModal");
 
-  // For Intro modal fields
+  // For Intro Modal fields
   const editOccupation = document.getElementById("editOccupation");
   const editState = document.getElementById("editState");
   const editDistrict = document.getElementById("editDistrict");
@@ -332,7 +332,7 @@
     editAge.appendChild(opt);
   }
 
-  // Populate editDistrict based on editState selection in Intro Modal
+  // Populate editDistrict based on selected state in Intro Modal
   editState.addEventListener("change", function () {
     const state = this.value;
     const districts = getDistricts(state);
@@ -345,7 +345,7 @@
     });
   });
 
-  // Helper: Returns sample districts for a given state
+  // Helper function: returns sample districts for a given state
   function getDistricts(state) {
     const data = {
       "Bihar": ["Patna", "Gaya", "Bhagalpur"],
@@ -371,7 +371,7 @@
     });
   });
 
-  // Save updated location from the Location Modal
+  // Save location using Location Modal
   window.saveLocation = () => {
     const state = document.getElementById("locState").value;
     const district = document.getElementById("locDistrict").value;
@@ -385,7 +385,7 @@
       .catch(error => console.error("Error updating location:", error));
   };
 
-  // Expose location modal functions globally so they can be called in the inline onclick:
+  // Expose location modal functions globally
   window.openLocationModal = function() {
     locationModal.style.display = "block";
   };
@@ -393,7 +393,7 @@
     locationModal.style.display = "none";
   };
 
-  // Auth and data loading
+  // Auth state and data loading
   onAuthStateChanged(auth, (user) => {
     if (user) {
       currentUID = user.uid;
@@ -421,23 +421,18 @@
     signOut(auth).then(() => window.location.href = "social.html");
   };
 
- function uploadAndSet(event, key, imgElement) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const fileRef = ref(storage, `users/${currentUID}/${key}.jpg`);
-  uploadBytes(fileRef, file)
-    .then(() => getDownloadURL(fileRef))
-    .then((url) => {
-      return update(dbRef(db, `users/${currentUID}`), { [key]: url })
-        .then(() => {
-          imgElement.src = url;
-        });
-    })
-    .catch((error) => {
-      console.error("Error uploading and setting image:", error);
+  function uploadAndSet(event, key, imgElement) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const fileRef = ref(storage, `users/${currentUID}/${key}.jpg`);
+    uploadBytes(fileRef, file).then(() => {
+      getDownloadURL(fileRef).then((url) => {
+        update(dbRef(db, `users/${currentUID}`), { [key]: url });
+        imgElement.src = url;
+      });
     });
-}
+  }
+
   // Intro Modal for editing intro fields
   window.openModal = function() {
     modal.style.display = "block";
