@@ -271,9 +271,14 @@ window.sendOTP = function () {
     showPopup("Please enter phone in +91 format");
     return;
   }
-  window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-    size: "invisible"
-  });
+
+  // ✅ Only create once
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
+      size: "normal"
+    }, auth);
+  }
+
   signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
     .then((res) => {
       confirmationResult = res;
@@ -284,16 +289,6 @@ window.sendOTP = function () {
     .catch((err) => showPopup(err.message));
 };
 
-window.resendOTP = function () {
-  window.sendOTP();
-};
-
-window.verifyOTP = function () {
-  const code = document.getElementById("otpCode").value;
-  confirmationResult.confirm(code).then(() => {
-    showPopup("Phone verified!");
-  }).catch((err) => showPopup("Invalid OTP"));
-};
 
 window.signupUser = function () {
   const email = document.getElementById("signupEmail").value;
