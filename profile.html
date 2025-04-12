@@ -4,25 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WEFARM Profile</title>
+  <!-- Font Awesome for Pencil Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- You can also include Animate.css and AOS if desired -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       background: #9AC18B;
     }
-
     .cover-container {
       position: relative;
       height: 250px;
       overflow: hidden;
     }
-
     .cover-container img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
     .cover-btn, .logout-btn {
       position: absolute;
       padding: 8px 12px;
@@ -31,20 +33,17 @@
       cursor: pointer;
       border: none;
     }
-
     .cover-btn {
       bottom: 10px;
       right: 10px;
       background-color: #ffffffcc;
     }
-
     .logout-btn {
       top: 10px;
       right: 10px;
       background: #dc3545;
       color: white;
     }
-
     .profile-section {
       display: flex;
       align-items: flex-end;
@@ -52,13 +51,11 @@
       padding: 0 20px;
       margin-top: -75px;
     }
-
     .profile-pic-container {
       position: relative;
       width: 150px;
       height: 150px;
     }
-
     .profile-pic-container img {
       width: 150px;
       height: 150px;
@@ -66,7 +63,6 @@
       border: 5px solid white;
       object-fit: cover;
     }
-
     .profile-pic-btn {
       position: absolute;
       bottom: 0;
@@ -80,19 +76,16 @@
       cursor: pointer;
       border-radius: 0 0 50% 50%;
     }
-
     .user-info h2 {
       margin: 0;
       color: white;
       text-shadow: 1px 1px 3px black;
     }
-
     .nav-tabs {
       background: white;
       padding: 10px 20px;
       border-bottom: 1px solid #ccc;
     }
-
     .nav-tabs ul {
       display: flex;
       gap: 15px;
@@ -100,33 +93,27 @@
       margin: 0;
       padding: 0;
     }
-
     .nav-tabs a {
       text-decoration: none;
       color: #333;
       font-weight: bold;
     }
-
     .container {
       display: flex;
       gap: 20px;
       padding: 20px;
     }
-
     .left-sidebar, .main-content {
       background: white;
       padding: 15px;
       border-radius: 10px;
     }
-
     .left-sidebar {
       width: 25%;
     }
-
     .main-content {
       flex: 1;
     }
-
     .edit-btn {
       margin-top: 10px;
       padding: 8px 12px;
@@ -136,7 +123,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
+    /* Modal for editing Intro fields */
     .modal {
       display: none;
       position: fixed;
@@ -147,7 +134,6 @@
       height: 100%;
       background-color: rgba(0,0,0,0.5);
     }
-
     .modal-content {
       background-color: #fff;
       padding: 20px;
@@ -156,15 +142,18 @@
       max-width: 400px;
       border-radius: 10px;
     }
-
-    .modal-content input {
+    .modal-content label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    .modal-content input, .modal-content select {
       width: 100%;
-      margin: 10px 0;
-      padding: 10px;
+      margin: 6px 0 12px;
+      padding: 8px;
       border-radius: 6px;
       border: 1px solid #ccc;
     }
-
     .modal-content button {
       background-color: #2e7d32;
       color: white;
@@ -178,14 +167,16 @@
 </head>
 <body>
 
-<div class="cover-container">
+<!-- Cover Section -->
+<div class="cover-container" data-aos="fade-down">
   <img id="coverPhoto" src="profileD.png" alt="Cover Photo" />
   <input type="file" id="coverInput" accept="image/*" hidden />
   <button class="cover-btn" id="changeCoverBtn">Change Cover Pic</button>
   <button class="logout-btn" id="logoutBtn">Logout</button>
 </div>
 
-<div class="profile-section">
+<!-- Profile Section -->
+<div class="profile-section" data-aos="fade-up">
   <div class="profile-pic-container">
     <img id="profilePic" src="profileD.png" alt="Profile Picture" />
     <input type="file" id="profileInput" accept="image/*" hidden />
@@ -196,6 +187,7 @@
   </div>
 </div>
 
+<!-- Navigation Tabs -->
 <div class="nav-tabs">
   <ul>
     <li><a href="#">Timeline</a></li>
@@ -207,19 +199,25 @@
   </ul>
 </div>
 
+<!-- Main Container -->
 <div class="container">
-  <div class="left-sidebar">
+  <div class="left-sidebar" data-aos="fade-right">
     <div class="intro-section">
       <h2>Intro</h2>
-      <p><strong>Works at:</strong> <span id="worksAt">Loading...</span></p>
+      <p><strong>Occupation:</strong> <span id="occupation">Loading...</span></p>
       <p><strong>Studied at:</strong> <span id="studiedAt">Loading...</span></p>
-      <p><strong>Lives in:</strong> <span id="livesIn">Loading...</span></p>
+      <p>
+        <strong>Lives in:</strong> 
+        <span id="livesIn">Loading...</span> 
+        <i class="fas fa-pencil-alt" style="cursor:pointer; color:#007bff;" onclick="openLocationModal()"></i>
+      </p>
       <p><strong>From:</strong> <span id="from">Loading...</span></p>
+      <p><strong>Age:</strong> <span id="age">Loading...</span></p>
     </div>
     <button class="edit-btn" onclick="openModal()">Edit Details</button>
   </div>
 
-  <div class="main-content">
+  <div class="main-content" data-aos="fade-left">
     <div class="post-box">
       <textarea placeholder="What’s on your mind?" rows="4"></textarea>
       <div class="post-options">
@@ -234,36 +232,69 @@
   </div>
 </div>
 
+<!-- Edit Intro Modal -->
 <div class="modal" id="editModal">
   <div class="modal-content">
-    <input type="text" id="editWorksAt" placeholder="Works at" />
+    <label>Occupation</label>
+    <input type="text" id="editOccupation" placeholder="e.g. Farmer, Agronomist" />
+    
+    <label>Studied at</label>
     <input type="text" id="editStudiedAt" placeholder="Studied at" />
-    <input type="text" id="editLivesIn" placeholder="Lives in" />
-    <input type="text" id="editFrom" placeholder="From" />
+
+    <label>Lives in</label>
+    <select id="editState">
+      <option value="">-- Select State --</option>
+      <option value="Bihar">Bihar</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Uttar Pradesh">Uttar Pradesh</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Karnataka">Karnataka</option>
+      <!-- Add more states as required -->
+    </select>
+    <select id="editDistrict">
+      <option value="">-- Select District --</option>
+    </select>
+
+    <label>From</label>
+    <input type="text" id="editFrom" placeholder="Your Hometown" />
+
+    <label>Age (Select Birth Year)</label>
+    <select id="editAge">
+      <option value="">-- Select Year --</option>
+    </select>
+
     <button onclick="saveIntro()">💾 Save</button>
   </div>
 </div>
 
+<!-- Location Edit Modal triggered by pencil icon (alternative to in-modal state/district) -->
+<div class="modal" id="locationModal">
+  <div class="modal-content">
+    <label>Select State</label>
+    <select id="locState">
+      <option value="">-- Select State --</option>
+      <option value="Bihar">Bihar</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Uttar Pradesh">Uttar Pradesh</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Karnataka">Karnataka</option>
+      <!-- Add more states as needed -->
+    </select>
+    <label>Select District</label>
+    <select id="locDistrict">
+      <option value="">-- Select District --</option>
+    </select>
+    <button onclick="saveLocation()">Save Location</button>
+    <button onclick="closeLocationModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- Scripts -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import {
-    getDatabase,
-    ref as dbRef,
-    get,
-    update,
-    child
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-  import {
-    getStorage,
-    ref,
-    uploadBytes,
-    getDownloadURL
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getDatabase, ref as dbRef, get, update, child, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
@@ -291,23 +322,118 @@
   const logoutBtn = document.getElementById("logoutBtn");
 
   const modal = document.getElementById("editModal");
+  const locationModal = document.getElementById("locationModal");
+
+  // For Intro modal fields
+  const editOccupation = document.getElementById("editOccupation");
+  const editStudiedAt = document.getElementById("editStudiedAt");
+  const editState = document.getElementById("editState");
+  const editDistrict = document.getElementById("editDistrict");
+  const editFrom = document.getElementById("editFrom");
+  const editAge = document.getElementById("editAge");
 
   let currentUID = null;
+
+  // Populate Age Dropdown (Birth Year) from current year back 100 years
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y > currentYear - 100; y--) {
+    const opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    editAge.appendChild(opt);
+  }
+
+  // Populate District dropdown for the modal based on chosen state (for Intro modal)
+  editState.addEventListener("change", function () {
+    const state = this.value;
+    const districts = getDistricts(state);
+    editDistrict.innerHTML = '<option value="">-- Select District --</option>';
+    districts.forEach(dist => {
+      const option = document.createElement("option");
+      option.value = dist;
+      option.textContent = dist;
+      editDistrict.appendChild(option);
+    });
+  });
+
+  // Helper: Return sample districts for a state (expand this list as needed)
+  function getDistricts(state) {
+    const data = {
+      "Bihar": ["Patna", "Gaya", "Bhagalpur"],
+      "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
+      "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi"],
+      "Delhi": ["Central Delhi", "North Delhi", "South Delhi"],
+      "Karnataka": ["Bengaluru Urban", "Mysuru", "Mangalore"]
+    };
+    return data[state] || [];
+  }
+
+  // For Location Modal (triggered by pencil icon)
+  const locState = document.getElementById("locState");
+  const locDistrict = document.getElementById("locDistrict");
+
+  // Populate state dropdown for location modal using same data
+  for (let state in {
+    "Bihar": 1,
+    "Maharashtra": 1,
+    "Uttar Pradesh": 1,
+    "Delhi": 1,
+    "Karnataka": 1
+  }) {
+    const opt = document.createElement("option");
+    opt.value = state;
+    opt.textContent = state;
+    locState.appendChild(opt);
+  }
+
+  locState.addEventListener("change", function () {
+    const districts = getDistricts(this.value);
+    locDistrict.innerHTML = '<option value="">-- Select District --</option>';
+    districts.forEach(dist => {
+      const option = document.createElement("option");
+      option.value = dist;
+      option.textContent = dist;
+      locDistrict.appendChild(option);
+    });
+  });
+
+  function openLocationModal() {
+    locationModal.style.display = "block";
+  }
+  function closeLocationModal() {
+    locationModal.style.display = "none";
+  }
+  function saveLocation() {
+    const state = locState.value;
+    const district = locDistrict.value;
+    const locationString = district && state ? `${district}, ${state}` : "";
+    // Update livesIn field in Firebase without overwriting others
+    const userRef = dbRef(db, `users/${currentUID}`);
+    update(userRef, { livesIn: locationString })
+      .then(() => {
+        document.getElementById("livesIn").textContent = locationString || "—";
+        closeLocationModal();
+      })
+      .catch(error => console.error("Error updating location:", error));
+  }
+
+  // Set up event listener for location modal's Save button within its modal-content:
+  // We'll add inline onclick="saveLocation()" in the modal markup below.
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       currentUID = user.uid;
-
       get(child(dbRef(db), `users/${currentUID}`)).then((snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
-          userName.textContent = (data.firstName || "") + ' ' + (data.lastName || "");
+          userName.textContent = (data.firstName || "") + " " + (data.lastName || "");
           if (data.profileURL) profilePic.src = data.profileURL;
           if (data.coverURL) coverPhoto.src = data.coverURL;
-          document.getElementById("worksAt").textContent = data.worksAt || "—";
+          document.getElementById("occupation").textContent = data.occupation || "—";
           document.getElementById("studiedAt").textContent = data.studiedAt || "—";
           document.getElementById("livesIn").textContent = data.livesIn || "—";
           document.getElementById("from").textContent = data.from || "—";
+          document.getElementById("age").textContent = data.age || "—";
         }
       });
 
@@ -316,7 +442,6 @@
 
       changeProfileBtn.onclick = () => profileInput.click();
       profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
-
     } else {
       window.location.href = "social.html";
     }
@@ -338,30 +463,188 @@
     });
   }
 
+  // Intro modal for editing Occupation, Studied at, Lives in, From, and Age
   window.openModal = () => {
     modal.style.display = "block";
   };
 
-  window.saveIntro = () => {
-    const data = {
-      worksAt: document.getElementById("editWorksAt").value,
-      studiedAt: document.getElementById("editStudiedAt").value,
-      livesIn: document.getElementById("editLivesIn").value,
-      from: document.getElementById("editFrom").value
+  window.saveIntro = async () => {
+    const occupation = document.getElementById("editOccupation").value;
+    const studiedAt = document.getElementById("editStudiedAt").value;
+    const livesInSelect = document.getElementById("editDistrict");
+    const stateSelect = document.getElementById("editState");
+    const fromVal = document.getElementById("editFrom").value;
+    const ageVal = document.getElementById("editAge").value;
+
+    // Create location string if both are selected
+    let livesIn = "";
+    if (stateSelect.value && livesInSelect.value) {
+      livesIn = `${livesInSelect.value}, ${stateSelect.value}`;
+    }
+
+    // Fetch existing data to preserve unchanged fields
+    const userRef = dbRef(db, `users/${currentUID}`);
+    const snapshot = await get(userRef);
+    const existingData = snapshot.exists() ? snapshot.val() : {};
+
+    const updatedData = {
+      ...existingData,
+      occupation: occupation || existingData.occupation,
+      studiedAt: studiedAt || existingData.studiedAt,
+      livesIn: livesIn || existingData.livesIn,
+      from: fromVal || existingData.from,
+      age: ageVal || existingData.age
     };
-    update(dbRef(db, `users/${currentUID}`), data)
-      .then(() => {
-        modal.style.display = "none";
-        location.reload();
-      })
-      .catch((error) => {
-        console.error("Failed to update user intro:", error);
-      });
+
+    update(userRef, updatedData).then(() => {
+      modal.style.display = "none";
+      location.reload();
+    }).catch(error => console.error("Failed to update user intro:", error));
   };
 
   window.onclick = (e) => {
     if (e.target == modal) modal.style.display = "none";
+    if (e.target == locationModal) locationModal.style.display = "none";
   };
+</script>
+
+<!-- Location Modal for editing "Lives in" field -->
+<div class="modal" id="locationModal">
+  <div class="modal-content">
+    <label>Select State</label>
+    <select id="locState">
+      <option value="">-- Select State --</option>
+      <option value="Bihar">Bihar</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Uttar Pradesh">Uttar Pradesh</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Karnataka">Karnataka</option>
+      <!-- Add remaining Indian states as needed -->
+    </select>
+    <label>Select District</label>
+    <select id="locDistrict">
+      <option value="">-- Select District --</option>
+    </select>
+    <button onclick="saveLocation()">Save Location</button>
+    <button onclick="closeLocationModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- Intro Modal for editing all Intro fields -->
+<div class="modal" id="editModal">
+  <div class="modal-content">
+    <label>Occupation</label>
+    <input type="text" id="editOccupation" placeholder="e.g., Farmer" />
+    
+    <label>Studied at</label>
+    <input type="text" id="editStudiedAt" placeholder="e.g., Agri University" />
+    
+    <label>Lives in</label>
+    <select id="editState">
+      <option value="">-- Select State --</option>
+      <option value="Bihar">Bihar</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Uttar Pradesh">Uttar Pradesh</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Karnataka">Karnataka</option>
+      <!-- Extend as needed -->
+    </select>
+    <select id="editDistrict">
+      <option value="">-- Select District --</option>
+    </select>
+    
+    <label>From</label>
+    <input type="text" id="editFrom" placeholder="Your Hometown" />
+    
+    <label>Age (Birth Year)</label>
+    <select id="editAge">
+      <option value="">-- Select Year --</option>
+    </select>
+    
+    <button onclick="saveIntro()">💾 Save</button>
+  </div>
+</div>
+
+<script>
+  // Populate editAge dropdown (past 100 years)
+  const editAgeDropdown = document.getElementById("editAge");
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y > currentYear - 100; y--) {
+    const opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    editAgeDropdown.appendChild(opt);
+  }
+  
+  // Populate editDistrict based on editState selection
+  document.getElementById("editState").addEventListener("change", function () {
+    const state = this.value;
+    const districts = getDistricts(state);
+    const editDistrict = document.getElementById("editDistrict");
+    editDistrict.innerHTML = '<option value="">-- Select District --</option>';
+    districts.forEach(dist => {
+      const option = document.createElement("option");
+      option.value = dist;
+      option.textContent = dist;
+      editDistrict.appendChild(option);
+    });
+  });
+
+  // Sample helper function: returns sample districts for selected state
+  function getDistricts(state) {
+    const data = {
+      "Bihar": ["Patna", "Gaya", "Bhagalpur"],
+      "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
+      "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi"],
+      "Delhi": ["Central Delhi", "North Delhi", "South Delhi"],
+      "Karnataka": ["Bengaluru Urban", "Mysuru", "Mangalore"]
+    };
+    return data[state] || [];
+  }
+  
+  // Populate locDistrict when a state is selected in the location modal
+  document.getElementById("locState").addEventListener("change", function () {
+    const state = this.value;
+    const districts = getDistricts(state);
+    const locDistrict = document.getElementById("locDistrict");
+    locDistrict.innerHTML = '<option value="">-- Select District --</option>';
+    districts.forEach(dist => {
+      const option = document.createElement("option");
+      option.value = dist;
+      option.textContent = dist;
+      locDistrict.appendChild(option);
+    });
+  });
+  
+  // Save updated location from Location Modal
+  function saveLocation() {
+    const state = document.getElementById("locState").value;
+    const district = document.getElementById("locDistrict").value;
+    let locationString = "";
+    if (state && district) {
+      locationString = `${district}, ${state}`;
+    }
+    const userRef = dbRef(db, `users/${currentUID}`);
+    update(userRef, { livesIn: locationString })
+      .then(() => {
+        document.getElementById("livesIn").textContent = locationString || "—";
+        closeLocationModal();
+      })
+      .catch(error => console.error("Error updating location:", error));
+  }
+  
+  function openLocationModal() {
+    document.getElementById("locationModal").style.display = "block";
+  }
+  function closeLocationModal() {
+    document.getElementById("locationModal").style.display = "none";
+  }
+</script>
+
+<!-- AOS Initialization -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
 </script>
 </body>
 </html>
