@@ -8,42 +8,64 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background-color: #f2f2f2;
+      background: #9AC18B;
     }
-    .profile-header {
+    .cover-container {
       position: relative;
-      height: 250px;
-      background: url('profileD.png') center/cover no-repeat;
     }
-    .profile-pic {
-      position: absolute;
-      bottom: -50px;
-      left: 20px;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 4px solid #fff;
-      background-color: #fff;
+    .cover-container img {
+      width: 100%;
+      max-height: 250px;
       object-fit: cover;
     }
-    .user-name {
-      margin-left: 160px;
-      margin-top: 20px;
-      font-size: 24px;
-      font-weight: bold;
+    .cover-container button {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      padding: 6px 10px;
     }
-    .nav-tabs ul {
+    .profile-section {
+      padding: 0 20px;
+      margin-top: -75px;
       display: flex;
       gap: 20px;
-      list-style: none;
-      padding: 10px 20px;
+    }
+    .profile-pic-container {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 5px solid white;
       background: #fff;
-      border-bottom: 1px solid #ddd;
+    }
+    .profile-pic-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-pic-container button {
+      margin-top: 5px;
+    }
+    .user-info {
+      padding-top: 60px;
+    }
+    .user-info h2 {
+      margin: 0;
+    }
+    .nav-tabs ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 20px;
+      padding: 0;
+      border-bottom: 1px solid #ccc;
     }
     .nav-tabs ul li a {
       text-decoration: none;
-      color: #444;
+      color: #333;
       font-weight: bold;
+      padding-bottom: 6px;
+      display: inline-block;
     }
     .container {
       display: flex;
@@ -51,59 +73,67 @@
     }
     .left-sidebar {
       width: 30%;
-      background: #fff;
-      padding: 15px;
-      margin-right: 20px;
-      border-radius: 10px;
+      padding-right: 20px;
     }
     .main-content {
-      flex: 1;
-      background: #fff;
+      width: 70%;
+    }
+    .intro-section {
+      background: white;
       padding: 15px;
       border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .edit-btn {
+      background: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .post-box {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
     }
     .post-box textarea {
       width: 100%;
-      padding: 10px;
-      border-radius: 10px;
       border: 1px solid #ccc;
-      resize: none;
-    }
-    .post-box input[type="file"] {
-      margin-top: 10px;
-    }
-    .post-box button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      margin-top: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .post {
-      background: #f9f9f9;
+      border-radius: 6px;
       padding: 10px;
-      margin-top: 15px;
-      border-radius: 8px;
     }
-    .post img {
-      max-width: 100%;
-      border-radius: 10px;
+    .post-options button {
       margin-top: 10px;
-    }
-    .timestamp {
-      color: #888;
-      font-size: 12px;
+      margin-right: 10px;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background: #eee;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-
-  <div class="profile-header">
-    <img src="profileD.png" alt="Profile" class="profile-pic" id="profilePic" />
+  <!-- Cover Photo -->
+  <div class="cover-container">
+    <img id="coverPhoto" src="default-cover-pic.jpg" alt="Cover Photo">
+    <input type="file" id="coverInput" accept="image/*" hidden>
+    <button onclick="document.getElementById('coverInput').click()">Change Cover</button>
   </div>
-  <div class="user-name" id="userName">Loading...</div>
+
+  <!-- Profile Section -->
+  <div class="profile-section">
+    <div class="profile-pic-container">
+      <img id="profilePic" src="default-profile-pic.jpg" alt="Profile Picture">
+      <input type="file" id="profileInput" accept="image/*" hidden>
+      <button onclick="document.getElementById('profileInput').click()">Change Profile Pic</button>
+    </div>
+    <div class="user-info">
+      <h2 id="userName">Your Name</h2>
+    </div>
+  </div>
 
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
@@ -117,6 +147,7 @@
     </ul>
   </div>
 
+  <!-- Content -->
   <div class="container">
     <!-- Intro Section (Left Sidebar) -->
     <div class="left-sidebar">
@@ -130,29 +161,31 @@
       <button class="edit-btn">Edit Details</button>
     </div>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area (Posts) -->
     <div class="main-content">
       <div class="post-box">
-        <textarea id="postText" placeholder="What’s on your mind?" rows="4"></textarea>
-        <input type="file" id="postImage" accept="image/*">
-        <button onclick="submitPost()">Post</button>
+        <textarea placeholder="What’s on your mind?" rows="4"></textarea>
+        <div class="post-options">
+          <button>Photo/Video</button>
+          <button>Tag Friends</button>
+          <button>Check-in</button>
+        </div>
       </div>
-
-      <div class="posts" id="postsContainer">
-        <p>Loading posts...</p>
+      <div class="posts">
+        <p>No posts yet.</p>
       </div>
     </div>
   </div>
 
-  <!-- Firebase -->
+  <!-- Firebase SDKs -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
-    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-storage.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getDatabase, ref as dbRef, set, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
     const firebaseConfig = {
-     const firebaseConfig = {
+      const firebaseConfig = {
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
     authDomain: "wefarmproject.firebaseapp.com",
     projectId: "wefarmproject",
@@ -161,72 +194,61 @@
     appId: "1:260514820964:web:400135c256ed2554388071",
     databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app"  // ✅ Add this
   };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
     const storage = getStorage(app);
 
+    const coverInput = document.getElementById("coverInput");
+    const profileInput = document.getElementById("profileInput");
+    const coverPhoto = document.getElementById("coverPhoto");
+    const profilePic = document.getElementById("profilePic");
     const userName = document.getElementById("userName");
-    const postsContainer = document.getElementById("postsContainer");
 
-    let currentUser = null;
-
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
-        currentUser = user;
-        userName.innerText = user.displayName || "Anonymous User";
-        loadPosts();
-      } else {
-        alert("Please login to access profile.");
+        const uid = user.uid;
+        const userDbRef = dbRef(db, "users/" + uid);
+
+        // Load existing data
+        get(child(dbRef(db), `users/${uid}`)).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            if (data.name) userName.textContent = data.name;
+            if (data.coverURL) coverPhoto.src = data.coverURL;
+            if (data.profileURL) profilePic.src = data.profileURL;
+            if (data.worksAt) document.getElementById("worksAt").textContent = data.worksAt;
+            if (data.studiedAt) document.getElementById("studiedAt").textContent = data.studiedAt;
+            if (data.livesIn) document.getElementById("livesIn").textContent = data.livesIn;
+            if (data.from) document.getElementById("from").textContent = data.from;
+          }
+        });
+
+        // Upload cover photo
+        coverInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          const storageRef = ref(storage, `users/${uid}/cover.jpg`);
+          uploadBytes(storageRef, file).then(() => {
+            getDownloadURL(storageRef).then((url) => {
+              set(dbRef(db, `users/${uid}/coverURL`), url);
+              coverPhoto.src = url;
+            });
+          });
+        });
+
+        // Upload profile pic
+        profileInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          const storageRef = ref(storage, `users/${uid}/profile.jpg`);
+          uploadBytes(storageRef, file).then(() => {
+            getDownloadURL(storageRef).then((url) => {
+              set(dbRef(db, `users/${uid}/profileURL`), url);
+              profilePic.src = url;
+            });
+          });
+        });
       }
     });
-
-    window.submitPost = async () => {
-      const text = document.getElementById("postText").value;
-      const imageFile = document.getElementById("postImage").files[0];
-      const postRef = push(ref(db, "posts/" + currentUser.uid));
-
-      let imageUrl = "";
-      if (imageFile) {
-        const imgRef = sRef(storage, `posts/${currentUser.uid}/${Date.now()}-${imageFile.name}`);
-        const snapshot = await uploadBytes(imgRef, imageFile);
-        imageUrl = await getDownloadURL(snapshot.ref);
-      }
-
-      await set(postRef, {
-        text,
-        imageUrl,
-        timestamp: new Date().toISOString()
-      });
-
-      document.getElementById("postText").value = "";
-      document.getElementById("postImage").value = "";
-    };
-
-    function loadPosts() {
-      onValue(ref(db, "posts/" + currentUser.uid), snapshot => {
-        postsContainer.innerHTML = "";
-        const data = snapshot.val();
-        if (!data) {
-          postsContainer.innerHTML = "<p>No posts yet.</p>";
-          return;
-        }
-
-        const postsArray = Object.values(data).reverse();
-        postsArray.forEach(post => {
-          const postDiv = document.createElement("div");
-          postDiv.classList.add("post");
-
-          postDiv.innerHTML = `
-            <p>${post.text || ""}</p>
-            ${post.imageUrl ? `<img src="${post.imageUrl}" />` : ""}
-            <p class="timestamp">${new Date(post.timestamp).toLocaleString()}</p>
-          `;
-          postsContainer.appendChild(postDiv);
-        });
-      });
-    }
   </script>
 </body>
 </html>
