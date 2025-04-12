@@ -271,31 +271,34 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-window.sendOTP = function () {
+window.resendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
+  const btn = document.getElementById("resendBtn");
+
   if (!phone.startsWith("+91")) {
     showPopup("Please enter phone in +91 format");
     return;
   }
-
-  if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'normal',
-      callback: (response) => {
-        // CAPTCHA solved
-      }
-    });
-    window.recaptchaVerifier.render(); // render only once
-  }
+if (!window.recaptchaVerifier) {
+  window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+    size: 'normal',
+    callback: (response) => {}
+  }, auth);
+  window.recaptchaVerifier.render().then(id => {
+    window.recaptchaWidgetId = id;
+  });
+}
 
   signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
     .then((res) => {
       confirmationResult = res;
-      document.getElementById("otpSection").style.display = "block";
-      showPopup("OTP sent successfully!");
+      showPopup("OTP resent successfully!");
       startResendCountdown();
     })
-    .catch((err) => showPopup(err.message));
+    .catch((err) => showPopup(err.message))
+    .finally(() => {
+      btn.disabled = true; // remains disabled for 30s
+    });
 };
 
 window.resendOTP = function () {
