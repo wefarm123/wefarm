@@ -421,18 +421,23 @@
     signOut(auth).then(() => window.location.href = "social.html");
   };
 
-  function uploadAndSet(event, key, imgElement) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const fileRef = ref(storage, `users/${currentUID}/${key}.jpg`);
-    uploadBytes(fileRef, file).then(() => {
-      getDownloadURL(fileRef).then((url) => {
-        update(dbRef(db, `users/${currentUID}`), { [key]: url });
-        imgElement.src = url;
-      });
-    });
-  }
+ function uploadAndSet(event, key, imgElement) {
+  const file = event.target.files[0];
+  if (!file) return;
 
+  const fileRef = ref(storage, `users/${currentUID}/${key}.jpg`);
+  uploadBytes(fileRef, file)
+    .then(() => getDownloadURL(fileRef))
+    .then((url) => {
+      return update(dbRef(db, `users/${currentUID}`), { [key]: url })
+        .then(() => {
+          imgElement.src = url;
+        });
+    })
+    .catch((error) => {
+      console.error("Error uploading and setting image:", error);
+    });
+}
   // Intro Modal for editing intro fields
   window.openModal = function() {
     modal.style.display = "block";
