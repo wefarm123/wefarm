@@ -266,6 +266,9 @@ const firebaseConfig = {
   messagingSenderId: "260514820964",
   appId: "1:260514820964:web:400135c256ed2554388071"
 };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
 window.sendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
