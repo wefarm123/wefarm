@@ -266,7 +266,6 @@ function startResendCountdown() {
     }
   }, 1000);
 }
-</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
@@ -286,9 +285,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-
+// ✅ Global declarations
 let confirmationResult;
-
+let recaptchaVerifier;
+let recaptchaInitialized = false;
 
 window.sendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
@@ -304,18 +304,18 @@ window.sendOTP = function () {
   btn.innerHTML = 'Sending... <span class="spinner"></span>';
 
   setTimeout(() => {
-   
     if (!recaptchaInitialized) {
-  recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-    size: 'normal',
-    callback: () => {}
-  }, auth);
-  recaptchaVerifier.render();
-  recaptchaInitialized = true;
-}
+      recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+        size: 'normal',
+        callback: () => {}
+      }, auth);
+      recaptchaVerifier.render();
+      recaptchaInitialized = true;
+    }
+
     signInWithPhoneNumber(auth, phone, recaptchaVerifier)
       .then((res) => {
-        confirmationResult = res;  // ✅ LINE 308 — now won't error
+        confirmationResult = res;
         document.getElementById("otpSection").style.display = "block";
         showPopup("OTP sent successfully!");
         startResendCountdown();
@@ -327,6 +327,7 @@ window.sendOTP = function () {
       });
   }, 3000);
 };
+
 window.verifyOTP = function () {
   const code = document.getElementById("otpCode").value;
 
@@ -336,15 +337,9 @@ window.verifyOTP = function () {
   }
 
   confirmationResult.confirm(code)
-    .then((result) => {
-      showPopup("Phone verified successfully!");
-      // You can proceed to next steps here (e.g., enable sign up, hide OTP section, etc.)
-    })
-    .catch((err) => {
-      showPopup("Invalid OTP. Please try again.");
-    });
+    .then(() => showPopup("Phone verified successfully!"))
+    .catch(() => showPopup("Invalid OTP. Please try again."));
 };
-
 
 window.resendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
@@ -358,7 +353,8 @@ window.resendOTP = function () {
   btn.disabled = true;
   btn.innerHTML = `Resend OTP (30s) <span class="spinner"></span>`;
 
-  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+  // 🔁 Reuse already verified reCAPTCHA
+  signInWithPhoneNumber(auth, phone, recaptchaVerifier)
     .then((res) => {
       confirmationResult = res;
       showPopup("OTP resent successfully!");
@@ -382,13 +378,7 @@ function startResendCountdown() {
       btn.classList.remove("resend-disabled");
     }
   }, 1000);
-};
-
-
-window.resendOTP = function () {
-  window.sendOTP(); // simply call the existing sendOTP logic
-};
-
+}
 
 window.signupUser = function () {
   const email = document.getElementById("signupEmail").value;
@@ -400,6 +390,7 @@ window.signupUser = function () {
     showPopup("Please fill all fields.");
     return;
   }
+
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       set(ref(db, 'users/' + userCredential.user.uid), {
@@ -421,6 +412,7 @@ window.loginUser = function () {
     showPopup("Enter both email/phone and password");
     return;
   }
+
   signInWithEmailAndPassword(auth, email, password)
     .then(() => {
       showPopup("Login successful!");
@@ -431,17 +423,17 @@ window.loginUser = function () {
 
 window.forgotPassword = function () {
   const email = document.getElementById("loginEmail").value;
+
   if (!email.includes("@")) {
     showPopup("Use email (not phone) for password reset");
     return;
   }
+
   sendPasswordResetEmail(auth, email)
     .then(() => showPopup("Reset link sent!"))
     .catch((error) => showPopup(error.message));
 };
-
 </script>
-
 <script>
   const canvas = document.getElementById("bubbleCanvas");
   const ctx = canvas.getContext("2d");
@@ -499,5 +491,5 @@ window.forgotPassword = function () {
   animateBubbles();
 </script>
 
-</body>
+  </body>
 </html>
