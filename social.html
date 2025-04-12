@@ -345,21 +345,19 @@ window.forgotPassword = function () {
     .catch((error) => showPopup(error.message));
 };
 
-<canvas id="bubbleCanvas"></canvas>
+</script>
+
 <script>
   const canvas = document.getElementById("bubbleCanvas");
   const ctx = canvas.getContext("2d");
 
-  canvas.style.position = "fixed";
-  canvas.style.top = 0;
-  canvas.style.left = 0;
-  canvas.style.width = "100%";
-  canvas.style.height = "100%";
-  canvas.style.zIndex = 0;
-  canvas.style.pointerEvents = "none";
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
 
   let bubbles = [];
 
@@ -395,23 +393,16 @@ window.forgotPassword = function () {
 
   function animateBubbles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i in bubbles) {
+    for (let i = 0; i < bubbles.length; i++) {
       bubbles[i].update();
       bubbles[i].draw();
     }
     requestAnimationFrame(animateBubbles);
   }
 
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    initBubbles();
-  });
-
   initBubbles();
   animateBubbles();
 </script>
 
-</script>
 </body>
 </html>
