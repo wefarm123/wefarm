@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WEFARM Social</title>
-  <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display|Calligraffitti" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -37,17 +37,21 @@
       z-index: 0;
     }
     header {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: 'Calligraffitti', cursive;
-      font-size: 4em;
-      color: #fff;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-      z-index: 2;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(154, 193, 139, 0.95);
+      padding: 10px 0;
       text-align: center;
+      font-size: 28px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
     }
+
     .card-container {
       margin-top: 100px;
       width: 380px;
@@ -163,7 +167,16 @@
     </div>
   </div>
 
- 
+  <footer>
+    <div>
+      English <a href="#">हिन्दी</a> <a href="#">ਪੰਜਾਬੀ</a> <a href="#">বাংলা</a> <a href="#">मराठी</a>
+    </div>
+    <div>
+      <a href="#">Sign Up</a> | <a href="#">Log In</a> | <a href="#">About</a> | <a href="#">Contact Us</a> | <a href="#">Terms</a> | <a href="#">Privacy</a>
+    </div>
+    <p>&copy; 2025 WEFARM. All Rights Reserved.</p>
+  </footer>
+
   <script>
     function flipCard() {
       document.getElementById("flipCard").classList.toggle("flipped");
