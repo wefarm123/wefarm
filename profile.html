@@ -286,7 +286,7 @@
   import { getDatabase, ref as dbRef, get, update, child, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
-  const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
     authDomain: "wefarmproject.firebaseapp.com",
     databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -295,6 +295,7 @@
     messagingSenderId: "260514820964",
     appId: "1:260514820964:web:400135c256ed2554388071"
   };
+
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -314,7 +315,6 @@
   const modal = document.getElementById("editModal");
   const locationModal = document.getElementById("locationModal");
 
-  // For Intro Modal fields
   const editOccupation = document.getElementById("editOccupation");
   const editState = document.getElementById("editState");
   const editDistrict = document.getElementById("editDistrict");
@@ -322,7 +322,6 @@
 
   let currentUID = null;
 
-  // Populate editAge dropdown (Birth Year) for past 100 years
   const currentYear = new Date().getFullYear();
   for (let y = currentYear; y > currentYear - 100; y--) {
     const opt = document.createElement("option");
@@ -331,20 +330,6 @@
     editAge.appendChild(opt);
   }
 
-  // Populate editDistrict based on selected state in Intro Modal
-  editState.addEventListener("change", function () {
-    const state = this.value;
-    const districts = getDistricts(state);
-    editDistrict.innerHTML = '<option value="">-- Select District --</option>';
-    districts.forEach(dist => {
-      const option = document.createElement("option");
-      option.value = dist;
-      option.textContent = dist;
-      editDistrict.appendChild(option);
-    });
-  });
-
-  // Helper: Returns sample districts for a given state
   function getDistricts(state) {
     const data = {
       "Bihar": ["Patna", "Gaya", "Bhagalpur"],
@@ -356,26 +341,37 @@
     return data[state] || [];
   }
 
-  // Populate locDistrict when a state is selected in the Location Modal
-  document.getElementById("locState").addEventListener("change", function () {
-    const state = this.value;
-    const districts = getDistricts(state);
-    const locDistrict = document.getElementById("locDistrict");
-    locDistrict.innerHTML = '<option value="">-- Select District --</option>';
+  editState.addEventListener("change", function () {
+    const districts = getDistricts(this.value);
+    editDistrict.innerHTML = '<option value="">-- Select District --</option>';
     districts.forEach(dist => {
-      const option = document.createElement("option");
-      option.value = dist;
-      option.textContent = dist;
-      locDistrict.appendChild(option);
+      const opt = document.createElement("option");
+      opt.value = dist;
+      opt.textContent = dist;
+      editDistrict.appendChild(opt);
     });
   });
 
-  // Save updated location from the Location Modal
+  document.getElementById("locState").addEventListener("change", function () {
+    const districts = getDistricts(this.value);
+    const locDistrict = document.getElementById("locDistrict");
+    locDistrict.innerHTML = '<option value="">-- Select District --</option>';
+    districts.forEach(dist => {
+      const opt = document.createElement("option");
+      opt.value = dist;
+      opt.textContent = dist;
+      locDistrict.appendChild(opt);
+    });
+  });
+
+  window.openLocationModal = () => locationModal.style.display = "block";
+  window.closeLocationModal = () => locationModal.style.display = "none";
+
   window.saveLocation = () => {
     const state = document.getElementById("locState").value;
     const district = document.getElementById("locDistrict").value;
-    const locationString = (state && district) ? ${district}, ${state} : "";
-    const userRef = dbRef(db, users/${currentUID});
+    const locationString = (state && district) ? `${district}, ${state}` : "";
+    const userRef = dbRef(db, `users/${currentUID}`);
     update(userRef, { livesIn: locationString })
       .then(() => {
         document.getElementById("livesIn").textContent = locationString || "—";
@@ -384,19 +380,10 @@
       .catch(error => console.error("Error updating location:", error));
   };
 
-  // Expose location modal functions globally
-  window.openLocationModal = function() {
-    locationModal.style.display = "block";
-  };
-  window.closeLocationModal = function() {
-    locationModal.style.display = "none";
-  };
-
-  // Auth state and data loading
   onAuthStateChanged(auth, (user) => {
     if (user) {
       currentUID = user.uid;
-      get(child(dbRef(db), users/${currentUID})).then((snapshot) => {
+      get(child(dbRef(db), `users/${currentUID}`)).then((snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
           userName.textContent = (data.firstName || "") + " " + (data.lastName || "");
@@ -407,38 +394,33 @@
           document.getElementById("age").textContent = data.age || "—";
         }
       });
-      // Ensure cover button is enabled and add a log for debugging
       changeCoverBtn.disabled = false;
-      changeCoverBtn.onclick = () => { console.log("Cover button clicked"); coverInput.click(); };
+      changeCoverBtn.onclick = () => coverInput.click();
       coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
+
       changeProfileBtn.onclick = () => profileInput.click();
       profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
+
+      logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = "social.html");
     } else {
       window.location.href = "social.html";
     }
   });
 
-  logoutBtn.onclick = () => {
-    signOut(auth).then(() => window.location.href = "social.html");
-  };
-
   function uploadAndSet(event, key, imgElement) {
     const file = event.target.files[0];
     if (!file) return;
-    const fileRef = ref(storage, users/${currentUID}/${key}.jpg);
+    const fileRef = ref(storage, `users/${currentUID}/${key}.jpg`);
     uploadBytes(fileRef, file)
       .then(() => getDownloadURL(fileRef))
       .then((url) => {
-        update(dbRef(db, users/${currentUID}), { [key]: url });
+        update(dbRef(db, `users/${currentUID}`), { [key]: url });
         imgElement.src = url;
       })
       .catch(error => console.error("Error uploading and setting image:", error));
   }
 
-  // Intro Modal for editing intro fields
-  window.openModal = function() {
-    modal.style.display = "block";
-  };
+  window.openModal = () => modal.style.display = "block";
 
   window.saveIntro = async () => {
     const occupation = editOccupation.value;
@@ -447,9 +429,9 @@
     const ageVal = editAge.value;
     let livesIn = "";
     if (stateVal && districtVal) {
-      livesIn = ${districtVal}, ${stateVal};
+      livesIn = `${districtVal}, ${stateVal}`;
     }
-    const userRef = dbRef(db, users/${currentUID});
+    const userRef = dbRef(db, `users/${currentUID}`);
     const snapshot = await get(userRef);
     const existingData = snapshot.exists() ? snapshot.val() : {};
     const updatedData = {
@@ -459,7 +441,10 @@
       age: ageVal || existingData.age
     };
     update(userRef, updatedData)
-      .then(() => { modal.style.display = "none"; location.reload(); })
+      .then(() => {
+        modal.style.display = "none";
+        location.reload();
+      })
       .catch(error => console.error("Failed to update user intro:", error));
   };
 
@@ -468,6 +453,7 @@
     if (e.target === locationModal) locationModal.style.display = "none";
   };
 </script>
+
 
 <!-- AOS Initialization -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
