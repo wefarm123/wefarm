@@ -298,6 +298,9 @@ window.sendOTP = function () {
     .catch((err) => showPopup(err.message));
 };
 
+window.resendOTP = function () {
+  window.sendOTP(); // simply call the existing sendOTP logic
+};
 
 
 window.signupUser = function () {
