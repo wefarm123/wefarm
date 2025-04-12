@@ -241,6 +241,7 @@
   </div>
 </div>
 
+<!-- ✅ All your HTML stays the same, only the <script type="module"> is updated below -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -256,7 +257,6 @@
     messagingSenderId: "260514820964",
     appId: "1:260514820964:web:400135c256ed2554388071"
   };
-
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -323,37 +323,35 @@
   window.openLocationModal = () => locationModal.style.display = "block";
   window.closeLocationModal = () => locationModal.style.display = "none";
 
+  // ✅ Main logic to load user and bind cover/profile uploads
   onAuthStateChanged(auth, (user) => {
-  if (user) {
-    const uid = user.uid;
-    get(child(dbRef(db), `users/${uid}`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        userName.textContent = (data.firstName || "") + " " + (data.lastName || "");
-        if (data.profileURL) profilePic.src = data.profileURL;
-        if (data.coverURL) coverPhoto.src = data.coverURL;
-        document.getElementById("occupation").textContent = data.occupation || "—";
-        document.getElementById("livesIn").textContent = data.livesIn || "—";
-        document.getElementById("age").textContent = data.age || "—";
-      }
-    });
+    if (user) {
+      const uid = user.uid;
 
-    // ✅ Bind change events directly
-    changeProfileBtn.onclick = () => profileInput.click();
-    profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
+      get(child(dbRef(db), `users/${uid}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          userName.textContent = (data.firstName || "") + " " + (data.lastName || "");
+          if (data.profileURL) profilePic.src = data.profileURL;
+          if (data.coverURL) coverPhoto.src = data.coverURL;
+          document.getElementById("occupation").textContent = data.occupation || "—";
+          document.getElementById("livesIn").textContent = data.livesIn || "—";
+          document.getElementById("age").textContent = data.age || "—";
+        }
+      });
 
-    changeCoverBtn.onclick = () => coverInput.click();
-    coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
+      // ✅ Cover and Profile Image Upload Logic
+      changeProfileBtn.onclick = () => profileInput.click();
+      profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
 
-    logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = "social.html");
-  } else {
-    window.location.href = "social.html";
-  }
-});
+      changeCoverBtn.onclick = () => coverInput.click();
+      coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
 
-
-    logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = "social.html");
-  };
+      logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = "social.html");
+    } else {
+      window.location.href = "social.html";
+    }
+  });
 
   function uploadAndSet(event, key, imgElement) {
     const file = event.target.files[0];
@@ -407,9 +405,3 @@
     if (e.target === locationModal) locationModal.style.display = "none";
   };
 </script>
-
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>AOS.init();</script>
-
-</body>
-</html>
