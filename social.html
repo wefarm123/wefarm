@@ -300,7 +300,7 @@ window.sendOTP = function () {
   const originalText = btn.textContent;
   btn.innerHTML = 'Sending... <span class="spinner"></span>';
 
-  setTimeout(() => {
+
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', { size: 'normal', callback: () => {} }, auth);
       window.recaptchaVerifier.render();
@@ -318,7 +318,7 @@ window.sendOTP = function () {
         btn.disabled = false;
         btn.textContent = originalText;
       });
-  }, 3000);
+ 
 };
 
 
