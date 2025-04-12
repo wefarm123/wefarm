@@ -267,33 +267,34 @@ const firebaseConfig = {
   appId: "1:260514820964:web:400135c256ed2554388071"
 };
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
 
-window.sendOTP = function () {
-  const phone = document.getElementById("signupPhone").value;
-  const btn = document.getElementById("sendOtpBtn");
+  // ✅ Use `auth` in RecaptchaVerifier
+  window.sendOTP = function () {
+    const phone = document.getElementById("signupPhone").value;
+    const btn = document.getElementById("sendOtpBtn");
 
-  if (!phone.startsWith("+91")) {
-    showPopup("Please enter phone in +91 format");
-    return;
-  }
+    if (!phone.startsWith("+91")) {
+      showPopup("Please enter phone in +91 format");
+      return;
+    }
+const btn = document.getElementById("sendOtpBtn");
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.innerHTML = 'Sending... <span class="spinner"></span>';
+setTimeout(() => {
 
-  btn.disabled = true;
-  const originalText = btn.textContent;
-  btn.innerHTML = 'Sending... <span class="spinner"></span>';
-
-  // Delay execution by 3 seconds to show loading effect
-  setTimeout(() => {
-    // ✅ Initialize reCAPTCHA only once
     if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-        size: 'normal',
-        callback: () => {}
-      }, auth);
-      window.recaptchaVerifier.render().then(widgetId => {
-        window.recaptchaWidgetId = widgetId;
-      });
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        'recaptcha-container',
+        {
+          size: 'normal',
+          callback: () => {}
+        },
+        auth // ✅ Must be passed correctly
+      );
+      window.recaptchaVerifier.render();
     }
 
     signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
@@ -308,9 +309,8 @@ window.sendOTP = function () {
         btn.disabled = false;
         btn.textContent = originalText;
       });
-
-  }, 3000); // ⏱️ 3-second delay
-};
+} 3000);
+  };
 
 window.verifyOTP = function () {
   const code = document.getElementById("otpCode").value;
