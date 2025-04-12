@@ -6,7 +6,7 @@
   <title>WEFARM Profile</title>
   <!-- Font Awesome for Pencil Icon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- You can also include Animate.css and AOS if desired -->
+  <!-- Animate.css and AOS for animations -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
   <style>
@@ -205,13 +205,12 @@
     <div class="intro-section">
       <h2>Intro</h2>
       <p><strong>Occupation:</strong> <span id="occupation">Loading...</span></p>
-      <p><strong>Studied at:</strong> <span id="studiedAt">Loading...</span></p>
+      <!-- Removed Studied at and From fields as requested -->
       <p>
-        <strong>Lives in:</strong> 
-        <span id="livesIn">Loading...</span> 
+        <strong>Lives in:</strong>
+        <span id="livesIn">Loading...</span>
         <i class="fas fa-pencil-alt" style="cursor:pointer; color:#007bff;" onclick="openLocationModal()"></i>
       </p>
-      <p><strong>From:</strong> <span id="from">Loading...</span></p>
       <p><strong>Age:</strong> <span id="age">Loading...</span></p>
     </div>
     <button class="edit-btn" onclick="openModal()">Edit Details</button>
@@ -232,15 +231,14 @@
   </div>
 </div>
 
-<!-- Edit Intro Modal -->
+<!-- Intro Modal for editing Intro fields -->
 <div class="modal" id="editModal">
   <div class="modal-content">
     <label>Occupation</label>
-    <input type="text" id="editOccupation" placeholder="e.g. Farmer, Agronomist" />
+    <input type="text" id="editOccupation" placeholder="e.g., Farmer, Agronomist" />
     
-    <label>Studied at</label>
-    <input type="text" id="editStudiedAt" placeholder="Studied at" />
-
+    <!-- Removed Studied at and From fields -->
+    
     <label>Lives in</label>
     <select id="editState">
       <option value="">-- Select State --</option>
@@ -249,25 +247,22 @@
       <option value="Uttar Pradesh">Uttar Pradesh</option>
       <option value="Delhi">Delhi</option>
       <option value="Karnataka">Karnataka</option>
-      <!-- Add more states as required -->
+      <!-- Extend as needed -->
     </select>
     <select id="editDistrict">
       <option value="">-- Select District --</option>
     </select>
-
-    <label>From</label>
-    <input type="text" id="editFrom" placeholder="Your Hometown" />
-
+    
     <label>Age (Select Birth Year)</label>
     <select id="editAge">
       <option value="">-- Select Year --</option>
     </select>
-
+    
     <button onclick="saveIntro()">💾 Save</button>
   </div>
 </div>
 
-<!-- Location Edit Modal triggered by pencil icon (alternative to in-modal state/district) -->
+<!-- Location Modal for editing "Lives in" field via pencil icon -->
 <div class="modal" id="locationModal">
   <div class="modal-content">
     <label>Select State</label>
@@ -278,7 +273,7 @@
       <option value="Uttar Pradesh">Uttar Pradesh</option>
       <option value="Delhi">Delhi</option>
       <option value="Karnataka">Karnataka</option>
-      <!-- Add more states as needed -->
+      <!-- Add remaining Indian states as needed -->
     </select>
     <label>Select District</label>
     <select id="locDistrict">
@@ -289,7 +284,6 @@
   </div>
 </div>
 
-<!-- Scripts -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -326,15 +320,13 @@
 
   // For Intro modal fields
   const editOccupation = document.getElementById("editOccupation");
-  const editStudiedAt = document.getElementById("editStudiedAt");
   const editState = document.getElementById("editState");
   const editDistrict = document.getElementById("editDistrict");
-  const editFrom = document.getElementById("editFrom");
   const editAge = document.getElementById("editAge");
 
   let currentUID = null;
 
-  // Populate Age Dropdown (Birth Year) from current year back 100 years
+  // Populate editAge dropdown (Birth Year) for past 100 years
   const currentYear = new Date().getFullYear();
   for (let y = currentYear; y > currentYear - 100; y--) {
     const opt = document.createElement("option");
@@ -343,7 +335,7 @@
     editAge.appendChild(opt);
   }
 
-  // Populate District dropdown for the modal based on chosen state (for Intro modal)
+  // Populate District dropdown for the Intro modal based on the selected state
   editState.addEventListener("change", function () {
     const state = this.value;
     const districts = getDistricts(state);
@@ -356,7 +348,7 @@
     });
   });
 
-  // Helper: Return sample districts for a state (expand this list as needed)
+  // Helper: Return sample districts for a given state
   function getDistricts(state) {
     const data = {
       "Bihar": ["Patna", "Gaya", "Bhagalpur"],
@@ -368,26 +360,11 @@
     return data[state] || [];
   }
 
-  // For Location Modal (triggered by pencil icon)
-  const locState = document.getElementById("locState");
-  const locDistrict = document.getElementById("locDistrict");
-
-  // Populate state dropdown for location modal using same data
-  for (let state in {
-    "Bihar": 1,
-    "Maharashtra": 1,
-    "Uttar Pradesh": 1,
-    "Delhi": 1,
-    "Karnataka": 1
-  }) {
-    const opt = document.createElement("option");
-    opt.value = state;
-    opt.textContent = state;
-    locState.appendChild(opt);
-  }
-
-  locState.addEventListener("change", function () {
-    const districts = getDistricts(this.value);
+  // Populate locDistrict when a state is selected in the Location Modal
+  document.getElementById("locState").addEventListener("change", function () {
+    const state = this.value;
+    const districts = getDistricts(state);
+    const locDistrict = document.getElementById("locDistrict");
     locDistrict.innerHTML = '<option value="">-- Select District --</option>';
     districts.forEach(dist => {
       const option = document.createElement("option");
@@ -397,17 +374,11 @@
     });
   });
 
-  function openLocationModal() {
-    locationModal.style.display = "block";
-  }
-  function closeLocationModal() {
-    locationModal.style.display = "none";
-  }
+  // Save updated location from the Location Modal
   function saveLocation() {
-    const state = locState.value;
-    const district = locDistrict.value;
-    const locationString = district && state ? `${district}, ${state}` : "";
-    // Update livesIn field in Firebase without overwriting others
+    const state = document.getElementById("locState").value;
+    const district = document.getElementById("locDistrict").value;
+    const locationString = (state && district) ? `${district}, ${state}` : "";
     const userRef = dbRef(db, `users/${currentUID}`);
     update(userRef, { livesIn: locationString })
       .then(() => {
@@ -416,10 +387,15 @@
       })
       .catch(error => console.error("Error updating location:", error));
   }
+  
+  function openLocationModal() {
+    locationModal.style.display = "block";
+  }
+  function closeLocationModal() {
+    locationModal.style.display = "none";
+  }
 
-  // Set up event listener for location modal's Save button within its modal-content:
-  // We'll add inline onclick="saveLocation()" in the modal markup below.
-
+  // Auth state and data loading
   onAuthStateChanged(auth, (user) => {
     if (user) {
       currentUID = user.uid;
@@ -430,9 +406,8 @@
           if (data.profileURL) profilePic.src = data.profileURL;
           if (data.coverURL) coverPhoto.src = data.coverURL;
           document.getElementById("occupation").textContent = data.occupation || "—";
-          document.getElementById("studiedAt").textContent = data.studiedAt || "—";
+          // Removed studiedAt and from display as requested
           document.getElementById("livesIn").textContent = data.livesIn || "—";
-          document.getElementById("from").textContent = data.from || "—";
           document.getElementById("age").textContent = data.age || "—";
         }
       });
@@ -442,6 +417,7 @@
 
       changeProfileBtn.onclick = () => profileInput.click();
       profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
+
     } else {
       window.location.href = "social.html";
     }
@@ -463,182 +439,40 @@
     });
   }
 
-  // Intro modal for editing Occupation, Studied at, Lives in, From, and Age
+  // Intro Modal for editing intro fields (only Occupation, Lives in, Age now)
   window.openModal = () => {
     modal.style.display = "block";
   };
 
   window.saveIntro = async () => {
+    // Get fields from modal
     const occupation = document.getElementById("editOccupation").value;
-    const studiedAt = document.getElementById("editStudiedAt").value;
-    const livesInSelect = document.getElementById("editDistrict");
-    const stateSelect = document.getElementById("editState");
-    const fromVal = document.getElementById("editFrom").value;
+    const stateSelect = document.getElementById("editState").value;
+    const districtSelect = document.getElementById("editDistrict").value;
     const ageVal = document.getElementById("editAge").value;
-
-    // Create location string if both are selected
     let livesIn = "";
-    if (stateSelect.value && livesInSelect.value) {
-      livesIn = `${livesInSelect.value}, ${stateSelect.value}`;
+    if (stateSelect && districtSelect) {
+      livesIn = `${districtSelect}, ${stateSelect}`;
     }
-
-    // Fetch existing data to preserve unchanged fields
+    // Fetch existing data to preserve already stored values
     const userRef = dbRef(db, `users/${currentUID}`);
     const snapshot = await get(userRef);
     const existingData = snapshot.exists() ? snapshot.val() : {};
-
     const updatedData = {
       ...existingData,
       occupation: occupation || existingData.occupation,
-      studiedAt: studiedAt || existingData.studiedAt,
       livesIn: livesIn || existingData.livesIn,
-      from: fromVal || existingData.from,
       age: ageVal || existingData.age
     };
-
-    update(userRef, updatedData).then(() => {
-      modal.style.display = "none";
-      location.reload();
-    }).catch(error => console.error("Failed to update user intro:", error));
+    update(userRef, updatedData)
+      .then(() => { modal.style.display = "none"; location.reload(); })
+      .catch(error => console.error("Failed to update user intro:", error));
   };
 
   window.onclick = (e) => {
     if (e.target == modal) modal.style.display = "none";
     if (e.target == locationModal) locationModal.style.display = "none";
   };
-</script>
-
-<!-- Location Modal for editing "Lives in" field -->
-<div class="modal" id="locationModal">
-  <div class="modal-content">
-    <label>Select State</label>
-    <select id="locState">
-      <option value="">-- Select State --</option>
-      <option value="Bihar">Bihar</option>
-      <option value="Maharashtra">Maharashtra</option>
-      <option value="Uttar Pradesh">Uttar Pradesh</option>
-      <option value="Delhi">Delhi</option>
-      <option value="Karnataka">Karnataka</option>
-      <!-- Add remaining Indian states as needed -->
-    </select>
-    <label>Select District</label>
-    <select id="locDistrict">
-      <option value="">-- Select District --</option>
-    </select>
-    <button onclick="saveLocation()">Save Location</button>
-    <button onclick="closeLocationModal()">Cancel</button>
-  </div>
-</div>
-
-<!-- Intro Modal for editing all Intro fields -->
-<div class="modal" id="editModal">
-  <div class="modal-content">
-    <label>Occupation</label>
-    <input type="text" id="editOccupation" placeholder="e.g., Farmer" />
-    
-    <label>Studied at</label>
-    <input type="text" id="editStudiedAt" placeholder="e.g., Agri University" />
-    
-    <label>Lives in</label>
-    <select id="editState">
-      <option value="">-- Select State --</option>
-      <option value="Bihar">Bihar</option>
-      <option value="Maharashtra">Maharashtra</option>
-      <option value="Uttar Pradesh">Uttar Pradesh</option>
-      <option value="Delhi">Delhi</option>
-      <option value="Karnataka">Karnataka</option>
-      <!-- Extend as needed -->
-    </select>
-    <select id="editDistrict">
-      <option value="">-- Select District --</option>
-    </select>
-    
-    <label>From</label>
-    <input type="text" id="editFrom" placeholder="Your Hometown" />
-    
-    <label>Age (Birth Year)</label>
-    <select id="editAge">
-      <option value="">-- Select Year --</option>
-    </select>
-    
-    <button onclick="saveIntro()">💾 Save</button>
-  </div>
-</div>
-
-<script>
-  // Populate editAge dropdown (past 100 years)
-  const editAgeDropdown = document.getElementById("editAge");
-  const currentYear = new Date().getFullYear();
-  for (let y = currentYear; y > currentYear - 100; y--) {
-    const opt = document.createElement("option");
-    opt.value = y;
-    opt.textContent = y;
-    editAgeDropdown.appendChild(opt);
-  }
-  
-  // Populate editDistrict based on editState selection
-  document.getElementById("editState").addEventListener("change", function () {
-    const state = this.value;
-    const districts = getDistricts(state);
-    const editDistrict = document.getElementById("editDistrict");
-    editDistrict.innerHTML = '<option value="">-- Select District --</option>';
-    districts.forEach(dist => {
-      const option = document.createElement("option");
-      option.value = dist;
-      option.textContent = dist;
-      editDistrict.appendChild(option);
-    });
-  });
-
-  // Sample helper function: returns sample districts for selected state
-  function getDistricts(state) {
-    const data = {
-      "Bihar": ["Patna", "Gaya", "Bhagalpur"],
-      "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
-      "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi"],
-      "Delhi": ["Central Delhi", "North Delhi", "South Delhi"],
-      "Karnataka": ["Bengaluru Urban", "Mysuru", "Mangalore"]
-    };
-    return data[state] || [];
-  }
-  
-  // Populate locDistrict when a state is selected in the location modal
-  document.getElementById("locState").addEventListener("change", function () {
-    const state = this.value;
-    const districts = getDistricts(state);
-    const locDistrict = document.getElementById("locDistrict");
-    locDistrict.innerHTML = '<option value="">-- Select District --</option>';
-    districts.forEach(dist => {
-      const option = document.createElement("option");
-      option.value = dist;
-      option.textContent = dist;
-      locDistrict.appendChild(option);
-    });
-  });
-  
-  // Save updated location from Location Modal
-  function saveLocation() {
-    const state = document.getElementById("locState").value;
-    const district = document.getElementById("locDistrict").value;
-    let locationString = "";
-    if (state && district) {
-      locationString = `${district}, ${state}`;
-    }
-    const userRef = dbRef(db, `users/${currentUID}`);
-    update(userRef, { livesIn: locationString })
-      .then(() => {
-        document.getElementById("livesIn").textContent = locationString || "—";
-        closeLocationModal();
-      })
-      .catch(error => console.error("Error updating location:", error));
-  }
-  
-  function openLocationModal() {
-    document.getElementById("locationModal").style.display = "block";
-  }
-  function closeLocationModal() {
-    document.getElementById("locationModal").style.display = "none";
-  }
 </script>
 
 <!-- AOS Initialization -->
