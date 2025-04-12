@@ -278,15 +278,14 @@ window.sendOTP = function () {
     return;
   }
 
-  // Only create reCAPTCHA once
   if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
-      size: "normal", // or 'invisible'
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'normal',
       callback: (response) => {
-        // reCAPTCHA solved
+        // CAPTCHA solved
       }
-    }, auth); // 👈 Pass 'auth' here
-    window.recaptchaVerifier.render(); // Required to render it
+    });
+    window.recaptchaVerifier.render(); // render only once
   }
 
   signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
@@ -298,6 +297,7 @@ window.sendOTP = function () {
     })
     .catch((err) => showPopup(err.message));
 };
+
 
 
 window.signupUser = function () {
