@@ -16,6 +16,15 @@
       flex-direction: column;
       align-items: center;
     }
+    canvas#bubbleCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
     header {
       position: fixed;
       top: 0;
@@ -36,6 +45,7 @@
       width: 380px;
       height: auto;
       perspective: 1200px;
+      z-index: 1;
     }
     .card {
       width: 100%;
@@ -115,20 +125,29 @@
   </style>
 </head>
 <body>
-  <header>WEFARM Social</header>
+  <canvas id="bubbleCanvas"></canvas>
+  <header>
+    WEFARM Social
+    <div style="position: absolute; top: 10px; right: 20px;">
+      <select id="langSwitch" onchange="toggleLanguage()" style="padding: 4px 8px; border-radius: 4px;">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+      </select>
+    </div>
+  </header>
 
   <div class="card-container">
     <div class="card" id="flipCard">
       <div class="card-face front">
-        <h2>Login</h2>
+        <h2><span id="loginTitle">Login</span></h2>
         <input type="text" id="loginEmail" placeholder="Email" />
         <input type="password" id="loginPassword" placeholder="Password" />
         <a class="forgot-link" onclick="forgotPassword()">Forgot your password?</a>
-        <button onclick="loginUser()">Log In</button>
-        <div class="toggle" onclick="flipCard()">Create New Account</div>
+        <button onclick="loginUser()"><span id="loginBtn">Log In</span></button>
+        <div class="toggle" onclick="flipCard()"><span id="createNew">Create New Account</span></div>
       </div>
       <div class="card-face back">
-        <h2>Create Account</h2>
+        <h2><span id="signupTitle">Create Account</span></h2>
         <input id="firstName" type="text" placeholder="First Name" />
         <input id="surname" type="text" placeholder="Surname" />
         <input id="signupEmail" type="text" placeholder="Email" />
@@ -142,8 +161,8 @@
         <input type="radio" name="gender"> Male
         <br><br>
         <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
-        <button onclick="signupUser()">Sign Up</button>
-        <div class="toggle" onclick="flipCard()">Back to Login</div>
+        <button onclick="signupUser()"><span id="signupBtn">Sign Up</span></button>
+        <div class="toggle" onclick="flipCard()"><span id="backToLogin">Back to Login</span></div>
       </div>
     </div>
   </div>
@@ -154,13 +173,85 @@
     function flipCard() {
       document.getElementById("flipCard").classList.toggle("flipped");
     }
-
     function showPopup(message) {
       const popup = document.getElementById("popup");
       popup.innerText = message;
       popup.style.display = "block";
       setTimeout(() => popup.style.display = "none", 3000);
     }
+    function toggleLanguage() {
+      const lang = document.getElementById("langSwitch").value;
+      const content = {
+        en: {
+          loginTitle: "Login",
+          loginBtn: "Log In",
+          createNew: "Create New Account",
+          signupTitle: "Create Account",
+          signupBtn: "Sign Up",
+          backToLogin: "Back to Login"
+        },
+        hi: {
+          loginTitle: "लॉग इन करें",
+          loginBtn: "लॉग इन",
+          createNew: "नया खाता बनाएं",
+          signupTitle: "खाता बनाएं",
+          signupBtn: "साइन अप करें",
+          backToLogin: "वापस लॉगिन पर जाएं"
+        }
+      };
+      for (let id in content[lang]) {
+        document.getElementById(id).innerText = content[lang][id];
+      }
+    }
+  </script>
+
+  <script>
+    const canvas = document.getElementById("bubbleCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let bubbles = [];
+    function Bubble() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height + Math.random() * 100;
+      this.radius = Math.random() * 4 + 1;
+      this.speed = Math.random() * 1 + 0.5;
+      this.alpha = Math.random() * 0.5 + 0.3;
+      this.update = function () {
+        this.y -= this.speed;
+        if (this.y < -this.radius) {
+          this.y = canvas.height + this.radius;
+          this.x = Math.random() * canvas.width;
+        }
+      };
+      this.draw = function () {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.fillStyle = "rgba(255,255,255," + this.alpha + ")";
+        ctx.fill();
+      };
+    }
+    function initBubbles() {
+      bubbles = [];
+      for (let i = 0; i < 120; i++) {
+        bubbles.push(new Bubble());
+      }
+    }
+    function animateBubbles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i in bubbles) {
+        bubbles[i].update();
+        bubbles[i].draw();
+      }
+      requestAnimationFrame(animateBubbles);
+    }
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initBubbles();
+    });
+    initBubbles();
+    animateBubbles();
   </script>
 
   <script type="module">
@@ -234,73 +325,5 @@
         .catch((error) => showPopup(error.message));
     };
   </script>
-
-<canvas id="bubbleCanvas"></canvas>
-<script>
-  const canvas = document.getElementById("bubbleCanvas");
-  const ctx = canvas.getContext("2d");
-
-  canvas.style.position = "fixed";
-  canvas.style.top = 0;
-  canvas.style.left = 0;
-  canvas.style.width = "100%";
-  canvas.style.height = "100%";
-  canvas.style.zIndex = 0;
-  canvas.style.pointerEvents = "none";
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let bubbles = [];
-
-  function Bubble() {
-    this.x = Math.random() * canvas.width;
-    this.y = canvas.height + Math.random() * 100;
-    this.radius = Math.random() * 4 + 1;
-    this.speed = Math.random() * 1 + 0.5;
-    this.alpha = Math.random() * 0.5 + 0.3;
-
-    this.update = function () {
-      this.y -= this.speed;
-      if (this.y < -this.radius) {
-        this.y = canvas.height + this.radius;
-        this.x = Math.random() * canvas.width;
-      }
-    };
-
-    this.draw = function () {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-      ctx.fillStyle = "rgba(255, 255, 255," + this.alpha + ")";
-      ctx.fill();
-    };
-  }
-
-  function initBubbles() {
-    bubbles = [];
-    for (let i = 0; i < 120; i++) {
-      bubbles.push(new Bubble());
-    }
-  }
-
-  function animateBubbles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i in bubbles) {
-      bubbles[i].update();
-      bubbles[i].draw();
-    }
-    requestAnimationFrame(animateBubbles);
-  }
-
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    initBubbles();
-  });
-
-  initBubbles();
-  animateBubbles();
-</script>
-
 </body>
 </html>
