@@ -295,7 +295,7 @@ const app = initializeApp(firebaseConfig);
       showPopup("Please enter phone in +91 format");
       return;
     }
-const btn = document.getElementById("sendOtpBtn");
+
     btn.disabled = true;
     const originalText = btn.textContent;
     btn.innerHTML = 'Sending... <span class="spinner"></span>';
