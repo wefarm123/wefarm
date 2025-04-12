@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WEFARM Social</title>
-  <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display|Calligraffitti" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -29,6 +29,10 @@
       background-size: cover;
       background-attachment: fixed;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     canvas {
       position: absolute;
@@ -37,26 +41,19 @@
       z-index: 0;
     }
     header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background-color: rgba(154, 193, 139, 0.95);
-      padding: 10px 0;
+      font-family: 'Calligraffitti', cursive;
+      font-size: 4em;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+      z-index: 2;
       text-align: center;
-      font-size: 28px;
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      color: white;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
+      margin-bottom: 40px;
     }
-
     .card-container {
-      margin-top: 100px;
       width: 380px;
-      height: auto;
       perspective: 1200px;
+      position: relative;
+      z-index: 2;
     }
     .card {
       width: 100%;
@@ -123,59 +120,49 @@
     footer a {
       margin: 0 5px;
       color: #2E7D32;
-      text-decoration: none
+      text-decoration: none;
     }
     footer a:hover {
       text-decoration: underline;
     }
-
   </style>
 </head>
 <body>
   <div class="container" id="co">
     <canvas id="c"></canvas>
     <header>WEFARM Social</header>
+    <div class="card-container">
+      <div class="card" id="flipCard">
+        <div class="card-face front">
+          <h2>Login</h2>
+          <input type="text" id="loginEmail" placeholder="Email" />
+          <input type="password" id="loginPassword" placeholder="Password" />
+          <button onclick="loginUser()">Log In</button>
+          <div class="toggle" onclick="flipCard()">Create New Account</div>
+        </div>
+        <div class="card-face back">
+          <h2>Create Account</h2>
+          <input id="firstName" type="text" placeholder="First Name" />
+          <input id="surname" type="text" placeholder="Surname" />
+          <input id="signupEmail" type="text" placeholder="Email" />
+          <input id="signupPassword" type="password" placeholder="Password" />
+          <p>Birthday</p>
+          <select><option>Day</option></select>
+          <select><option>Month</option></select>
+          <select><option>Year</option></select>
+          <a href="#">Why provide my birthdate?</a><br><br>
+          <input type="radio" name="gender"> Female
+          <input type="radio" name="gender"> Male
+          <br><br>
+          <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
+          <button onclick="signupUser()">Sign Up</button>
+          <div class="toggle" onclick="flipCard()">Back to Login</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="card-container">
-    <div class="card" id="flipCard">
-      <div class="card-face front">
-        <h2>Login</h2>
-        <input type="text" id="loginEmail" placeholder="Email" />
-        <input type="password" id="loginPassword" placeholder="Password" />
-        <button onclick="loginUser()">Log In</button>
-        <div class="toggle" onclick="flipCard()">Create New Account</div>
-      </div>
-      <div class="card-face back">
-        <h2>Create Account</h2>
-        <input id="firstName" type="text" placeholder="First Name" />
-        <input id="surname" type="text" placeholder="Surname" />
-        <input id="signupEmail" type="text" placeholder="Email" />
-        <input id="signupPassword" type="password" placeholder="Password" />
-        <p>Birthday</p>
-        <select><option>Day</option></select>
-        <select><option>Month</option></select>
-        <select><option>Year</option></select>
-        <a href="#">Why provide my birthdate?</a><br><br>
-        <input type="radio" name="gender"> Female
-        <input type="radio" name="gender"> Male
-        <br><br>
-        <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
-        <button onclick="signupUser()">Sign Up</button>
-        <div class="toggle" onclick="flipCard()">Back to Login</div>
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    <div>
-      English <a href="#">हिन्दी</a> <a href="#">ਪੰਜਾਬੀ</a> <a href="#">বাংলা</a> <a href="#">मराठी</a>
-    </div>
-    <div>
-      <a href="#">Sign Up</a> | <a href="#">Log In</a> | <a href="#">About</a> | <a href="#">Contact Us</a> | <a href="#">Terms</a> | <a href="#">Privacy</a>
-    </div>
-    <p>&copy; 2025 WEFARM. All Rights Reserved.</p>
-  </footer>
+ 
 
   <script>
     function flipCard() {
