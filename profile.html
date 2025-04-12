@@ -224,22 +224,29 @@
 
   window.openModal = () => { modal.style.display = "block"; };
 
-  window.saveIntro = () => {
-    const updates = {
-      worksAt: document.getElementById("editWorksAt").value,
-      studiedAt: document.getElementById("editStudiedAt").value,
-      livesIn: document.getElementById("editLivesIn").value,
-      from: document.getElementById("editFrom").value,
-      profileURL,
-      coverURL,
-      firstName: first,
-      lastName: last
-    };
-    update(dbRef(db, `users/${currentUID}`), updates).then(() => {
+  window.saveIntro = async () => {
+  const newBio = {
+    worksAt: document.getElementById("editWorksAt").value,
+    studiedAt: document.getElementById("editStudiedAt").value,
+    livesIn: document.getElementById("editLivesIn").value,
+    from: document.getElementById("editFrom").value
+  };
+
+  const userRef = dbRef(db, `users/${currentUID}`);
+  try {
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+      const existingData = snapshot.val();
+      const updatedData = { ...existingData, ...newBio };  // 🔁 Preserve old data
+      await set(userRef, updatedData);
       modal.style.display = "none";
       location.reload();
-    });
-  };
+    }
+  } catch (error) {
+    console.error("Failed to update user intro:", error);
+  }
+};
+
 
   window.onclick = (e) => {
     if (e.target == modal) modal.style.display = "none";
