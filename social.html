@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WEFARM Social</title>
-  <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display|Calligraffitti" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -16,29 +16,11 @@
     }
     body {
       font-family: "Poppins", sans-serif;
-      background: #eaf5e9;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .container {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      background-image: linear-gradient(135deg, rgba(52, 152, 219,0.5) 0%,rgba(243, 65, 65, 0.4) 100%), url('signuplogo.png');
+      background: url('signuplogo.png') no-repeat center center fixed;
       background-size: cover;
-      background-attachment: fixed;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-    }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
     }
     header {
       position: fixed;
@@ -55,14 +37,11 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       z-index: 1000;
     }
-
-    .card-container {
-      width: 100%;
-      max-width: 400px;
+    ;.card-container {
+      margin-top: 100px;
+      width: 380px;
+      height: auto;
       perspective: 1200px;
-      position: relative;
-      z-index: 2;
-      margin: 0 auto;
     }
     .card {
       width: 100%;
@@ -129,7 +108,7 @@
     footer a {
       margin: 0 5px;
       color: #2E7D32;
-      text-decoration: none;
+      text-decoration: none
     }
     footer a:hover {
       text-decoration: underline;
@@ -137,132 +116,46 @@
   </style>
 </head>
 <body>
-  <div class="container" id="co">
-    <canvas id="c"></canvas>
-    <header>WEFARM Social</header>
-    <div class="card-container">
-      <div class="card" id="flipCard">
-        <div class="card-face front">
-          <h2>Login</h2>
-          <input type="text" id="loginEmail" placeholder="Email" />
-          <input type="password" id="loginPassword" placeholder="Password" />
-          <button onclick="loginUser()">Log In</button>
-          <div class="toggle" onclick="flipCard()">Create New Account</div>
-        </div>
-        <div class="card-face back">
-          <h2>Create Account</h2>
-          <input id="firstName" type="text" placeholder="First Name" />
-          <input id="surname" type="text" placeholder="Surname" />
-          <input id="signupEmail" type="text" placeholder="Email" />
-          <input id="signupPassword" type="password" placeholder="Password" />
-          <p>Birthday</p>
-          <select><option>Day</option></select>
-          <select><option>Month</option></select>
-          <select><option>Year</option></select>
-          <a href="#">Why provide my birthdate?</a><br><br>
-          <input type="radio" name="gender"> Female
-          <input type="radio" name="gender"> Male
-          <br><br>
-          <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
-          <button onclick="signupUser()">Sign Up</button>
-          <div class="toggle" onclick="flipCard()">Back to Login</div>
-        </div>
+  <header>WEFARM Social</header>
+
+  <div class="card-container">
+    <div class="card" id="flipCard">
+      <!-- Login Side -->
+      <div class="card-face front">
+        <h2>Login</h2>
+        <input type="text" id="loginEmail" placeholder="Email" />
+        <input type="password" id="loginPassword" placeholder="Password" />
+        <button onclick="loginUser()">Log In</button>
+        <div class="toggle" onclick="flipCard()">Create New Account</div>
+      </div>
+      <!-- Signup Side -->
+      <div class="card-face back">
+        <h2>Create Account</h2>
+        <input id="firstName" type="text" placeholder="First Name" />
+        <input id="surname" type="text" placeholder="Surname" />
+        <input id="signupEmail" type="text" placeholder="Email" />
+        <input id="signupPassword" type="password" placeholder="Password" />
+        <p>Birthday</p>
+        <select><option>Day</option></select>
+        <select><option>Month</option></select>
+        <select><option>Year</option></select>
+        <a href="#">Why provide my birthdate?</a><br><br>
+        <input type="radio" name="gender"> Female
+        <input type="radio" name="gender"> Male
+        <br><br>
+        <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
+        <button onclick="signupUser()">Sign Up</button>
+        <div class="toggle" onclick="flipCard()">Back to Login</div>
       </div>
     </div>
   </div>
 
- 
+  
+
   <script>
     function flipCard() {
       document.getElementById("flipCard").classList.toggle("flipped");
     }
-  </script>
-
-  <script>
-    (function() {
-      var width, height, largeContainer, canvas, ctx, circles, target, animateHeader = true;
-
-      initHeader();
-      addListeners();
-
-      function initHeader() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        target = {x: 0, y: height};
-
-        largeContainer = document.getElementById('co');
-        largeContainer.style.height = height+'px';
-
-        canvas = document.getElementById('c');
-        canvas.width = width;
-        canvas.height = height;
-        ctx = canvas.getContext('2d');
-
-        circles = [];
-        for(var x = 0; x < width*0.5; x++) {
-          var c = new Circle();
-          circles.push(c);
-        }
-        animate();
-      }
-
-      function addListeners() {
-        window.addEventListener('scroll', scrollCheck);
-        window.addEventListener('resize', resize);
-      }
-
-      function scrollCheck() {
-        if(document.body.scrollTop > height) animateHeader = false;
-        else animateHeader = true;
-      }
-
-      function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        largeContainer.style.height = height+'px';
-        canvas.width = width;
-        canvas.height = height;
-      }
-
-      function animate() {
-        if(animateHeader) {
-          ctx.clearRect(0,0,width,height);
-          for(var i in circles) {
-            circles[i].draw();
-          }
-        }
-        requestAnimationFrame(animate);
-      }
-
-      function Circle() {
-        var _this = this;
-
-        (function() {
-          _this.pos = {};
-          init();
-        })();
-
-        function init() {
-          _this.pos.x = Math.random()*width;
-          _this.pos.y = height+Math.random()*100;
-          _this.alpha = 0.1+Math.random()*0.3;
-          _this.scale = 0.1+Math.random()*0.3;
-          _this.velocity = Math.random();
-        }
-
-        this.draw = function() {
-          if(_this.alpha <= 0) {
-            init();
-          }
-          _this.pos.y -= _this.velocity;
-          _this.alpha -= 0.0005;
-          ctx.beginPath();
-          ctx.arc(_this.pos.x, _this.pos.y, _this.scale*10, 0, 2 * Math.PI, false);
-          ctx.fillStyle = 'rgba(255,255,255,'+ _this.alpha+')';
-          ctx.fill();
-        };
-      }
-    })();
   </script>
 
   <script type="module">
