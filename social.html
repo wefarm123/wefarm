@@ -6,14 +6,8 @@
   <title>WEFARM Social</title>
   <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
     body {
       font-family: "Poppins", sans-serif;
       background: url('signuplogo.png') no-repeat center center fixed;
@@ -96,22 +90,27 @@
       cursor: pointer;
       font-size: 14px;
     }
-    footer {
-      margin-top: 40px;
-      background-color: rgba(231, 244, 227, 0.9);
-      width: 100%;
-      text-align: center;
+    .forgot-link {
+      display: block;
+      text-align: right;
       font-size: 13px;
-      padding: 10px;
       color: #2E7D32;
+      margin-top: -8px;
+      margin-bottom: 10px;
+      cursor: pointer;
     }
-    footer a {
-      margin: 0 5px;
-      color: #2E7D32;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
+    .popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      padding: 12px 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 9999;
+      display: none;
     }
   </style>
 </head>
@@ -120,15 +119,14 @@
 
   <div class="card-container">
     <div class="card" id="flipCard">
-      <!-- Login Side -->
       <div class="card-face front">
         <h2>Login</h2>
         <input type="text" id="loginEmail" placeholder="Email" />
         <input type="password" id="loginPassword" placeholder="Password" />
+        <a class="forgot-link" onclick="forgotPassword()">Forgot your password?</a>
         <button onclick="loginUser()">Log In</button>
         <div class="toggle" onclick="flipCard()">Create New Account</div>
       </div>
-      <!-- Signup Side -->
       <div class="card-face back">
         <h2>Create Account</h2>
         <input id="firstName" type="text" placeholder="First Name" />
@@ -150,17 +148,24 @@
     </div>
   </div>
 
-  
+  <div id="popup" class="popup"></div>
 
   <script>
     function flipCard() {
       document.getElementById("flipCard").classList.toggle("flipped");
     }
+
+    function showPopup(message) {
+      const popup = document.getElementById("popup");
+      popup.innerText = message;
+      popup.style.display = "block";
+      setTimeout(() => popup.style.display = "none", 3000);
+    }
   </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
     const firebaseConfig = {
@@ -183,6 +188,11 @@
       const firstName = document.getElementById("firstName").value;
       const surname = document.getElementById("surname").value;
 
+      if (!email || !password || !firstName || !surname) {
+        showPopup("Please fill all signup fields.");
+        return;
+      }
+
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           set(ref(db, 'users/' + userCredential.user.uid), {
@@ -190,90 +200,39 @@
             surname: surname,
             email: email
           });
-          alert("Signup successful!");
+          showPopup("Signup successful!");
         })
-        .catch((error) => alert(error.message));
+        .catch((error) => showPopup(error.message));
     };
 
     window.loginUser = function () {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
 
+      if (!email || !password) {
+        showPopup("Please enter email and password.");
+        return;
+      }
+
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          alert("Login successful!");
+          showPopup("Login successful!");
           window.location.href = "profile.html";
         })
-        .catch((error) => alert(error.message));
+        .catch((error) => showPopup(error.message));
+    };
+
+    window.forgotPassword = function () {
+      const email = document.getElementById("loginEmail").value;
+      if (!email) {
+        showPopup("Please enter your email above first.");
+        return;
+      }
+
+      sendPasswordResetEmail(auth, email)
+        .then(() => showPopup("Password reset email sent! Check your inbox."))
+        .catch((error) => showPopup(error.message));
     };
   </script>
-
-<canvas id="bubbleCanvas"></canvas>
-
-<script>
-  const canvas = document.getElementById('bubbleCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.style.position = 'fixed';
-  canvas.style.top = 0;
-  canvas.style.left = 0;
-  canvas.style.width = '100%';
-  canvas.style.height = '100%';
-  canvas.style.zIndex = 0;
-  canvas.style.pointerEvents = 'none';
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let bubbles = [];
-
-  function Bubble() {
-    this.x = Math.random() * canvas.width;
-    this.y = canvas.height + Math.random() * 100;
-    this.radius = Math.random() * 4 + 1;
-    this.speed = Math.random() * 1 + 0.5;
-    this.alpha = Math.random() * 0.5 + 0.3;
-
-    this.update = function () {
-      this.y -= this.speed;
-      if (this.y < -this.radius) {
-        this.y = canvas.height + this.radius;
-        this.x = Math.random() * canvas.width;
-      }
-    };
-
-    this.draw = function () {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-      ctx.fillStyle = 'rgba(255, 255, 255,' + this.alpha + ')';
-      ctx.fill();
-    };
-  }
-
-  function initBubbles() {
-    bubbles = [];
-    for (let i = 0; i < 120; i++) {
-      bubbles.push(new Bubble());
-    }
-  }
-
-  function animateBubbles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i in bubbles) {
-      bubbles[i].update();
-      bubbles[i].draw();
-    }
-    requestAnimationFrame(animateBubbles);
-  }
-
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    initBubbles();
-  });
-
-  initBubbles();
-  animateBubbles();
-</script>
-
 </body>
 </html>
