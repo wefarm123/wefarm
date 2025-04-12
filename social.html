@@ -143,22 +143,6 @@
   transform: scale(0.90);
   transform-origin: top left;
 }
-.spinner {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #fff;
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  vertical-align: middle;
-  margin-left: 5px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
   </style>
 </head>
@@ -289,51 +273,31 @@ const db = getDatabase(app);
 
 window.sendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
-  const btn = document.getElementById("sendOtpBtn");
-
   if (!phone.startsWith("+91")) {
     showPopup("Please enter phone in +91 format");
     return;
   }
 
-  btn.disabled = true;
-  const originalText = btn.textContent;
-  btn.innerHTML = 'Sending... <span class="spinner"></span>';
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'normal',
+      callback: (response) => {
+        // CAPTCHA solved
+      }
+    });
+    window.recaptchaVerifier.render(); // render only once
+  }
 
-
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', { size: 'normal', callback: () => {} }, auth);
-      window.recaptchaVerifier.render();
-    }
-
-    signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-      .then((res) => {
-        window.confirmationResult = res;
-        document.getElementById("otpSection").style.display = "block";
-        showPopup("OTP sent successfully!");
-        startResendCountdown();
-      })
-      .catch((err) => showPopup(err.message))
-      .finally(() => {
-        btn.disabled = false;
-        btn.textContent = originalText;
-      });
- 
-};
-
-
-window.verifyOTP = function () {
-  const code = document.getElementById("otpCode").value;
-  confirmationResult.confirm(code)
-    .then((result) => {
-      showPopup("Phone verified!");
+  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+    .then((res) => {
+      confirmationResult = res;
+      document.getElementById("otpSection").style.display = "block";
+      showPopup("OTP sent successfully!");
+      startResendCountdown();
     })
-    .catch((err) => showPopup("Invalid OTP"));
+    .catch((err) => showPopup(err.message));
 };
 
-window.resendOTP = function () {
-  window.sendOTP(); // Just re-call the sendOTP function
-};
 
 
 window.signupUser = function () {
