@@ -286,8 +286,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// ✅ Flag to ensure captcha is created once
-let recaptchaInitialized = false;
+let recaptchaVerifier;
 let confirmationResult;
 
 window.sendOTP = function () {
