@@ -123,7 +123,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    /* Modal Styles */
+    /* Modal for editing Intro fields */
     .modal {
       display: none;
       position: fixed;
@@ -206,7 +206,7 @@
       <h2>Intro</h2>
       <p><strong>Occupation:</strong> <span id="occupation">Loading...</span></p>
       <p>
-        <strong>Lives in:</strong>
+        <strong>Lives in:</strong> 
         <span id="livesIn">Loading...</span>
         <i class="fas fa-pencil-alt" style="cursor:pointer; color:#007bff;" onclick="window.openLocationModal()"></i>
       </p>
@@ -244,7 +244,6 @@
       <option value="Uttar Pradesh">Uttar Pradesh</option>
       <option value="Delhi">Delhi</option>
       <option value="Karnataka">Karnataka</option>
-      <!-- Extend as needed -->
     </select>
     <select id="editDistrict">
       <option value="">-- Select District --</option>
@@ -345,7 +344,7 @@
     });
   });
 
-  // Helper function: returns sample districts for a given state
+  // Helper: Returns sample districts for a given state
   function getDistricts(state) {
     const data = {
       "Bihar": ["Patna", "Gaya", "Bhagalpur"],
@@ -371,7 +370,7 @@
     });
   });
 
-  // Save location using Location Modal
+  // Save updated location from the Location Modal
   window.saveLocation = () => {
     const state = document.getElementById("locState").value;
     const district = document.getElementById("locDistrict").value;
@@ -408,7 +407,9 @@
           document.getElementById("age").textContent = data.age || "—";
         }
       });
-      changeCoverBtn.onclick = () => coverInput.click();
+      // Ensure cover button is enabled and add a log for debugging
+      changeCoverBtn.disabled = false;
+      changeCoverBtn.onclick = () => { console.log("Cover button clicked"); coverInput.click(); };
       coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
       changeProfileBtn.onclick = () => profileInput.click();
       profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
@@ -425,12 +426,13 @@
     const file = event.target.files[0];
     if (!file) return;
     const fileRef = ref(storage, `users/${currentUID}/${key}.jpg`);
-    uploadBytes(fileRef, file).then(() => {
-      getDownloadURL(fileRef).then((url) => {
+    uploadBytes(fileRef, file)
+      .then(() => getDownloadURL(fileRef))
+      .then((url) => {
         update(dbRef(db, `users/${currentUID}`), { [key]: url });
         imgElement.src = url;
-      });
-    });
+      })
+      .catch(error => console.error("Error uploading and setting image:", error));
   }
 
   // Intro Modal for editing intro fields
