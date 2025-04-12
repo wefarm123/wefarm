@@ -289,40 +289,39 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// ✅ Then your sendOTP function as-is
-  window.sendOTP = function () {
-    const phone = document.getElementById("signupPhone").value;
-    const btn = document.getElementById("sendOtpBtn");
-    if (!phone.startsWith("+91")) {
-      showPopup("Please enter phone in +91 format");
-      return;
-    }
+window.sendOTP = function () {
+  const phone = document.getElementById("signupPhone").value;
+  if (!phone.startsWith("+91")) {
+    showPopup("Please enter phone in +91 format");
+    return;
+  }
+btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.innerHTML = 'Sending... <span class="spinner"></span>';
 
-    btn.disabled = true;
-    const originalText = btn.textContent;
-    btn.innerHTML = 'Sending... <span class="spinner"></span>';
+  // Only initialize reCAPTCHA once
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+      size: 'normal',
+      callback: (response) => {
+        // CAPTCHA solved — allow user to proceed
+      }
+    }, auth);
+    window.recaptchaVerifier.render().then(widgetId => {
+      window.recaptchaWidgetId = widgetId;
+    });
+  }
 
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-        size: 'normal',
-        callback: () => {}
-      }, auth);
-      window.recaptchaVerifier.render();
-    }
+  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+    .then((res) => {
+      confirmationResult = res;
+      document.getElementById("otpSection").style.display = "block";
+      showPopup("OTP sent successfully!");
+      startResendCountdown();
+    })
+    .catch((err) => showPopup(err.message));
+};
 
-    signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-      .then((res) => {
-        confirmationResult = res;
-        document.getElementById("otpSection").style.display = "block";
-        showPopup("OTP sent successfully!");
-        startResendCountdown(); // ✅ now works perfectly
-      })
-      .catch((err) => showPopup(err.message))
-      .finally(() => {
-        btn.disabled = false;
-        btn.textContent = originalText;
-      });
-  };
 function startResendCountdown() {
     const btn = document.getElementById("resendBtn");
     let timeLeft = 30;
