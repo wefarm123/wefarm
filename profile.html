@@ -5,71 +5,174 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WEFARM Profile</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #9AC18B; }
-    .cover-container { position: relative; height: 250px; overflow: hidden; }
-    .cover-container img { width: 100%; height: 100%; object-fit: cover; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #9AC18B;
+    }
+
+    .cover-container {
+      position: relative;
+      height: 250px;
+      overflow: hidden;
+    }
+
+    .cover-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .cover-btn, .logout-btn {
-      position: absolute; padding: 8px 12px; font-weight: bold; border-radius: 5px;
-      cursor: pointer; border: none;
+      position: absolute;
+      padding: 8px 12px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
     }
-    .cover-btn { bottom: 10px; right: 10px; background-color: #ffffffcc; }
-    .logout-btn { top: 10px; right: 10px; background: #dc3545; color: white; }
+
+    .cover-btn {
+      bottom: 10px;
+      right: 10px;
+      background-color: #ffffffcc;
+    }
+
+    .logout-btn {
+      top: 10px;
+      right: 10px;
+      background: #dc3545;
+      color: white;
+    }
+
     .profile-section {
-      display: flex; align-items: flex-end; gap: 20px;
-      padding: 0 20px; margin-top: -75px;
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      padding: 0 20px;
+      margin-top: -75px;
     }
+
     .profile-pic-container {
-      position: relative; width: 150px; height: 150px;
+      position: relative;
+      width: 150px;
+      height: 150px;
     }
+
     .profile-pic-container img {
-      width: 150px; height: 150px; border-radius: 50%;
-      border: 5px solid white; object-fit: cover;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 5px solid white;
+      object-fit: cover;
     }
+
     .profile-pic-btn {
-      position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;
-      background: rgba(0,0,0,0.6); color: white; font-size: 14px;
-      padding: 6px 0; cursor: pointer; border-radius: 0 0 50% 50%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      font-size: 14px;
+      padding: 6px 0;
+      cursor: pointer;
+      border-radius: 0 0 50% 50%;
     }
-    .user-info h2 { margin: 0; color: white; text-shadow: 1px 1px 3px black; }
+
+    .user-info h2 {
+      margin: 0;
+      color: white;
+      text-shadow: 1px 1px 3px black;
+    }
+
     .nav-tabs {
-      background: white; padding: 10px 20px; border-bottom: 1px solid #ccc;
+      background: white;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ccc;
     }
+
     .nav-tabs ul {
-      display: flex; gap: 15px; list-style: none;
-      margin: 0; padding: 0;
+      display: flex;
+      gap: 15px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
+
     .nav-tabs a {
-      text-decoration: none; color: #333; font-weight: bold;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
     }
-    .container { display: flex; gap: 20px; padding: 20px; }
+
+    .container {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+
     .left-sidebar, .main-content {
-      background: white; padding: 15px; border-radius: 10px;
-    }
-    .left-sidebar { width: 25%; }
-    .main-content { flex: 1; }
-    .edit-btn {
-      margin-top: 10px; padding: 8px 12px;
-      background: #007bff; color: white; border: none;
-      border-radius: 5px; cursor: pointer;
-    }
-    .modal {
-      display: none; position: fixed; z-index: 999;
-      left: 0; top: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
-    }
-    .modal-content {
-      background-color: #fff; padding: 20px;
-      margin: 10% auto; width: 90%; max-width: 400px;
+      background: white;
+      padding: 15px;
       border-radius: 10px;
     }
-    .modal-content input {
-      width: 100%; margin: 10px 0; padding: 10px;
-      border-radius: 6px; border: 1px solid #ccc;
+
+    .left-sidebar {
+      width: 25%;
     }
+
+    .main-content {
+      flex: 1;
+    }
+
+    .edit-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      margin: 10% auto;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 10px;
+    }
+
+    .modal-content input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
     .modal-content button {
-      background-color: #2e7d32; color: white;
-      border: none; padding: 10px; border-radius: 6px;
-      width: 100%; font-weight: bold;
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      width: 100%;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -143,9 +246,24 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getDatabase, ref as dbRef, get, update, child } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import {
+    getDatabase,
+    ref as dbRef,
+    get,
+    update,
+    child
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  import {
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
@@ -171,10 +289,10 @@
   const changeCoverBtn = document.getElementById("changeCoverBtn");
   const changeProfileBtn = document.getElementById("changeProfileBtn");
   const logoutBtn = document.getElementById("logoutBtn");
+
   const modal = document.getElementById("editModal");
 
   let currentUID = null;
-  let profileURL = "", coverURL = "", first = "", last = "";
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -183,12 +301,9 @@
       get(child(dbRef(db), `users/${currentUID}`)).then((snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
-          first = data.firstName || ""; last = data.lastName || "";
-          profileURL = data.profileURL || "profileD.png";
-          coverURL = data.coverURL || "profileD.png";
-          userName.textContent = `${first} ${last}`;
-          profilePic.src = profileURL;
-          coverPhoto.src = coverURL;
+          userName.textContent = (data.firstName || "") + ' ' + (data.lastName || "");
+          if (data.profileURL) profilePic.src = data.profileURL;
+          if (data.coverURL) coverPhoto.src = data.coverURL;
           document.getElementById("worksAt").textContent = data.worksAt || "—";
           document.getElementById("studiedAt").textContent = data.studiedAt || "—";
           document.getElementById("livesIn").textContent = data.livesIn || "—";
@@ -201,6 +316,7 @@
 
       changeProfileBtn.onclick = () => profileInput.click();
       profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
+
     } else {
       window.location.href = "social.html";
     }
@@ -222,31 +338,26 @@
     });
   }
 
-  window.openModal = () => { modal.style.display = "block"; };
-
-  window.saveIntro = async () => {
-  const newBio = {
-    worksAt: document.getElementById("editWorksAt").value,
-    studiedAt: document.getElementById("editStudiedAt").value,
-    livesIn: document.getElementById("editLivesIn").value,
-    from: document.getElementById("editFrom").value
+  window.openModal = () => {
+    modal.style.display = "block";
   };
 
-  const userRef = dbRef(db, `users/${currentUID}`);
-  try {
-    const snapshot = await get(userRef);
-    if (snapshot.exists()) {
-      const existingData = snapshot.val();
-      const updatedData = { ...existingData, ...newBio };  // 🔁 Preserve old data
-      await set(userRef, updatedData);
-      modal.style.display = "none";
-      location.reload();
-    }
-  } catch (error) {
-    console.error("Failed to update user intro:", error);
-  }
-};
-
+  window.saveIntro = () => {
+    const data = {
+      worksAt: document.getElementById("editWorksAt").value,
+      studiedAt: document.getElementById("editStudiedAt").value,
+      livesIn: document.getElementById("editLivesIn").value,
+      from: document.getElementById("editFrom").value
+    };
+    update(dbRef(db, `users/${currentUID}`), data)
+      .then(() => {
+        modal.style.display = "none";
+        location.reload();
+      })
+      .catch((error) => {
+        console.error("Failed to update user intro:", error);
+      });
+  };
 
   window.onclick = (e) => {
     if (e.target == modal) modal.style.display = "none";
