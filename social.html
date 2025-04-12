@@ -7,7 +7,9 @@
   <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; margin: 0; padding: 0;
+    }
     body {
       font-family: "Poppins", sans-serif;
       background: url('signuplogo.png') no-repeat center center fixed;
@@ -43,7 +45,7 @@
     .card-container {
       margin-top: 100px;
       width: 380px;
-      height: auto;
+      max-width: 90vw;
       perspective: 1200px;
       z-index: 1;
     }
@@ -122,208 +124,90 @@
       z-index: 9999;
       display: none;
     }
+    @media screen and (max-width: 480px) {
+      .card-face h2 { font-size: 20px; }
+      button, input, select { font-size: 13px; padding: 10px; }
+      header { font-size: 22px; padding: 8px 0; }
+    }
   </style>
 </head>
 <body>
-  <canvas id="bubbleCanvas"></canvas>
-  <header>
-    WEFARM Social
-    <div style="position: absolute; top: 10px; right: 20px;">
-      <select id="langSwitch" onchange="toggleLanguage()" style="padding: 4px 8px; border-radius: 4px;">
-        <option value="en">English</option>
-        <option value="hi">हिन्दी</option>
-      </select>
+<canvas id="bubbleCanvas"></canvas>
+<header>
+  WEFARM Social
+  <div style="position: absolute; top: 10px; right: 20px;">
+    <select id="langSwitch" onchange="toggleLanguage()" style="padding: 4px 8px; border-radius: 4px;">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+    </select>
+  </div>
+</header>
+<div class="card-container">
+  <div class="card" id="flipCard">
+    <div class="card-face front">
+      <h2><span id="loginTitle">Login</span></h2>
+      <input type="text" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <a class="forgot-link" onclick="forgotPassword()">Forgot your password?</a>
+      <button onclick="loginUser()"><span id="loginBtn">Log In</span></button>
+      <div class="toggle" onclick="flipCard()"><span id="createNew">Create New Account</span></div>
     </div>
-  </header>
-
-  <div class="card-container">
-    <div class="card" id="flipCard">
-      <div class="card-face front">
-        <h2><span id="loginTitle">Login</span></h2>
-        <input type="text" id="loginEmail" placeholder="Email" />
-        <input type="password" id="loginPassword" placeholder="Password" />
-        <a class="forgot-link" onclick="forgotPassword()">Forgot your password?</a>
-        <button onclick="loginUser()"><span id="loginBtn">Log In</span></button>
-        <div class="toggle" onclick="flipCard()"><span id="createNew">Create New Account</span></div>
-      </div>
-      <div class="card-face back">
-        <h2><span id="signupTitle">Create Account</span></h2>
-        <input id="firstName" type="text" placeholder="First Name" />
-        <input id="surname" type="text" placeholder="Surname" />
-        <input id="signupEmail" type="text" placeholder="Email" />
-        <input id="signupPassword" type="password" placeholder="Password" />
-        <p>Birthday</p>
-        <select><option>Day</option></select>
-        <select><option>Month</option></select>
-        <select><option>Year</option></select>
-        <a href="#">Why provide my birthdate?</a><br><br>
-        <input type="radio" name="gender"> Female
-        <input type="radio" name="gender"> Male
-        <br><br>
-        <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
-        <button onclick="signupUser()"><span id="signupBtn">Sign Up</span></button>
-        <div class="toggle" onclick="flipCard()"><span id="backToLogin">Back to Login</span></div>
-      </div>
+    <div class="card-face back">
+      <h2><span id="signupTitle">Create Account</span></h2>
+      <input id="firstName" type="text" placeholder="First Name" />
+      <input id="surname" type="text" placeholder="Surname" />
+      <input id="signupEmail" type="text" placeholder="Email" />
+      <input id="signupPassword" type="password" placeholder="Password" />
+      <p><span id="birthdayLabel">Birthday</span></p>
+      <select><option>Day</option></select>
+      <select><option>Month</option></select>
+      <select><option>Year</option></select>
+      <a href="#">Why provide my birthdate?</a><br><br>
+      <span id="genderLabel">Gender:</span>
+      <input type="radio" name="gender"> <span id="femaleLabel">Female</span>
+      <input type="radio" name="gender"> <span id="maleLabel">Male</span>
+      <br><br>
+      <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
+      <button onclick="signupUser()"><span id="signupBtn">Sign Up</span></button>
+      <div class="toggle" onclick="flipCard()"><span id="backToLogin">Back to Login</span></div>
     </div>
   </div>
-
-  <div id="popup" class="popup"></div>
-
-  <script>
-    function flipCard() {
-      document.getElementById("flipCard").classList.toggle("flipped");
-    }
-    function showPopup(message) {
-      const popup = document.getElementById("popup");
-      popup.innerText = message;
-      popup.style.display = "block";
-      setTimeout(() => popup.style.display = "none", 3000);
-    }
-    function toggleLanguage() {
-      const lang = document.getElementById("langSwitch").value;
-      const content = {
-        en: {
-          loginTitle: "Login",
-          loginBtn: "Log In",
-          createNew: "Create New Account",
-          signupTitle: "Create Account",
-          signupBtn: "Sign Up",
-          backToLogin: "Back to Login"
-        },
-        hi: {
-          loginTitle: "लॉग इन करें",
-          loginBtn: "लॉग इन",
-          createNew: "नया खाता बनाएं",
-          signupTitle: "खाता बनाएं",
-          signupBtn: "साइन अप करें",
-          backToLogin: "वापस लॉगिन पर जाएं"
-        }
-      };
-      for (let id in content[lang]) {
-        document.getElementById(id).innerText = content[lang][id];
+</div>
+<div id="popup" class="popup"></div>
+<script>
+  function toggleLanguage() {
+    const lang = document.getElementById("langSwitch").value;
+    const content = {
+      en: {
+        loginTitle: "Login",
+        loginBtn: "Log In",
+        createNew: "Create New Account",
+        signupTitle: "Create Account",
+        signupBtn: "Sign Up",
+        backToLogin: "Back to Login",
+        birthdayLabel: "Birthday",
+        genderLabel: "Gender:",
+        maleLabel: "Male",
+        femaleLabel: "Female"
+      },
+      hi: {
+        loginTitle: "लॉग इन करें",
+        loginBtn: "लॉग इन",
+        createNew: "नया खाता बनाएं",
+        signupTitle: "खाता बनाएं",
+        signupBtn: "साइन अप करें",
+        backToLogin: "वापस लॉगिन पर जाएं",
+        birthdayLabel: "जन्म तिथि",
+        genderLabel: "लिंग:",
+        maleLabel: "पुरुष",
+        femaleLabel: "महिला"
       }
-    }
-  </script>
-
-  <script>
-    const canvas = document.getElementById("bubbleCanvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    let bubbles = [];
-    function Bubble() {
-      this.x = Math.random() * canvas.width;
-      this.y = canvas.height + Math.random() * 100;
-      this.radius = Math.random() * 4 + 1;
-      this.speed = Math.random() * 1 + 0.5;
-      this.alpha = Math.random() * 0.5 + 0.3;
-      this.update = function () {
-        this.y -= this.speed;
-        if (this.y < -this.radius) {
-          this.y = canvas.height + this.radius;
-          this.x = Math.random() * canvas.width;
-        }
-      };
-      this.draw = function () {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        ctx.fillStyle = "rgba(255,255,255," + this.alpha + ")";
-        ctx.fill();
-      };
-    }
-    function initBubbles() {
-      bubbles = [];
-      for (let i = 0; i < 120; i++) {
-        bubbles.push(new Bubble());
-      }
-    }
-    function animateBubbles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i in bubbles) {
-        bubbles[i].update();
-        bubbles[i].draw();
-      }
-      requestAnimationFrame(animateBubbles);
-    }
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initBubbles();
-    });
-    initBubbles();
-    animateBubbles();
-  </script>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-      authDomain: "wefarmproject.firebaseapp.com",
-      databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "wefarmproject",
-      storageBucket: "wefarmproject.firebasestorage.app",
-      messagingSenderId: "260514820964",
-      appId: "1:260514820964:web:400135c256ed2554388071"
     };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    window.signupUser = function () {
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
-      const firstName = document.getElementById("firstName").value;
-      const surname = document.getElementById("surname").value;
-
-      if (!email || !password || !firstName || !surname) {
-        showPopup("Please fill all signup fields.");
-        return;
-      }
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          set(ref(db, 'users/' + userCredential.user.uid), {
-            firstName: firstName,
-            surname: surname,
-            email: email
-          });
-          showPopup("Signup successful!");
-        })
-        .catch((error) => showPopup(error.message));
-    };
-
-    window.loginUser = function () {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-
-      if (!email || !password) {
-        showPopup("Please enter email and password.");
-        return;
-      }
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          showPopup("Login successful!");
-          window.location.href = "profile.html";
-        })
-        .catch((error) => showPopup(error.message));
-    };
-
-    window.forgotPassword = function () {
-      const email = document.getElementById("loginEmail").value;
-      if (!email) {
-        showPopup("Please enter your email above first.");
-        return;
-      }
-
-      sendPasswordResetEmail(auth, email)
-        .then(() => showPopup("Password reset email sent! Check your inbox."))
-        .catch((error) => showPopup(error.message));
-    };
-  </script>
+    for (let id in content[lang]) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = content[lang][id];
+    }
+  }
+</script>
 </body>
 </html>
