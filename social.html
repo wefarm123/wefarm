@@ -9,22 +9,21 @@
     * {
       box-sizing: border-box;
     }
-    body {
-      font-family: "Poppins", sans-serif;
-      background: url('signuplogo.png') no-repeat center center fixed;
-      background-size: cover;
+    html, body {
+      height: 100%;
       margin: 0;
       padding: 0;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: url('signuplogo.png') no-repeat center center;
+      background-size: cover;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
       justify-content: center;
       align-items: center;
     }
     header {
-      position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       background-color: rgba(154, 193, 139, 0.95);
       padding: 10px 0;
@@ -34,11 +33,14 @@
       font-weight: 700;
       color: white;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 1;
     }
     .card-container {
       width: 380px;
       height: auto;
       perspective: 1200px;
+      z-index: 2;
     }
     .card {
       width: 100%;
@@ -94,7 +96,6 @@
       font-size: 14px;
     }
     footer {
-      margin-top: 40px;
       background-color: rgba(231, 244, 227, 0.9);
       width: 100%;
       text-align: center;
@@ -147,7 +148,7 @@
     </div>
   </div>
 
- 
+  
 
   <script>
     function flipCard() {
@@ -204,5 +205,13 @@
         .catch((error) => alert(error.message));
     };
   </script>
+
+<footer>
+    <div>
+      English <a href="#">हिन्दी</a> <a href="#">ਪੰਜਾਬੀ</a> <a href="#">বাংলা</a> <a href="#">मराठी</a>
+    </div>
+    
+    <p>&copy; 2025 WEFARM. All Rights Reserved.</p>
+  </footer>
 </body>
 </html>
