@@ -271,15 +271,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-window.resendOTP = function () {
+window.sendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
-  const btn = document.getElementById("resendBtn");
-
   if (!phone.startsWith("+91")) {
     showPopup("Please enter phone in +91 format");
     return;
   }
-if (!window.recaptchaVerifier) {
+
+  if (!window.recaptchaVerifier) {
   window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
     size: 'normal',
     callback: (response) => {}
@@ -289,17 +288,18 @@ if (!window.recaptchaVerifier) {
   });
 }
 
+
   signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
     .then((res) => {
       confirmationResult = res;
-      showPopup("OTP resent successfully!");
+      document.getElementById("otpSection").style.display = "block";
+      showPopup("OTP sent successfully!");
       startResendCountdown();
     })
-    .catch((err) => showPopup(err.message))
-    .finally(() => {
-      btn.disabled = true; // remains disabled for 30s
-    });
+    .catch((err) => showPopup(err.message));
 };
+
+
 
 window.resendOTP = function () {
   window.sendOTP(); // simply call the existing sendOTP logic
