@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WEFARM Social</title>
   <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet" />
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -28,10 +27,8 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 100px;
-      background: linear-gradient(270deg, #9AC18B, #6DA76A);
-      background-size: 400% 400%;
-      animation: gradientMove 8s ease infinite;
+      background-color: rgba(154, 193, 139, 0.95);
+      padding: 10px 0;
       text-align: center;
       font-size: 28px;
       font-family: 'Playfair Display', serif;
@@ -39,17 +36,9 @@
       color: white;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       z-index: 1000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
     }
     .card-container {
-      margin-top: 140px;
+      margin-top: 100px;
       width: 380px;
       height: auto;
       perspective: 1200px;
@@ -66,9 +55,7 @@
     .card-face {
       position: absolute;
       width: 100%;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: white;
       border-radius: 10px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
       padding: 30px;
@@ -98,11 +85,6 @@
       border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    button:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 10px rgba(46, 125, 50, 0.5);
     }
     .card-face.back {
       transform: rotateY(180deg);
@@ -113,24 +95,6 @@
       margin-top: 10px;
       cursor: pointer;
       font-size: 14px;
-    }
-    .signal {
-      position: fixed;
-      top: 35%;
-      width: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .signal-line {
-      width: 300px;
-      height: 2px;
-      background: linear-gradient(90deg, #ffffffaa, transparent);
-      animation: pulseLine 2s infinite alternate;
-      margin: 0 auto;
-    }
-    @keyframes pulseLine {
-      0% { transform: scaleX(0.6); opacity: 0.5; }
-      100% { transform: scaleX(1); opacity: 1; }
     }
     footer {
       margin-top: 40px;
@@ -153,20 +117,19 @@
 </head>
 <body>
   <header>WEFARM Social</header>
-  <div class="signal">
-    <div class="signal-line"></div>
-  </div>
 
   <div class="card-container">
     <div class="card" id="flipCard">
-      <div class="card-face front" data-aos="zoom-in">
+      <!-- Login Side -->
+      <div class="card-face front">
         <h2>Login</h2>
         <input type="text" id="loginEmail" placeholder="Email" />
         <input type="password" id="loginPassword" placeholder="Password" />
         <button onclick="loginUser()">Log In</button>
         <div class="toggle" onclick="flipCard()">Create New Account</div>
       </div>
-      <div class="card-face back" data-aos="zoom-in">
+      <!-- Signup Side -->
+      <div class="card-face back">
         <h2>Create Account</h2>
         <input id="firstName" type="text" placeholder="First Name" />
         <input id="surname" type="text" placeholder="Surname" />
@@ -187,10 +150,7 @@
     </div>
   </div>
 
- 
-
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>AOS.init();</script>
+  
 
   <script>
     function flipCard() {
