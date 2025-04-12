@@ -1,104 +1,159 @@
 <!DOCTYPE html>
-<html lang=\"en\">
+<html lang="en">
 <head>
-    <meta charset=\"UTF-8\">
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WEFARM Social</title>
-    <link href=\"https://fonts.googleapis.com/css?family=Poppins|Playfair+Display\" rel=\"stylesheet\">
+    <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet">
+    <link href="homepage_style.css" type="text/css" rel="stylesheet">
     <style>
         body {
-            font-family: \"Poppins\", sans-serif;
+            font-family: "Poppins", sans-serif;
             background: linear-gradient(white, #DFF1D4);
             margin: 0 auto;
             text-align: center;
         }
-        #header_wrapper { background-color: #9AC18B; padding: 15px 0; }
-        #header { width: 980px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        #header #sitename a { font-family: 'Playfair Display', serif; color: white; font-size: 32px; text-decoration: none; font-weight: 700; }
-        input { padding: 5px; border-radius: 4px; margin-bottom: 5px; border: 1px solid #ccc; }
-        input[type=\"submit\"] { background-color: #2E7D32; color: white; cursor: pointer; border: none; padding: 7px 15px; }
-        #wrapper { width: 980px; margin: 40px auto; display: flex; justify-content: space-between; }
-        #div1, #div2 { padding: 20px; }
-        #div2 { background-color: white; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        #header_wrapper {
+            background-color: #9AC18B;
+            padding: 15px 0;
+        }
+        #header {
+            width: 980px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #header #sitename a {
+            font-family: 'Playfair Display', serif;
+            color: white;
+            font-size: 32px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        #header form input[type="text"],
+        #header form input[type="password"] {
+            border: none;
+            padding: 5px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        #header form input[type="submit"] {
+            background-color: #2E7D32;
+            color: white;
+            border: none;
+            padding: 7px 15px;
+            border-radius: 4px;
+        }
+        #wrapper {
+            width: 980px;
+            margin: 40px auto;
+            display: flex;
+            justify-content: space-between;
+        }
+        #div1 {
+            width: 55%;
+            text-align: left;
+        }
+        #div1 p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        #div2 {
+            width: 40%;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        #div2 h1 {
+            color: #2E7D32;
+            font-size: 32px;
+        }
+        #div2 input, #div2 select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        #div2 input[type="submit"] {
+            background-color: #2E7D32;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #footer_wrapper {
+            background-color: #E7F4E3;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+        #footer_wrapper a {
+            color: #2E7D32;
+            margin: 0 5px;
+            text-decoration: none;
+        }
+        #footer_wrapper a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-<div id=\"header_wrapper\">
-    <div id=\"header\">
-        <div id=\"sitename\"><a href=\"#\">WEFARM Social</a></div>
-        <div>
-            <input id=\"loginEmail\" type=\"text\" placeholder=\"Email\">
-            <input id=\"loginPassword\" type=\"password\" placeholder=\"Password\">
-            <input type=\"submit\" value=\"Log In\" onclick=\"loginUser()\">
-            <br><a href=\"#\">Forgotten account?</a>
-        </div>
+
+<div id="header_wrapper">
+    <div id="header">
+        <div id="sitename"><a href="http://www.wefarm.food">WEFARM Social</a></div>
+        <form action="post">
+            <input type="text" placeholder="Email or Phone">
+            <input type="password" placeholder="Password">
+            <input type="submit" value="Log In">
+            <br><a href="#">Forgotten account?</a>
+        </form>
     </div>
 </div>
-<div id=\"wrapper\">
-    <div id=\"div1\">
+
+<div id="wrapper">
+
+    <div id="div1">
         <p>WEFARM connects you with fellow farmers to share knowledge and farming insights.</p>
-        <img src=\"signuplogo.png" alt=\"Connect Farmers\">
+        <img src="images/farmer_connect.png" alt="Connect Farmers">
     </div>
-    <div id=\"div2\">
+
+    <div id="div2">
         <h1>Create an account</h1>
-        <input id=\"firstName\" type=\"text\" placeholder=\"First Name\">
-        <input id=\"surname\" type=\"text\" placeholder=\"Surname\">
-        <input id=\"signupEmail\" type=\"text\" placeholder=\"Email\">
-        <input id=\"signupPassword\" type=\"password\" placeholder=\"Password\">
+        <p>It's quick and easy.</p>
+        <input type="text" placeholder="First Name" id="firstname">
+        <input type="text" placeholder="Surname" id="surname">
+        <input type="text" placeholder="Mobile number or email">
+        <input type="password" placeholder="New password">
+        <p>Birthday</p>
+        <select><option>Day</option></select>
+        <select><option>Month</option></select>
+        <select><option>Year</option></select>
+        <a href="#">Why provide my birthdate?</a>
         <br><br>
-        <input type=\"submit\" value=\"Create an account\" onclick=\"signupUser()\">
+        <input type="radio" name="gender"> Female
+        <input type="radio" name="gender"> Male
+        <br><br>
+        <p id="terms">By clicking Create an account, you agree to our <a href="#">Terms</a> and that you have read our <a href="#">Privacy Policy</a>.</p>
+        <input type="submit" value="Create an account">
+        <p id="create_page"><a href="#">Create a Page</a> for your farm or business.</p>
     </div>
+
 </div>
 
-<!-- Firebase -->
-<script type=\"module\">
-    import { initializeApp } from \"https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js\";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from \"https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js\";
-    import { getDatabase, ref, set } from \"https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js\";
+<div id="footer_wrapper">
+    <div>
+        English <a href="#">हिन्दी</a> <a href="#">ਪੰਜਾਬੀ</a> <a href="#">বাংলা</a> <a href="#">मराठी</a>
+    </div>
+    <div>
+        <a href="#">Sign Up</a> | <a href="#">Log In</a> | <a href="#">About</a> | <a href="#">Contact Us</a> | <a href="#">Terms</a> | <a href="#">Privacy</a>
+    </div>
+    <p>&copy; 2025 WEFARM. All Rights Reserved.</p>
+</div>
 
-    const firebaseConfig = {
-        apiKey: \"AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU\",
-        authDomain: \"wefarmproject.firebaseapp.com\",
-        databaseURL: \"https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app\",
-        projectId: \"wefarmproject\",
-        storageBucket: \"wefarmproject.firebasestorage.app\",
-        messagingSenderId: \"260514820964\",
-        appId: \"1:260514820964:web:400135c256ed2554388071\"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    window.signupUser = function() {
-        const email = document.getElementById(\"signupEmail\").value;
-        const password = document.getElementById(\"signupPassword\").value;
-        const firstName = document.getElementById(\"firstName\").value;
-        const surname = document.getElementById(\"surname\").value;
-
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                set(ref(db, 'users/' + userCredential.user.uid), {
-                    firstName: firstName,
-                    surname: surname,
-                    email: email
-                });
-                alert('Signup successful!');
-            })
-            .catch((error) => alert(error.message));
-    };
-
-    window.loginUser = function() {
-        const email = document.getElementById(\"loginEmail\").value;
-        const password = document.getElementById(\"loginPassword\").value;
-
-        signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                alert('Login successful!');
-                window.location.href = \"profile.html\";
-            })
-            .catch((error) => alert(error.message));
-    };
-</script>
 </body>
 </html>
