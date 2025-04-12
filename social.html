@@ -138,15 +138,10 @@
       button, input, select { font-size: 13px; padding: 10px; }
       header { font-size: 22px; padding: 8px 0; }
     }
-.captcha-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
+.captcha-style {
   margin: 10px 0;
-  background: #f5f5f5;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transform: scale(0.90);
+  transform-origin: top left;
 }
 
   </style>
@@ -178,9 +173,7 @@
       <input id="surname" type="text" placeholder="Surname" />
       <input id="signupEmail" type="text" placeholder="Email" />
       <input id="signupPhone" type="tel" placeholder="Phone Number" />
-     <div class="captcha-wrapper">
-      <div id="recaptcha-container"></div>
-      </div>
+    <div id="recaptcha-container" class="captcha-style"></div>
       <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
       <div id="otpSection">
         <input id="otpCode" type="text" placeholder="Enter OTP" />
@@ -285,14 +278,15 @@ window.sendOTP = function () {
     return;
   }
 
+  // Only create reCAPTCHA once
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
-      size: "normal", // or 'invisible' if you prefer
+      size: "normal", // or 'invisible'
       callback: (response) => {
         // reCAPTCHA solved
       }
-    }, auth);
-    window.recaptchaVerifier.render();
+    }, auth); // 👈 Pass 'auth' here
+    window.recaptchaVerifier.render(); // Required to render it
   }
 
   signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
