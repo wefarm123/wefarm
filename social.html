@@ -298,24 +298,12 @@ window.sendOTP = function () {
     return;
   }
 
-  // 3s loading spinner
   btn.disabled = true;
   const originalText = btn.textContent;
   btn.innerHTML = 'Sending... <span class="spinner"></span>';
 
   setTimeout(() => {
-    // Only initialize reCAPTCHA once
-    if (!recaptchaInitialized) {
-      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-        size: 'normal',
-        callback: () => {}
-      }, auth);
-
-      window.recaptchaVerifier.render();
-      recaptchaInitialized = true; // ✅ mark as done
-    }
-
-    signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+    signInWithPhoneNumber(auth, phone, recaptchaVerifier)
       .then((res) => {
         confirmationResult = res;
         document.getElementById("otpSection").style.display = "block";
@@ -325,9 +313,9 @@ window.sendOTP = function () {
       .catch((err) => showPopup(err.message))
       .finally(() => {
         btn.disabled = false;
-        btn.innerHTML = originalText;
+        btn.textContent = originalText;
       });
-  }, 3000); // 3 second delay
+  }, 3000);
 };
 
 window.resendOTP = function () {
