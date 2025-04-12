@@ -23,29 +23,26 @@
       object-fit: cover;
     }
 
-    .cover-btn {
+    .cover-btn, .logout-btn {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
       padding: 8px 12px;
-      background-color: #ffffffcc;
-      border: none;
-      cursor: pointer;
       font-weight: bold;
       border-radius: 5px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .cover-btn {
+      bottom: 10px;
+      right: 10px;
+      background-color: #ffffffcc;
     }
 
     .logout-btn {
-      position: absolute;
       top: 10px;
       right: 10px;
-      padding: 6px 12px;
       background: #dc3545;
       color: white;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
     }
 
     .profile-section {
@@ -54,7 +51,6 @@
       gap: 20px;
       padding: 0 20px;
       margin-top: -75px;
-      position: relative;
     }
 
     .profile-pic-container {
@@ -69,7 +65,6 @@
       border-radius: 50%;
       border: 5px solid white;
       object-fit: cover;
-      background: white;
     }
 
     .profile-pic-btn {
@@ -88,6 +83,8 @@
 
     .user-info h2 {
       margin: 0;
+      color: white;
+      text-shadow: 1px 1px 3px black;
     }
 
     .nav-tabs {
@@ -116,11 +113,18 @@
       padding: 20px;
     }
 
-    .left-sidebar {
-      width: 25%;
+    .left-sidebar, .main-content {
       background: white;
       padding: 15px;
       border-radius: 10px;
+    }
+
+    .left-sidebar {
+      width: 25%;
+    }
+
+    .main-content {
+      flex: 1;
     }
 
     .edit-btn {
@@ -133,39 +137,47 @@
       cursor: pointer;
     }
 
-    .main-content {
-      flex: 1;
-      background: white;
-      padding: 15px;
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      margin: 10% auto;
+      width: 90%;
+      max-width: 400px;
       border-radius: 10px;
     }
 
-    .post-box textarea {
+    .modal-content input {
       width: 100%;
+      margin: 10px 0;
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      resize: none;
     }
 
-    .post-options {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .post-options button {
-      padding: 8px 12px;
+    .modal-content button {
+      background-color: #2e7d32;
+      color: white;
       border: none;
-      background: #eee;
-      cursor: pointer;
-      border-radius: 5px;
+      padding: 10px;
+      border-radius: 6px;
+      width: 100%;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <!-- HTML: Cover Section -->
 <div class="cover-container">
   <img id="coverPhoto" src="profileD.png" alt="Cover Photo" />
   <input type="file" id="coverInput" accept="image/*" hidden />
@@ -173,7 +185,6 @@
   <button class="logout-btn" id="logoutBtn">Logout</button>
 </div>
 
-<!-- HTML: Profile Pic -->
 <div class="profile-section">
   <div class="profile-pic-container">
     <img id="profilePic" src="profileD.png" alt="Profile Picture" />
@@ -185,69 +196,86 @@
   </div>
 </div>
 
+<div class="nav-tabs">
+  <ul>
+    <li><a href="#">Timeline</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Friends</a></li>
+    <li><a href="#">Photos</a></li>
+    <li><a href="#">Archive</a></li>
+    <li><a href="#">More</a></li>
+  </ul>
+</div>
 
-  <!-- Navigation Tabs -->
-  <div class="nav-tabs">
-    <ul>
-      <li><a href="#">Timeline</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Friends</a></li>
-      <li><a href="#">Photos</a></li>
-      <li><a href="#">Archive</a></li>
-      <li><a href="#">More</a></li>
-    </ul>
+<div class="container">
+  <div class="left-sidebar">
+    <div class="intro-section">
+      <h2>Intro</h2>
+      <p><strong>Works at:</strong> <span id="worksAt">Loading...</span></p>
+      <p><strong>Studied at:</strong> <span id="studiedAt">Loading...</span></p>
+      <p><strong>Lives in:</strong> <span id="livesIn">Loading...</span></p>
+      <p><strong>From:</strong> <span id="from">Loading...</span></p>
+    </div>
+    <button class="edit-btn" onclick="openModal()">Edit Details</button>
   </div>
 
-  <!-- Content -->
-  <div class="container">
-    <!-- Intro Section (Left Sidebar) -->
-    <div class="left-sidebar">
-      <div class="intro-section">
-        <h2>Intro</h2>
-        <p><strong>Works at:</strong> <span id="worksAt">Loading...</span></p>
-        <p><strong>Studied at:</strong> <span id="studiedAt">Loading...</span></p>
-        <p><strong>Lives in:</strong> <span id="livesIn">Loading...</span></p>
-        <p><strong>From:</strong> <span id="from">Loading...</span></p>
+  <div class="main-content">
+    <div class="post-box">
+      <textarea placeholder="What’s on your mind?" rows="4"></textarea>
+      <div class="post-options">
+        <button>Photo/Video</button>
+        <button>Tag Friends</button>
+        <button>Check-in</button>
       </div>
-      <button class="edit-btn">Edit Details</button>
     </div>
-
-    <!-- Main Content Area (Posts) -->
-    <div class="main-content">
-      <div class="post-box">
-        <textarea placeholder="What’s on your mind?" rows="4"></textarea>
-        <div class="post-options">
-          <button>Photo/Video</button>
-          <button>Tag Friends</button>
-          <button>Check-in</button>
-        </div>
-      </div>
-      <div class="posts">
-        <p>No posts yet.</p>
-      </div>
+    <div class="posts">
+      <p>No posts yet.</p>
     </div>
   </div>
+</div>
 
-  <!-- Firebase Scripts -->
- <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-  import { getDatabase, ref as dbRef, set, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+<div class="modal" id="editModal">
+  <div class="modal-content">
+    <input type="text" id="editWorksAt" placeholder="Works at" />
+    <input type="text" id="editStudiedAt" placeholder="Studied at" />
+    <input type="text" id="editLivesIn" placeholder="Lives in" />
+    <input type="text" id="editFrom" placeholder="From" />
+    <button onclick="saveIntro()">💾 Save</button>
+  </div>
+</div>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import {
+    getDatabase,
+    ref as dbRef,
+    get,
+    set,
+    child
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  import {
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-  authDomain: "wefarmproject.firebaseapp.com",
-  databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "wefarmproject",
-  storageBucket: "wefarmproject.firebasestorage.app",
-  messagingSenderId: "260514820964",
-  appId: "1:260514820964:web:400135c256ed2554388071"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+    authDomain: "wefarmproject.firebaseapp.com",
+    databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "wefarmproject",
+    storageBucket: "wefarmproject.firebasestorage.app",
+    messagingSenderId: "260514820964",
+    appId: "1:260514820964:web:400135c256ed2554388071"
+  };
 
-
-const app = initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getDatabase(app);
   const storage = getStorage(app);
@@ -262,77 +290,74 @@ const app = initializeApp(firebaseConfig);
   const changeProfileBtn = document.getElementById("changeProfileBtn");
   const logoutBtn = document.getElementById("logoutBtn");
 
+  const modal = document.getElementById("editModal");
+
   let currentUID = null;
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       currentUID = user.uid;
 
-      // Load existing data
       get(child(dbRef(db), `users/${currentUID}`)).then((snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
-          if (data.name) userName.textContent = data.name;
+          userName.textContent = data.firstName + ' ' + data.lastName || "User";
           if (data.profileURL) profilePic.src = data.profileURL;
           if (data.coverURL) coverPhoto.src = data.coverURL;
+          document.getElementById("worksAt").textContent = data.worksAt || "—";
+          document.getElementById("studiedAt").textContent = data.studiedAt || "—";
+          document.getElementById("livesIn").textContent = data.livesIn || "—";
+          document.getElementById("from").textContent = data.from || "—";
         }
       });
 
-      // Enable Cover Photo Change
-      changeCoverBtn.addEventListener("click", () => {
-        coverInput.click();
-      });
+      changeCoverBtn.onclick = () => coverInput.click();
+      coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
 
-      coverInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const coverRef = ref(storage, `users/${currentUID}/cover.jpg`);
-        uploadBytes(coverRef, file).then(() => {
-          getDownloadURL(coverRef).then((url) => {
-            set(dbRef(db, `users/${currentUID}/coverURL`), url);
-            coverPhoto.src = url;
-          });
-        });
-      });
-
-      // Enable Profile Pic Change
-      changeProfileBtn.addEventListener("click", () => {
-        profileInput.click();
-      });
-
-      profileInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const profileRef = ref(storage, `users/${currentUID}/profile.jpg`);
-        uploadBytes(profileRef, file).then(() => {
-          getDownloadURL(profileRef).then((url) => {
-            set(dbRef(db, `users/${currentUID}/profileURL`), url);
-            profilePic.src = url;
-          });
-        });
-      });
+      changeProfileBtn.onclick = () => profileInput.click();
+      profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
 
     } else {
-      alert("Please log in.");
       window.location.href = "social.html";
     }
   });
 
-  // ✅ Logout (Now properly scoped)
-  window.logoutUser = () => {
-    signOut(auth).then(() => {
-      window.location.href = "social.html";
-    }).catch((error) => {
-      alert("Logout failed: " + error.message);
+  logoutBtn.onclick = () => {
+    signOut(auth).then(() => window.location.href = "social.html");
+  };
+
+  function uploadAndSet(event, key, imgElement) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const fileRef = ref(storage, `users/${currentUID}/${key}.jpg`);
+    uploadBytes(fileRef, file).then(() => {
+      getDownloadURL(fileRef).then((url) => {
+        set(dbRef(db, `users/${currentUID}/${key}`), url);
+        imgElement.src = url;
+      });
+    });
+  }
+
+  window.openModal = () => {
+    modal.style.display = "block";
+  };
+
+  window.saveIntro = () => {
+    const data = {
+      worksAt: document.getElementById("editWorksAt").value,
+      studiedAt: document.getElementById("editStudiedAt").value,
+      livesIn: document.getElementById("editLivesIn").value,
+      from: document.getElementById("editFrom").value
+    };
+    set(dbRef(db, `users/${currentUID}`), { ...data }, { merge: true }).then(() => {
+      modal.style.display = "none";
+      location.reload();
     });
   };
 
-  // Attach logout function properly to button
-  logoutBtn.addEventListener("click", () => {
-    logoutUser();
-  });
+  window.onclick = (e) => {
+    if (e.target == modal) modal.style.display = "none";
+  };
 </script>
 </body>
 </html>
