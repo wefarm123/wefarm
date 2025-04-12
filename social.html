@@ -195,9 +195,10 @@ h1 {
     var width, height, largeContainer, canvas, ctx, circles, target, animateHeader = true;
 
     // Main
-    initHeader();
-    addListeners();
-
+    window.onload = function () {
+  initHeader();
+  addListeners();
+};
     function initHeader() {
         width = window.innerWidth;
         height = window.innerHeight;
