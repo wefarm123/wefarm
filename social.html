@@ -22,6 +22,37 @@
       flex-direction: column;
       align-items: center;
     }
+.container {
+  background-image: linear-gradient(135deg, rgba(52, 152, 219,0.5) 0%,rgba(243, 65, 65, 0.4) 100%), url("http://i.imgbox.com/LmWSE419.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+
+h1 {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  
+  font-weight: normal;
+  font-size: 5em;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+  transform: translate3d(-50%,-50%,0);
+}
+
+
+@media only screen and (max-width : 768px) {
+
+  h1 {
+    font-size: 3em;
+  }
+}
     header {
       position: fixed;
       top: 0;
@@ -157,6 +188,102 @@
       document.getElementById("flipCard").classList.toggle("flipped");
     }
   </script>
+
+<script>
+(function() {
+
+    var width, height, largeContainer, canvas, ctx, circles, target, animateHeader = true;
+
+    // Main
+    initHeader();
+    addListeners();
+
+    function initHeader() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        target = {x: 0, y: height};
+      
+        largeContainer = document.getElementById('co');
+        largeContainer.style.height = height+'px';
+
+        canvas = document.getElementById('c');
+        canvas.width = width;
+        canvas.height = height;
+        ctx = canvas.getContext('2d');
+
+        // create particles
+        circles = [];
+        for(var x = 0; x < width*0.5; x++) {
+            var c = new Circle();
+            circles.push(c);
+        }
+        animate();
+    }
+
+    // Event handling
+    function addListeners() {
+        window.addEventListener('scroll', scrollCheck);
+        window.addEventListener('resize', resize);
+    }
+
+    function scrollCheck() {
+        if(document.body.scrollTop > height) animateHeader = false;
+        else animateHeader = true;
+    }
+
+    function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        largeContainer.style.height = height+'px';
+        canvas.width = width;
+        canvas.height = height;
+    }
+
+    function animate() {
+        if(animateHeader) {
+            ctx.clearRect(0,0,width,height);
+            for(var i in circles) {
+                circles[i].draw();
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    // Canvas manipulation
+    function Circle() {
+        var _this = this;
+
+        // constructor
+        (function() {
+            _this.pos = {};
+            init();
+            console.log(_this);
+        })();
+
+        function init() {
+            _this.pos.x = Math.random()*width;
+            _this.pos.y = height+Math.random()*100;
+            _this.alpha = 0.1+Math.random()*0.3;
+            _this.scale = 0.1+Math.random()*0.3;
+            _this.velocity = Math.random();
+        }
+
+        this.draw = function() {
+            if(_this.alpha <= 0) {
+                init();
+            }
+            _this.pos.y -= _this.velocity;
+            _this.alpha -= 0.0005;
+            ctx.beginPath();
+            ctx.arc(_this.pos.x, _this.pos.y, _this.scale*10, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'rgba(255,255,255,'+ _this.alpha+')';
+            ctx.fill();
+        };
+    }
+
+})();
+
+</script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
