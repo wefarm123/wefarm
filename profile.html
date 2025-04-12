@@ -237,14 +237,14 @@
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-    authDomain: "wefarmproject.firebaseapp.com",
-    projectId: "wefarmproject",
-    storageBucket: "wefarmproject.appspot.com",
-    messagingSenderId: "260514820964",
-    appId: "1:260514820964:web:400135c256ed2554388071",
-    databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app"  // ✅ Add this
-  };
+  apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+  authDomain: "wefarmproject.firebaseapp.com",
+  projectId: "wefarmproject",
+  storageBucket: "wefarmproject.appspot.com", // ✅ This is correct
+  messagingSenderId: "260514820964",
+  appId: "1:260514820964:web:400135c256ed2554388071"
+};
+
 
 const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
