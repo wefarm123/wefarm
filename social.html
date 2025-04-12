@@ -6,6 +6,9 @@
   <title>WEFARM Social</title>
   <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet" />
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: "Poppins", sans-serif;
       background: url('signuplogo.png') no-repeat center center fixed;
@@ -15,134 +18,102 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-    }
-    #header_wrapper {
-      background-color: #9AC18B;
-      padding: 15px 0;
-    }
-    #header {
-      width: 980px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #header #sitename a {
-      font-family: 'Playfair Display', serif;
-      color: white;
-      font-size: 32px;
-      text-decoration: none;
-      font-weight: 700;
-    }
-    #header form input[type="text"],
-    #header form input[type="password"] {
-      border: none;
-      padding: 5px;
-      border-radius: 4px;
-      margin-bottom: 5px;
-    }
-    #header form input[type="submit"] {
-      background-color: #2E7D32;
-      color: white;
-      border: none;
-      padding: 7px 15px;
-      border-radius: 4px;
-    }
-    #wrapper {
-      width: 100%;
-      display: flex;
       justify-content: center;
       align-items: center;
-      flex: 1;
+    }
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(154, 193, 139, 0.95);
+      padding: 10px 0;
+      text-align: center;
+      font-size: 28px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
     .card-container {
-      width: 800px;
-      height: 520px;
+      width: 380px;
+      height: auto;
       perspective: 1200px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
     .card {
       width: 100%;
-      height: 100%;
       position: relative;
       transition: transform 0.8s;
       transform-style: preserve-3d;
-      display: flex;
     }
     .card.flipped {
       transform: rotateY(180deg);
     }
     .card-face {
-      width: 50%;
-      height: 100%;
-      backface-visibility: hidden;
+      position: absolute;
+      width: 100%;
       background: white;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
       padding: 30px;
-      box-sizing: border-box;
-      text-align: left;
-      overflow-y: auto;
+      backface-visibility: hidden;
     }
-    .card-face h1, .card-face h2 {
+    .card-face h2 {
       color: #2E7D32;
+      margin-bottom: 20px;
+      font-size: 24px;
     }
-    .card-face input, .card-face select {
+    input[type="text"],
+    input[type="password"],
+    select {
       width: 100%;
-      padding: 10px;
-      border-radius: 5px;
+      padding: 12px;
+      margin: 10px 0;
       border: 1px solid #ccc;
-      margin-bottom: 10px;
+      border-radius: 5px;
+      font-size: 14px;
     }
-    .card-face input[type="submit"], button {
+    button {
+      width: 100%;
+      padding: 12px;
       background-color: #2E7D32;
       color: white;
       border: none;
-      cursor: pointer;
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
       border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
     }
     .card-face.back {
       transform: rotateY(180deg);
     }
     .toggle {
-      color: #2E7D32;
       text-align: center;
-      cursor: pointer;
+      color: #2E7D32;
       margin-top: 10px;
+      cursor: pointer;
+      font-size: 14px;
     }
-    #footer_wrapper {
-      background-color: #E7F4E3;
-      padding: 10px;
+    footer {
+      margin-top: 40px;
+      background-color: rgba(231, 244, 227, 0.9);
+      width: 100%;
       text-align: center;
-      font-size: 12px;
-    }
-    #footer_wrapper a {
+      font-size: 13px;
+      padding: 10px;
       color: #2E7D32;
+    }
+    footer a {
       margin: 0 5px;
+      color: #2E7D32;
       text-decoration: none;
     }
-    #footer_wrapper a:hover {
+    footer a:hover {
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div id="header_wrapper">
-    <div id="header">
-      <div id="sitename"><a href="http://www.wefarm.food">WEFARM Social</a></div>
-      <form action="post">
-        <input type="text" placeholder="Email or Phone">
-        <input type="password" placeholder="Password">
-        <input type="submit" value="Log In">
-        <br><a href="#">Forgotten account?</a>
-      </form>
-    </div>
-  </div>
+  <header>WEFARM Social</header>
 
   <div class="card-container">
     <div class="card" id="flipCard">
@@ -176,7 +147,7 @@
     </div>
   </div>
 
-  <div id="footer_wrapper">
+  <footer>
     <div>
       English <a href="#">हिन्दी</a> <a href="#">ਪੰਜਾਬੀ</a> <a href="#">বাংলা</a> <a href="#">मराठी</a>
     </div>
@@ -184,13 +155,14 @@
       <a href="#">Sign Up</a> | <a href="#">Log In</a> | <a href="#">About</a> | <a href="#">Contact Us</a> | <a href="#">Terms</a> | <a href="#">Privacy</a>
     </div>
     <p>&copy; 2025 WEFARM. All Rights Reserved.</p>
-  </div>
+  </footer>
 
   <script>
     function flipCard() {
       document.getElementById("flipCard").classList.toggle("flipped");
     }
   </script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
