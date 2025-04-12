@@ -1,309 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>WEFARM - Sign Up</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WEFARM Social</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins|Playfair+Display" rel="stylesheet" />
   <style>
-    body {
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
       margin: 0;
-      font-family: 'Poppins', sans-serif;
+      padding: 0;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
       background: url('signuplogo.png') no-repeat center center fixed;
       background-size: cover;
-      min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      padding: 20px;
     }
-
-    .container {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 30px rgba(0, 128, 0, 0.3);
-      width: 90%;
-      max-width: 420px;
-      position: relative;
-    }
-
-    .container h2 {
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(154, 193, 139, 0.95);
+      padding: 10px 0;
       text-align: center;
+      font-size: 28px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    .card-container {
+      margin-top: 100px;
+      width: 380px;
+      height: auto;
+      perspective: 1200px;
+    }
+    .card {
+      width: 100%;
+      position: relative;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+    .card-face {
+      position: absolute;
+      width: 100%;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      padding: 30px;
+      backface-visibility: hidden;
+    }
+    .card-face h2 {
       color: #2E7D32;
       margin-bottom: 20px;
+      font-size: 24px;
     }
-
-    input, button {
+    input[type="text"],
+    input[type="password"],
+    select {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
       border: 1px solid #ccc;
-      border-radius: 10px;
-      background: #ffffffcc;
+      border-radius: 5px;
       font-size: 14px;
     }
-
     button {
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    button:disabled {
-      background-color: #bbb;
-      cursor: not-allowed;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 3px solid #fff;
-      border-top: 3px solid #2e7d32;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      vertical-align: middle;
-      margin-right: 8px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .verify-button {
-      background-color: transparent;
-      color: #2e7d32;
-      position: relative;
-      overflow: hidden;
-      border: 2px solid #2e7d32;
-      transition: all 0.3s ease;
-    }
-
-    .verify-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
       width: 100%;
-      height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
-      transition: left 0.7s ease;
-    }
-
-    .verify-button:hover::before {
-      left: 100%;
-    }
-
-    .verify-button:hover {
+      padding: 12px;
+      background-color: #2E7D32;
       color: white;
-      background-color: #2e7d32;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
     }
-
-    .error {
-      color: red;
+    .card-face.back {
+      transform: rotateY(180deg);
+    }
+    .toggle {
+      text-align: center;
+      color: #2E7D32;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    footer {
+      margin-top: 40px;
+      background-color: rgba(231, 244, 227, 0.9);
+      width: 100%;
+      text-align: center;
       font-size: 13px;
-      margin-top: 5px;
-      display: none;
+      padding: 10px;
+      color: #2E7D32;
     }
-
-    #otp-section {
-      display: none;
+    footer a {
+      margin: 0 5px;
+      color: #2E7D32;
+      text-decoration: none;
     }
-
-    #language-select {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      z-index: 10;
-    }
-
-    #language-select select {
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-weight: 600;
+    footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
+  <header>WEFARM Social</header>
 
-<!-- 🌐 Language Selector -->
-<div id="language-select">
-  🌐
-  <select onchange="changeLang(this.value)">
-    <option value="en" selected>English</option>
-    <option value="hi">हिंदी</option>
-    <option value="gu">ગુજરાતી</option>
-  </select>
-</div>
-
-<div class="container" data-aos="fade-up">
-  <h2>👨‍🌾 WEFARM Sign Up</h2>
-
-  <input type="text" id="first" placeholder="First Name">
-  <input type="text" id="last" placeholder="Last Name">
-  <input type="email" id="email" placeholder="Email Address">
-  <input type="tel" id="phone" placeholder="Phone Number">
-  <input type="password" id="password" placeholder="Create Password">
-  <input type="password" id="confirmPassword" placeholder="Confirm Password">
-  <div id="error-message" class="error"></div>
-
-  <div id="recaptcha-wrapper">
-    <div id="recaptcha-container"></div>
+  <div class="card-container">
+    <div class="card" id="flipCard">
+      <!-- Login Side -->
+      <div class="card-face front">
+        <h2>Login</h2>
+        <input type="text" id="loginEmail" placeholder="Email" />
+        <input type="password" id="loginPassword" placeholder="Password" />
+        <button onclick="loginUser()">Log In</button>
+        <div class="toggle" onclick="flipCard()">Create New Account</div>
+      </div>
+      <!-- Signup Side -->
+      <div class="card-face back">
+        <h2>Create Account</h2>
+        <input id="firstName" type="text" placeholder="First Name" />
+        <input id="surname" type="text" placeholder="Surname" />
+        <input id="signupEmail" type="text" placeholder="Email" />
+        <input id="signupPassword" type="password" placeholder="Password" />
+        <p>Birthday</p>
+        <select><option>Day</option></select>
+        <select><option>Month</option></select>
+        <select><option>Year</option></select>
+        <a href="#">Why provide my birthdate?</a><br><br>
+        <input type="radio" name="gender"> Female
+        <input type="radio" name="gender"> Male
+        <br><br>
+        <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
+        <button onclick="signupUser()">Sign Up</button>
+        <div class="toggle" onclick="flipCard()">Back to Login</div>
+      </div>
+    </div>
   </div>
 
-  <button id="sendOtpBtn" onclick="sendOTP()">
-    📩 Send OTP
-  </button>
+  
 
-  <div id="otp-section">
-    <input type="text" id="otp" placeholder="Enter OTP">
-    <button class="verify-button" onclick="verifyOTP()">✅ Verify & Sign Up</button>
-  </div>
-
-  <div style="text-align:center; margin-top: 15px;">
-    <span style="color: #333;">Already have an account?</span>
-    <a href="social.html" class="zoom-link">Back to Login</a>
-  </div>
-</div>
-
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import {
-    getAuth,
-    RecaptchaVerifier,
-    signInWithPhoneNumber,
-    createUserWithEmailAndPassword
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-    authDomain: "wefarmproject.firebaseapp.com",
-    databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "wefarmproject",
-    storageBucket: "wefarmproject.firebasestorage.app",
-    messagingSenderId: "260514820964",
-    appId: "1:260514820964:web:400135c256ed2554388071"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const database = getDatabase(app);
-
-  let recaptchaInitialized = false;
-  let resendTimeout = null;
-
-  // ✅ Expose functions to global scope
-  window.sendOTP = async function () {
-    const phone = document.getElementById("phone").value.trim();
-    const errorDiv = document.getElementById("error-message");
-    const sendBtn = document.getElementById("sendOtpBtn");
-
-    if (!phone || phone.length !== 10) {
-      errorDiv.textContent = "Please enter a valid 10-digit phone number.";
-      errorDiv.style.display = "block";
-      return;
+  <script>
+    function flipCard() {
+      document.getElementById("flipCard").classList.toggle("flipped");
     }
+  </script>
 
-    errorDiv.style.display = "none";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
-    if (!recaptchaInitialized) {
-      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-        size: 'normal',
-        callback: () => console.log("Captcha verified ✅")
-      }, auth);
+    const firebaseConfig = {
+      apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+      authDomain: "wefarmproject.firebaseapp.com",
+      databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "wefarmproject",
+      storageBucket: "wefarmproject.firebasestorage.app",
+      messagingSenderId: "260514820964",
+      appId: "1:260514820964:web:400135c256ed2554388071"
+    };
 
-      await recaptchaVerifier.render().then(widgetId => {
-        window.recaptchaWidgetId = widgetId;
-      });
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-      recaptchaInitialized = true;
-    }
+    window.signupUser = function () {
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const firstName = document.getElementById("firstName").value;
+      const surname = document.getElementById("surname").value;
 
-    sendBtn.innerHTML = `<span class="spinner"></span> Sending...`;
-    sendBtn.disabled = true;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          set(ref(db, 'users/' + userCredential.user.uid), {
+            firstName: firstName,
+            surname: surname,
+            email: email
+          });
+          alert("Signup successful!");
+        })
+        .catch((error) => alert(error.message));
+    };
 
-    const appVerifier = window.recaptchaVerifier;
+    window.loginUser = function () {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
 
-    try {
-      const confirmationResult = await signInWithPhoneNumber(auth, "+91" + phone, appVerifier);
-      window.confirmationResult = confirmationResult;
-      document.getElementById("otp-section").style.display = "block";
-
-      let seconds = 30;
-      resendTimeout = setInterval(() => {
-        seconds--;
-        if (seconds > 0) {
-          sendBtn.innerHTML = `⏳ Resend in ${seconds}s`;
-        } else {
-          clearInterval(resendTimeout);
-          sendBtn.disabled = false;
-          sendBtn.innerHTML = "📩 Resend OTP";
-        }
-      }, 1000);
-    } catch (error) {
-      errorDiv.textContent = "Firebase Error: " + error.message;
-      errorDiv.style.display = "block";
-      sendBtn.innerHTML = "📩 Send OTP";
-      sendBtn.disabled = false;
-    }
-  };
-
-  window.verifyOTP = async function () {
-    const code = document.getElementById("otp").value;
-    const firstName = document.getElementById("first").value.trim();
-    const lastName = document.getElementById("last").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const confirmPassword = document.getElementById("confirmPassword").value.trim();
-    const errorDiv = document.getElementById("error-message");
-
-    if (!code) {
-      errorDiv.textContent = "Please enter the OTP.";
-      errorDiv.style.display = "block";
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      errorDiv.textContent = "Passwords do not match.";
-      errorDiv.style.display = "block";
-      return;
-    }
-
-    try {
-      const result = await window.confirmationResult.confirm(code);
-      const user = result.user;
-
-      await createUserWithEmailAndPassword(auth, email, password);
-
-      await set(ref(database, 'users/' + user.uid), {
-        firstName,
-        lastName,
-        email,
-        phone,
-        uid: user.uid
-      });
-
-      window.location.href = "profile.html";
-    } catch (err) {
-      errorDiv.textContent = "OTP Verification Failed: " + err.message;
-      errorDiv.style.display = "block";
-    }
-  };
-</script>
-
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-  AOS.init();
-</script>
-
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Login successful!");
+          window.location.href = "profile.html";
+        })
+        .catch((error) => alert(error.message));
+    };
+  </script>
 </body>
 </html>
