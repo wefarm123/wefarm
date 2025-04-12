@@ -323,29 +323,34 @@
   window.openLocationModal = () => locationModal.style.display = "block";
   window.closeLocationModal = () => locationModal.style.display = "none";
 
-  window.onload = () => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
-        get(child(dbRef(db), `users/${uid}`)).then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            userName.textContent = (data.firstName || "") + " " + (data.lastName || "");
-            if (data.profileURL) profilePic.src = data.profileURL;
-            if (data.coverURL) coverPhoto.src = data.coverURL;
-            document.getElementById("occupation").textContent = data.occupation || "—";
-            document.getElementById("livesIn").textContent = data.livesIn || "—";
-            document.getElementById("age").textContent = data.age || "—";
-          }
-        });
-        changeProfileBtn.onclick = () => profileInput.click();
-        profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
-        changeCoverBtn.onclick = () => coverInput.click();
-        coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
-      } else {
-        window.location.href = "social.html";
+  onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid;
+    get(child(dbRef(db), `users/${uid}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        userName.textContent = (data.firstName || "") + " " + (data.lastName || "");
+        if (data.profileURL) profilePic.src = data.profileURL;
+        if (data.coverURL) coverPhoto.src = data.coverURL;
+        document.getElementById("occupation").textContent = data.occupation || "—";
+        document.getElementById("livesIn").textContent = data.livesIn || "—";
+        document.getElementById("age").textContent = data.age || "—";
       }
     });
+
+    // ✅ Bind change events directly
+    changeProfileBtn.onclick = () => profileInput.click();
+    profileInput.onchange = (e) => uploadAndSet(e, "profileURL", profilePic);
+
+    changeCoverBtn.onclick = () => coverInput.click();
+    coverInput.onchange = (e) => uploadAndSet(e, "coverURL", coverPhoto);
+
+    logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = "social.html");
+  } else {
+    window.location.href = "social.html";
+  }
+});
+
 
     logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = "social.html");
   };
