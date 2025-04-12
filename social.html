@@ -16,73 +16,63 @@
     }
     body {
       font-family: "Poppins", sans-serif;
-      background: url('signuplogo.png') no-repeat center center fixed;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background-image: linear-gradient(135deg, rgba(52, 152, 219,0.5) 0%,rgba(243, 65, 65, 0.4) 100%), url('signuplogo.png');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-attachment: fixed;
       background-size: cover;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
     }
-.container {
-  background-image: linear-gradient(135deg, rgba(52, 152, 219,0.5) 0%,rgba(243, 65, 65, 0.4) 100%);
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: fixed;
-  background-size: cover;
-}
 
-
-h1 {
-  position: absolute;
-  margin: 0;
-  padding: 0;
-  color: #fff;
-  text-align: center;
-  top: 50%;
-  left: 50%;
-  
-  font-weight: normal;
-  font-size: 5em;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-  transform: translate3d(-50%,-50%,0);
-}
-
-
-@media only screen and (max-width : 768px) {
-
-  h1 {
-    font-size: 3em;
-  }
-}
-    header {
-      position: fixed;
+    canvas {
+      position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
+      z-index: 0;
+    }
+
+    header {
+      position: relative;
       background-color: rgba(154, 193, 139, 0.95);
       padding: 10px 0;
+      width: 100%;
       text-align: center;
       font-size: 28px;
       font-family: 'Playfair Display', serif;
       font-weight: 700;
       color: white;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
+      z-index: 2;
     }
+
     .card-container {
-      margin-top: 100px;
       width: 380px;
       height: auto;
       perspective: 1200px;
+      z-index: 2;
     }
+
     .card {
       width: 100%;
       position: relative;
       transition: transform 0.8s;
       transform-style: preserve-3d;
     }
+
     .card.flipped {
       transform: rotateY(180deg);
     }
+
     .card-face {
       position: absolute;
       width: 100%;
@@ -92,11 +82,17 @@ h1 {
       padding: 30px;
       backface-visibility: hidden;
     }
+
+    .card-face.back {
+      transform: rotateY(180deg);
+    }
+
     .card-face h2 {
       color: #2E7D32;
       margin-bottom: 20px;
       font-size: 24px;
     }
+
     input[type="text"],
     input[type="password"],
     select {
@@ -107,6 +103,7 @@ h1 {
       border-radius: 5px;
       font-size: 14px;
     }
+
     button {
       width: 100%;
       padding: 12px;
@@ -117,9 +114,7 @@ h1 {
       font-size: 16px;
       cursor: pointer;
     }
-    .card-face.back {
-      transform: rotateY(180deg);
-    }
+
     .toggle {
       text-align: center;
       color: #2E7D32;
@@ -127,168 +122,101 @@ h1 {
       cursor: pointer;
       font-size: 14px;
     }
-    footer {
-      margin-top: 40px;
-      background-color: rgba(231, 244, 227, 0.9);
-      width: 100%;
-      text-align: center;
-      font-size: 13px;
-      padding: 10px;
-      color: #2E7D32;
-    }
-    footer a {
-      margin: 0 5px;
-      color: #2E7D32;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
-<body>
   <div id="co" class="container">
     <canvas id="c"></canvas>
-  <header>WEFARM Social</header>
 
+    <header>WEFARM Social</header>
 
-  <div class="card-container">
-    <div class="card" id="flipCard">
-      <!-- Login Side -->
-      <div class="card-face front">
-        <h2>Login</h2>
-        <input type="text" id="loginEmail" placeholder="Email" />
-        <input type="password" id="loginPassword" placeholder="Password" />
-        <button onclick="loginUser()">Log In</button>
-        <div class="toggle" onclick="flipCard()">Create New Account</div>
-      </div>
-      <!-- Signup Side -->
-      <div class="card-face back">
-        <h2>Create Account</h2>
-        <input id="firstName" type="text" placeholder="First Name" />
-        <input id="surname" type="text" placeholder="Surname" />
-        <input id="signupEmail" type="text" placeholder="Email" />
-        <input id="signupPassword" type="password" placeholder="Password" />
-        <p>Birthday</p>
-        <select><option>Day</option></select>
-        <select><option>Month</option></select>
-        <select><option>Year</option></select>
-        <a href="#">Why provide my birthdate?</a><br><br>
-        <input type="radio" name="gender"> Female
-        <input type="radio" name="gender"> Male
-        <br><br>
-        <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
-        <button onclick="signupUser()">Sign Up</button>
-        <div class="toggle" onclick="flipCard()">Back to Login</div>
+    <div class="card-container">
+      <div class="card" id="flipCard">
+        <!-- Login Side -->
+        <div class="card-face front">
+          <h2>Login</h2>
+          <input type="text" id="loginEmail" placeholder="Email" />
+          <input type="password" id="loginPassword" placeholder="Password" />
+          <button onclick="loginUser()">Log In</button>
+          <div class="toggle" onclick="flipCard()">Create New Account</div>
+        </div>
+
+        <!-- Signup Side -->
+        <div class="card-face back">
+          <h2>Create Account</h2>
+          <input id="firstName" type="text" placeholder="First Name" />
+          <input id="surname" type="text" placeholder="Surname" />
+          <input id="signupEmail" type="text" placeholder="Email" />
+          <input id="signupPassword" type="password" placeholder="Password" />
+          <p>Birthday</p>
+          <select><option>Day</option></select>
+          <select><option>Month</option></select>
+          <select><option>Year</option></select>
+          <a href="#">Why provide my birthdate?</a><br><br>
+          <input type="radio" name="gender"> Female
+          <input type="radio" name="gender"> Male
+          <br><br>
+          <p>By clicking Create an account, you agree to our <a href="#">Terms</a> and our <a href="#">Privacy Policy</a>.</p>
+          <button onclick="signupUser()">Sign Up</button>
+          <div class="toggle" onclick="flipCard()">Back to Login</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-  
 
   <script>
     function flipCard() {
       document.getElementById("flipCard").classList.toggle("flipped");
     }
-  </script>
 
-<script>
-(function() {
-
-    var width, height, largeContainer, canvas, ctx, circles, target, animateHeader = true;
-
-    // Main
     window.onload = function () {
-  initHeader();
-  addListeners();
-};
-    function initHeader() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        target = {x: 0, y: height};
-      
-        largeContainer = document.getElementById('co');
-        largeContainer.style.height = height+'px';
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      let canvas = document.getElementById('c');
+      let ctx = canvas.getContext('2d');
+      canvas.width = width;
+      canvas.height = height;
+      let animateHeader = true;
 
-        canvas = document.getElementById('c');
-        canvas.width = width;
-        canvas.height = height;
-        ctx = canvas.getContext('2d');
+      let circles = [];
+      for (let x = 0; x < width * 0.5; x++) {
+        circles.push(new Circle());
+      }
 
-        // create particles
-        circles = [];
-        for(var x = 0; x < width*0.5; x++) {
-            var c = new Circle();
-            circles.push(c);
-        }
-        animate();
-    }
+      function Circle() {
+        this.pos = { x: Math.random() * width, y: height + Math.random() * 100 };
+        this.alpha = 0.1 + Math.random() * 0.3;
+        this.scale = 0.1 + Math.random() * 0.3;
+        this.velocity = Math.random();
+        this.draw = function () {
+          if (this.alpha <= 0) {
+            this.pos.y = height + Math.random() * 100;
+            this.alpha = 0.1 + Math.random() * 0.3;
+            this.scale = 0.1 + Math.random() * 0.3;
+            this.velocity = Math.random();
+          }
+          this.pos.y -= this.velocity;
+          this.alpha -= 0.0005;
+          ctx.beginPath();
+          ctx.arc(this.pos.x, this.pos.y, this.scale * 10, 0, 2 * Math.PI, false);
+          ctx.fillStyle = 'rgba(255,255,255,' + this.alpha + ')';
+          ctx.fill();
+        };
+      }
 
-    // Event handling
-    function addListeners() {
-        window.addEventListener('scroll', scrollCheck);
-        window.addEventListener('resize', resize);
-    }
-
-    function scrollCheck() {
-        if(document.body.scrollTop > height) animateHeader = false;
-        else animateHeader = true;
-    }
-
-    function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        largeContainer.style.height = height+'px';
-        canvas.width = width;
-        canvas.height = height;
-    }
-
-    function animate() {
-        if(animateHeader) {
-            ctx.clearRect(0,0,width,height);
-            for(var i in circles) {
-                circles[i].draw();
-            }
+      function animate() {
+        if (animateHeader) {
+          ctx.clearRect(0, 0, width, height);
+          for (let i in circles) {
+            circles[i].draw();
+          }
         }
         requestAnimationFrame(animate);
-    }
+      }
 
-    // Canvas manipulation
-    function Circle() {
-        var _this = this;
-
-        // constructor
-        (function() {
-            _this.pos = {};
-            init();
-            
-        })();
-
-        function init() {
-            _this.pos.x = Math.random()*width;
-            _this.pos.y = height+Math.random()*100;
-            _this.alpha = 0.1+Math.random()*0.3;
-            _this.scale = 0.1+Math.random()*0.3;
-            _this.velocity = Math.random();
-        }
-
-        this.draw = function() {
-            if(_this.alpha <= 0) {
-                init();
-            }
-            _this.pos.y -= _this.velocity;
-            _this.alpha -= 0.0005;
-            ctx.beginPath();
-            ctx.arc(_this.pos.x, _this.pos.y, _this.scale*10, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'rgba(255,255,255,'+ _this.alpha+')';
-            ctx.fill();
-        };
-    }
-
-})();
-
-</script>
+      animate();
+    };
+  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
