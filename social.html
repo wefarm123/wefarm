@@ -138,338 +138,331 @@
       button, input, select { font-size: 13px; padding: 10px; }
       header { font-size: 22px; padding: 8px 0; }
     }
-.captcha-style {
-  margin: 10px 0;
-  transform: scale(0.90);
-  transform-origin: top left;
-}
-
+    .captcha-style {
+      margin: 10px 0;
+      transform: scale(0.90);
+      transform-origin: top left;
+    }
+    /* New inline error message style */
     .error-message {
-  font-size: 12px;
-  color: red;
-  margin-top: -8px;
-  margin-bottom: 5px;
-  display: none;
-}
-input.invalid {
-  border: 2px solid red !important;
-}
-
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      display: none;
+    }
   </style>
 </head>
 <body>
-<canvas id="bubbleCanvas"></canvas>
-<header>
-  <span id="headerTitle">WEFARM Social</span>
-  <div class="lang-toggle">
-    <select id="langSwitch" onchange="toggleLanguage()">
-      <option value="en">English</option>
-      <option value="hi">हिन्दी</option>
-    </select>
-  </div>
-</header>
-<div class="card-container">
-  <div class="card" id="flipCard">
-    <div class="card-face front">
-      <h2 id="loginTitle">Login</h2>
-      <input type="text" id="loginEmail" placeholder="Email or Phone" />
-      <input type="password" id="loginPassword" placeholder="Password" />
-      <a class="forgot-link" onclick="forgotPassword()" id="forgotPassword">Forgot your password?</a>
-      <button onclick="loginUser()" id="loginBtn">Log In</button>
-      <div class="toggle" onclick="flipCard()" id="createNew">Create New Account</div>
+  <canvas id="bubbleCanvas"></canvas>
+  <header>
+    <span id="headerTitle">WEFARM Social</span>
+    <div class="lang-toggle">
+      <select id="langSwitch" onchange="toggleLanguage()">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+      </select>
     </div>
-    <div class="card-face back">
-      <h2 id="signupTitle">Create Account</h2>
-      <input id="firstName" type="text" placeholder="First Name" />
-      <span class="error-message" id="firstNameError"></span>
-
-      <input id="surname" type="text" placeholder="Surname" />
-      <span class="error-message" id="surnameError"></span>
-
-      <input id="signupEmail" type="text" placeholder="Email" />
-      <span class="error-message" id="emailError"></span>
-
-      <input id="signupPhone" type="tel" placeholder="Phone Number" />
-      <span class="error-message" id="phoneError"></span>
-
-    <div id="recaptcha-container" class="captcha-style"></div>
-      <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
-      <div id="otpSection">
-        <input id="otpCode" type="text" placeholder="Enter OTP" />
-        <button onclick="verifyOTP()" id="verifyOtp">Verify OTP</button>
-        <button id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
+  </header>
+  <div class="card-container">
+    <div class="card" id="flipCard">
+      <div class="card-face front">
+        <h2 id="loginTitle">Login</h2>
+        <!-- Inline error container for login -->
+        <div id="loginError" class="error-message"></div>
+        <input type="text" id="loginEmail" placeholder="Email or Phone" />
+        <input type="password" id="loginPassword" placeholder="Password" />
+        <a class="forgot-link" onclick="forgotPassword()" id="forgotPassword">Forgot your password?</a>
+        <button onclick="loginUser()" id="loginBtn">Log In</button>
+        <div class="toggle" onclick="flipCard()" id="createNew">Create New Account</div>
       </div>
-      <input id="signupPassword" type="password" placeholder="Password" />
-      <span class="error-message" id="passwordError"></span>
-
-      <button onclick="signupUser()" id="signupBtn">Sign Up</button>
-      <div class="toggle" onclick="flipCard()" id="backToLogin">Back to Login</div>
+      <div class="card-face back">
+        <h2 id="signupTitle">Create Account</h2>
+        <!-- Inline error container for signup -->
+        <div id="signupError" class="error-message"></div>
+        <input id="firstName" type="text" placeholder="First Name" />
+        <input id="surname" type="text" placeholder="Surname" />
+        <input id="signupEmail" type="text" placeholder="Email" />
+        <input id="signupPhone" type="tel" placeholder="Phone Number" />
+        <div id="recaptcha-container" class="captcha-style"></div>
+        <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+        <div id="otpSection">
+          <input id="otpCode" type="text" placeholder="Enter OTP" />
+          <button onclick="verifyOTP()" id="verifyOtp">Verify OTP</button>
+          <button id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
+        </div>
+        <input id="signupPassword" type="password" placeholder="Password" />
+        <button onclick="signupUser()" id="signupBtn">Sign Up</button>
+        <div class="toggle" onclick="flipCard()" id="backToLogin">Back to Login</div>
+      </div>
     </div>
   </div>
-</div>
-<div id="popup" class="popup"></div>
-<script>
-function flipCard() {
-  document.getElementById("flipCard").classList.toggle("flipped");
-}
-function showPopup(message) {
-  const popup = document.getElementById("popup");
-  popup.innerText = message;
-  popup.style.display = "block";
-  setTimeout(() => popup.style.display = "none", 3000);
-}
-function toggleLanguage() {
-  const lang = document.getElementById("langSwitch").value;
-  const strings = {
-    en: {
-      headerTitle: "WEFARM Social",
-      loginTitle: "Login",
-      signupTitle: "Create Account",
-      forgotPassword: "Forgot your password?",
-      loginBtn: "Log In",
-      signupBtn: "Sign Up",
-      createNew: "Create New Account",
-      backToLogin: "Back to Login",
-      sendOtpBtn: "Send OTP",
-      verifyOtp: "Verify OTP",
-      resendBtn: "Resend OTP"
-    },
-    hi: {
-      headerTitle: "वीफार्म सोशल",
-      loginTitle: "लॉग इन करें",
-      signupTitle: "खाता बनाएं",
-      forgotPassword: "पासवर्ड भूल गए?",
-      loginBtn: "लॉग इन",
-      signupBtn: "साइन अप करें",
-      createNew: "नया खाता बनाएं",
-      backToLogin: "लॉगिन पर वापस जाएं",
-      sendOtpBtn: "ओटीपी भेजें",
-      verifyOtp: "ओटीपी सत्यापित करें",
-      resendBtn: "ओटीपी पुनः भेजें"
+  <div id="popup" class="popup"></div>
+  <script>
+    function flipCard() {
+      document.getElementById("flipCard").classList.toggle("flipped");
     }
-  }[lang];
-  for (const id in strings) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = strings[id];
-  }
-}
-let confirmationResult;
-let resendTimer;
-function startResendCountdown() {
-  const btn = document.getElementById("resendBtn");
-  let timeLeft = 30;
-  btn.disabled = true;
-  btn.classList.add("resend-disabled");
-  btn.textContent = `Resend OTP (30s)`;
-  resendTimer = setInterval(() => {
-    timeLeft--;
-    btn.textContent = `Resend OTP (${timeLeft}s)`;
-    if (timeLeft <= 0) {
-      clearInterval(resendTimer);
-      btn.disabled = false;
-      btn.textContent = "Resend OTP";
-      btn.classList.remove("resend-disabled");
+    function showPopup(message) {
+      const popup = document.getElementById("popup");
+      popup.innerText = message;
+      popup.style.display = "block";
+      setTimeout(() => popup.style.display = "none", 3000);
     }
-  }, 1000);
-}
-</script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-  authDomain: "wefarmproject.firebaseapp.com",
-  databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "wefarmproject",
-  storageBucket: "wefarmproject.firebasestorage.app",
-  messagingSenderId: "260514820964",
-  appId: "1:260514820964:web:400135c256ed2554388071"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-
-window.sendOTP = function () {
-  const phone = document.getElementById("signupPhone").value;
-  if (!phone.startsWith("+91")) {
-    showPopup("Please enter phone in +91 format");
-    return;
-  }
-
-  if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'normal',
-      callback: (response) => {
-        // CAPTCHA solved
+    function toggleLanguage() {
+      const lang = document.getElementById("langSwitch").value;
+      const strings = {
+        en: {
+          headerTitle: "WEFARM Social",
+          loginTitle: "Login",
+          signupTitle: "Create Account",
+          forgotPassword: "Forgot your password?",
+          loginBtn: "Log In",
+          signupBtn: "Sign Up",
+          createNew: "Create New Account",
+          backToLogin: "Back to Login",
+          sendOtpBtn: "Send OTP",
+          verifyOtp: "Verify OTP",
+          resendBtn: "Resend OTP"
+        },
+        hi: {
+          headerTitle: "वीफार्म सोशल",
+          loginTitle: "लॉग इन करें",
+          signupTitle: "खाता बनाएं",
+          forgotPassword: "पासवर्ड भूल गए?",
+          loginBtn: "लॉग इन",
+          signupBtn: "साइन अप करें",
+          createNew: "नया खाता बनाएं",
+          backToLogin: "लॉगिन पर वापस जाएं",
+          sendOtpBtn: "ओटीपी भेजें",
+          verifyOtp: "ओटीपी सत्यापित करें",
+          resendBtn: "ओटीपी पुनः भेजें"
+        }
+      }[lang];
+      for (const id in strings) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = strings[id];
       }
-    });
-    window.recaptchaVerifier.render(); // render only once
-  }
-
-  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-    .then((res) => {
-      confirmationResult = res;
-      document.getElementById("otpSection").style.display = "block";
-      showPopup("OTP sent successfully!");
-      startResendCountdown();
-    })
-    .catch((err) => showPopup(err.message));
-};
-
-window.signupUser = function () {
-  const firstName = document.getElementById("firstName");
-  const surname = document.getElementById("surname");
-  const email = document.getElementById("signupEmail");
-  const phone = document.getElementById("signupPhone");
-  const password = document.getElementById("signupPassword");
-
-  // Reset
-  [firstName, surname, email, phone, password].forEach(el => {
-    el.classList.remove("invalid");
-    const err = el.nextElementSibling;
-    if (err && err.classList.contains("error-message")) {
-      err.innerText = "";
-      err.style.display = "none";
     }
-  });
-
-  let hasError = false;
-
-  // First name and surname validation
-  const nameRegex = /^[A-Za-z]{2,}$/;
-  if (!nameRegex.test(firstName.value)) {
-    showError(firstName, "First name must be letters only (min 2 chars)");
-    hasError = true;
-  }
-  if (!nameRegex.test(surname.value)) {
-    showError(surname, "Surname must be letters only (min 2 chars)");
-    hasError = true;
-  }
-
-  // Email validation (gmail, yahoo, outlook)
-  const emailRegex = /^[^\s@]+@(gmail\.com|yahoo\.com|outlook\.com)$/i;
-  if (!emailRegex.test(email.value)) {
-    showError(email, "Only Gmail, Yahoo, or Outlook emails are allowed.");
-    hasError = true;
-  }
-
-  // Password validation
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
-  if (!passwordRegex.test(password.value)) {
-    showError(password, "Must be 8+ chars with upper, number & special (!@#$%)");
-    hasError = true;
-  }
-
-  // Optional: Phone format validation
-  if (!phone.value.startsWith("+91") || phone.value.length < 13) {
-    showError(phone, "Phone must start with +91 and be valid.");
-    hasError = true;
-  }
-
-  if (hasError) return;
-
-  showPopup("✅ Validated! Proceed to Firebase signup...");
-};
-
-function showError(el, message) {
-  el.classList.add("invalid");
-  const errorEl = el.nextElementSibling;
-  if (errorEl && errorEl.classList.contains("error-message")) {
-    errorEl.innerText = message;
-    errorEl.style.display = "block";
-  }
-};
-
-window.loginUser = function () {
-  const input = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-  const email = input.includes("@") ? input : input + "@wefarm.login";
-
-  if (!input || !password) {
-    showPopup("Enter both email/phone and password");
-    return;
-  }
-
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      showPopup("Login successful!");
-      window.location.href = "profile.html";
-    })
-    .catch((error) => showPopup(error.message));
-};
-
-window.forgotPassword = function () {
-  const email = document.getElementById("loginEmail").value;
-  if (!email.includes("@")) {
-    showPopup("Use email (not phone) for password reset");
-    return;
-  }
-  sendPasswordResetEmail(auth, email)
-    .then(() => showPopup("Reset link sent!"))
-    .catch((error) => showPopup(error.message));
-};
-
-</script>
-
-<script>
-  const canvas = document.getElementById("bubbleCanvas");
-  const ctx = canvas.getContext("2d");
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
-
-  let bubbles = [];
-
-  function Bubble() {
-    this.x = Math.random() * canvas.width;
-    this.y = canvas.height + Math.random() * 100;
-    this.radius = Math.random() * 4 + 1;
-    this.speed = Math.random() * 1 + 0.5;
-    this.alpha = Math.random() * 0.5 + 0.3;
-
-    this.update = function () {
-      this.y -= this.speed;
-      if (this.y < -this.radius) {
-        this.y = canvas.height + this.radius;
-        this.x = Math.random() * canvas.width;
+    let confirmationResult;
+    let resendTimer;
+    function startResendCountdown() {
+      const btn = document.getElementById("resendBtn");
+      let timeLeft = 30;
+      btn.disabled = true;
+      btn.classList.add("resend-disabled");
+      btn.textContent = `Resend OTP (30s)`;
+      resendTimer = setInterval(() => {
+        timeLeft--;
+        btn.textContent = `Resend OTP (${timeLeft}s)`;
+        if (timeLeft <= 0) {
+          clearInterval(resendTimer);
+          btn.disabled = false;
+          btn.textContent = "Resend OTP";
+          btn.classList.remove("resend-disabled");
+        }
+      }, 1000);
+    }
+  </script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+      authDomain: "wefarmproject.firebaseapp.com",
+      databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "wefarmproject",
+      storageBucket: "wefarmproject.firebasestorage.app",
+      messagingSenderId: "260514820964",
+      appId: "1:260514820964:web:400135c256ed2554388071"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+  
+    window.sendOTP = function () {
+      const phone = document.getElementById("signupPhone").value;
+      if (!phone.startsWith("+91")) {
+        showPopup("Please enter phone in +91 format");
+        return;
       }
+  
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+          size: 'normal',
+          callback: (response) => {
+            // CAPTCHA solved
+          }
+        });
+        window.recaptchaVerifier.render();
+      }
+  
+      signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+        .then((res) => {
+          confirmationResult = res;
+          document.getElementById("otpSection").style.display = "block";
+          showPopup("OTP sent successfully!");
+          startResendCountdown();
+        })
+        .catch((err) => showPopup(err.message));
     };
-
-    this.draw = function () {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-      ctx.fillStyle = "rgba(255, 255, 255," + this.alpha + ")";
-      ctx.fill();
+  
+    window.signupUser = function () {
+      const signupError = document.getElementById("signupError");
+      signupError.style.display = "none";
+      signupError.innerText = "";
+  
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value.trim();
+      const firstName = document.getElementById("firstName").value.trim();
+      const surname = document.getElementById("surname").value.trim();
+  
+      let errors = [];
+  
+      // Validate first name and surname (alphabetic characters only)
+      if (!/^[A-Za-z]+$/.test(firstName)) {
+        errors.push("First name must contain only alphabets.");
+      }
+      if (!/^[A-Za-z]+$/.test(surname)) {
+        errors.push("Surname must contain only alphabets.");
+      }
+  
+      // Validate email domain
+      const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
+      const emailParts = email.split("@");
+      if (emailParts.length !== 2) {
+        errors.push("Invalid email format.");
+      } else {
+        const domain = emailParts[1].toLowerCase();
+        if (!allowedDomains.includes(domain)) {
+          errors.push("Email must be from gmail, yahoo, outlook, or hotmail.");
+        }
+      }
+  
+      // Validate password: at least 8 characters; requires one uppercase, one lowercase, one number, and one special character
+      if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password)) {
+        errors.push("Password must be at least 8 characters long, containing uppercase, lowercase, a number, and a special character.");
+      }
+  
+      if (errors.length > 0) {
+        signupError.innerText = errors.join(" ");
+        signupError.style.display = "block";
+        return;
+      }
+  
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          set(ref(db, 'users/' + userCredential.user.uid), {
+            firstName: firstName,
+            surname: surname,
+            email: email
+          });
+          showPopup("Signup successful!");
+        })
+        .catch((error) => {
+          signupError.innerText = error.message;
+          signupError.style.display = "block";
+        });
     };
-  }
-
-  function initBubbles() {
-    bubbles = [];
-    for (let i = 0; i < 120; i++) {
-      bubbles.push(new Bubble());
+  
+    window.loginUser = function () {
+      const loginError = document.getElementById("loginError");
+      loginError.style.display = "none";
+      loginError.innerText = "";
+  
+      const input = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+  
+      if (!input || !password) {
+        loginError.innerText = "Enter both email/phone and password";
+        loginError.style.display = "block";
+        return;
+      }
+  
+      // Determine if input is email or phone-based login
+      const email = input.includes("@") ? input : input + "@wefarm.login";
+  
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          showPopup("Login successful!");
+          window.location.href = "profile.html";
+        })
+        .catch((error) => {
+          loginError.innerText = error.message;
+          loginError.style.display = "block";
+        });
+    };
+  
+    window.forgotPassword = function () {
+      const email = document.getElementById("loginEmail").value;
+      if (!email.includes("@")) {
+        showPopup("Use email (not phone) for password reset");
+        return;
+      }
+      sendPasswordResetEmail(auth, email)
+        .then(() => showPopup("Reset link sent!"))
+        .catch((error) => showPopup(error.message));
+    };
+  </script>
+  <script>
+    const canvas = document.getElementById("bubbleCanvas");
+    const ctx = canvas.getContext("2d");
+  
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
-  }
-
-  function animateBubbles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < bubbles.length; i++) {
-      bubbles[i].update();
-      bubbles[i].draw();
+  
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+  
+    let bubbles = [];
+  
+    function Bubble() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height + Math.random() * 100;
+      this.radius = Math.random() * 4 + 1;
+      this.speed = Math.random() * 1 + 0.5;
+      this.alpha = Math.random() * 0.5 + 0.3;
+  
+      this.update = function () {
+        this.y -= this.speed;
+        if (this.y < -this.radius) {
+          this.y = canvas.height + this.radius;
+          this.x = Math.random() * canvas.width;
+        }
+      };
+  
+      this.draw = function () {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.fillStyle = "rgba(255, 255, 255," + this.alpha + ")";
+        ctx.fill();
+      };
     }
-    requestAnimationFrame(animateBubbles);
-  }
-
-  initBubbles();
-  animateBubbles();
-</script>
-
+  
+    function initBubbles() {
+      bubbles = [];
+      for (let i = 0; i < 120; i++) {
+        bubbles.push(new Bubble());
+      }
+    }
+  
+    function animateBubbles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < bubbles.length; i++) {
+        bubbles[i].update();
+        bubbles[i].draw();
+      }
+      requestAnimationFrame(animateBubbles);
+    }
+  
+    initBubbles();
+    animateBubbles();
+  </script>
 </body>
 </html>
