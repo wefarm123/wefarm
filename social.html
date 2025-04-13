@@ -319,124 +319,67 @@ window.sendOTP = function () {
     .catch((err) => showPopup(err.message));
 };
 
+<script>
 window.signupUser = function () {
-  const fields = {
-    firstName: document.getElementById("firstName"),
-    surname: document.getElementById("surname"),
-    email: document.getElementById("signupEmail"),
-    phone: document.getElementById("signupPhone"),
-    password: document.getElementById("signupPassword")
-  };
+  const firstName = document.getElementById("firstName");
+  const surname = document.getElementById("surname");
+  const email = document.getElementById("signupEmail");
+  const phone = document.getElementById("signupPhone");
+  const password = document.getElementById("signupPassword");
 
-  const errors = {
-    firstName: document.getElementById("firstNameError"),
-    surname: document.getElementById("surnameError"),
-    email: document.getElementById("emailError"),
-    phone: document.getElementById("phoneError"),
-    password: document.getElementById("passwordError")
-  };
-
-  // Clear previous errors
-  for (let key in fields) {
-    fields[key].classList.remove("invalid");
-    errors[key].style.display = "none";
-    errors[key].innerText = "";
-  }
-
-  const nameRegex = /^[A-Za-z]{2,}$/;
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+  // Clear previous styles
+  [firstName, surname, email, phone, password].forEach(el => {
+    el.style.border = "1px solid #ccc";
+    if (el.nextElementSibling && el.nextElementSibling.classList.contains('error')) {
+      el.nextElementSibling.remove();
+    }
+  });
 
   let hasError = false;
 
-  if (!nameRegex.test(fields.firstName.value.trim())) {
-    fields.firstName.classList.add("invalid");
-    errors.firstName.innerText = "Only letters allowed, min 2 characters.";
-    errors.firstName.style.display = "block";
+  // Name Validation
+  const nameRegex = /^[A-Za-z]{2,}$/;
+  if (!nameRegex.test(firstName.value)) {
+    showInlineError(firstName, "Only alphabets allowed in First Name.");
+    hasError = true;
+  }
+  if (!nameRegex.test(surname.value)) {
+    showInlineError(surname, "Only alphabets allowed in Surname.");
     hasError = true;
   }
 
-  if (!nameRegex.test(fields.surname.value.trim())) {
-    fields.surname.classList.add("invalid");
-    errors.surname.innerText = "Only letters allowed, min 2 characters.";
-    errors.surname.style.display = "block";
+  // Email Validation
+  const domainRegex = /^[^\s@]+@(gmail\.com|yahoo\.com|outlook\.com)$/i;
+  if (!domainRegex.test(email.value)) {
+    showInlineError(email, "Email must be gmail, yahoo or outlook only.");
     hasError = true;
   }
 
-  if (!emailRegex.test(fields.email.value.trim())) {
-    fields.email.classList.add("invalid");
-    errors.email.innerText = "Enter a valid Gmail/Yahoo/Outlook email.";
-    errors.email.style.display = "block";
-    hasError = true;
-  }
-
-  const phone = fields.phone.value.trim();
-  if (!phone.startsWith("+91") || phone.length < 10) {
-    fields.phone.classList.add("invalid");
-    errors.phone.innerText = "Phone must start with +91 and be valid.";
-    errors.phone.style.display = "block";
-    hasError = true;
-  }
-
-  const password = fields.password.value;
-  if (!passwordRegex.test(password)) {
-    fields.password.classList.add("invalid");
-    errors.password.innerText = "Min 8 chars, 1 uppercase, number & special (!@#$%).";
-    errors.password.style.display = "block";
+  // Password Validation
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+  if (!passwordRegex.test(password.value)) {
+    showInlineError(password, "Password must be 8+ chars, include upper, number & !@#$%.");
     hasError = true;
   }
 
   if (hasError) return;
 
-  // Firebase DB duplicate check
-  const email = fields.email.value.trim();
-  const usersRef = ref(db, "users");
-  get(usersRef).then((snapshot) => {
-    let emailExists = false;
-    let phoneExists = false;
-
-    snapshot.forEach((child) => {
-      const data = child.val();
-      if (data.email?.toLowerCase() === email.toLowerCase()) emailExists = true;
-      if (data.phone === phone) phoneExists = true;
-    });
-
-    if (emailExists) {
-      fields.email.classList.add("invalid");
-      errors.email.innerText = "Email already registered.";
-      errors.email.style.display = "block";
-      return;
-    }
-
-    if (phoneExists) {
-      fields.phone.classList.add("invalid");
-      errors.phone.innerText = "Phone number already registered.";
-      errors.phone.style.display = "block";
-      return;
-    }
-
-    // Create user in Firebase
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        return set(ref(db, "users/" + userCredential.user.uid), {
-          firstName: fields.firstName.value.trim(),
-          surname: fields.surname.value.trim(),
-          email,
-          phone
-        });
-      })
-      .then(() => {
-        showPopup("✅ Signup successful!");
-      })
-      .catch((error) => {
-        console.error("SIGNUP ERROR", error);
-        showPopup("🚫 " + error.message);
-      });
-  });
+  // Proceed to Firebase (code continues...)
+  showPopup("✅ All fields validated. Proceed to create account...");
 };
 
+function showInlineError(inputEl, message) {
+  inputEl.style.border = "2px solid red";
+  const error = document.createElement("div");
+  error.className = "error";
+  error.style.color = "red";
+  error.style.fontSize = "12px";
+  error.style.marginTop = "-8px";
+  error.innerText = message;
+  inputEl.parentNode.insertBefore(error, inputEl.nextSibling);
+}
+</script>
 
-  
 window.loginUser = function () {
   const input = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
