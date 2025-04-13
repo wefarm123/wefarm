@@ -310,32 +310,32 @@ window.signupUser = function () {
     return;
   }
 
-  // Strict email format check
+  // ✅ Email format check (MUST include @ and domain)
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(emailInput)) {
-    showPopup("❌ Enter a valid email address (must include '@' and domain)");
+    showPopup("❌ Please enter a valid email address.");
     return;
   }
 
-  // Strong password check
+  // ✅ Password strength check
   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password)) {
-    showPopup("🔒 Password must be 8+ chars, with letters, numbers, and one special (!@#$%)");
+    showPopup("🔒 Password must be at least 8 characters, include a letter, a number, and one of !@#$%");
     return;
   }
 
-  // Check Firebase DB for existing email or phone
+  // ✅ Check Realtime DB for duplicate email/phone
   const usersRef = ref(db, 'users');
   get(usersRef).then((snapshot) => {
     let emailExists = false;
     let phoneExists = false;
 
     snapshot.forEach((child) => {
-      const data = child.val();
-      if (data.email?.toLowerCase() === emailInput.toLowerCase()) {
+      const user = child.val();
+      if (user.email?.toLowerCase() === emailInput.toLowerCase()) {
         emailExists = true;
       }
-      if (data.phone === phone) {
+      if (user.phone === phone) {
         phoneExists = true;
       }
     });
@@ -344,12 +344,13 @@ window.signupUser = function () {
       showPopup("📧 Email already registered.");
       return;
     }
+
     if (phoneExists) {
-      showPopup("📱 Phone number already in use.");
+      showPopup("📱 Phone number already registered.");
       return;
     }
 
-    // No duplicates, proceed to Auth
+    // ✅ If unique, create user
     createUserWithEmailAndPassword(auth, emailInput, password)
       .then((userCredential) => {
         return set(ref(db, 'users/' + userCredential.user.uid), {
@@ -362,14 +363,14 @@ window.signupUser = function () {
       .then(() => {
         showPopup("✅ Signup successful!");
       })
-      .catch((error) => showPopup(`⚠️ ${error.message}`));
+      .catch((error) => {
+        showPopup("🚫 " + error.message);
+      });
   }).catch((err) => {
-    showPopup("⚠️ Failed to check user uniqueness.");
-    console.error(err);
+    console.error("Firebase DB check error: ", err);
+    showPopup("❌ Could not check existing users.");
   });
 };
-
-
 
 
 window.loginUser = function () {
