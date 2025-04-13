@@ -304,71 +304,71 @@ window.signupUser = function () {
   const firstName = document.getElementById("firstName").value.trim();
   const surname = document.getElementById("surname").value.trim();
   const phone = document.getElementById("signupPhone").value.trim();
+  const signupBtn = document.getElementById("signupBtn");
 
+  // Disable button to prevent double clicks
+  signupBtn.disabled = true;
+  signupBtn.innerHTML = 'Processing...';
+
+  // ✅ Check required fields
   if (!firstName || !surname || !emailInput || !password || !phone) {
     showPopup("⚠️ Please fill all fields.");
+    signupBtn.disabled = false;
+    signupBtn.innerHTML = 'Sign Up';
     return;
   }
 
-  // ✅ Email format check (MUST include @ and domain)
+  // ✅ Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(emailInput)) {
     showPopup("❌ Please enter a valid email address.");
+    signupBtn.disabled = false;
+    signupBtn.innerHTML = 'Sign Up';
     return;
   }
 
-  // ✅ Password strength check
+  // ✅ Validate strong password
   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password)) {
-    showPopup("🔒 Password must be at least 8 characters, include a letter, a number, and one of !@#$%");
+    showPopup("🔒 Password must be 8+ chars, include a letter, number, and one of !@#$%");
+    signupBtn.disabled = false;
+    signupBtn.innerHTML = 'Sign Up';
     return;
   }
 
-  // ✅ Check Realtime DB for duplicate email/phone
+  // ✅ Check for duplicates in Realtime DB
   const usersRef = ref(db, 'users');
   get(usersRef).then((snapshot) => {
-    let emailExists = false;
-    let phoneExists = false;
-
     snapshot.forEach((child) => {
       const user = child.val();
       if (user.email?.toLowerCase() === emailInput.toLowerCase()) {
-        emailExists = true;
+        throw new Error("📧 Email already registered.");
       }
       if (user.phone === phone) {
-        phoneExists = true;
+        throw new Error("📱 Phone number already registered.");
       }
     });
 
-    if (emailExists) {
-      showPopup("📧 Email already registered.");
-      return;
-    }
-
-    if (phoneExists) {
-      showPopup("📱 Phone number already registered.");
-      return;
-    }
-
-    // ✅ If unique, create user
-    createUserWithEmailAndPassword(auth, emailInput, password)
-      .then((userCredential) => {
-        return set(ref(db, 'users/' + userCredential.user.uid), {
-          firstName,
-          surname,
-          email: emailInput,
-          phone
-        });
-      })
-      .then(() => {
-        showPopup("✅ Signup successful!");
-      })
-      .catch((error) => {
-        showPopup("🚫 " + error.message);
-      });
-  }).catch((err) => {
-    console.error("Firebase DB check error: ", err);
-    showPopup("❌ Could not check existing users.");
+    // ✅ If all checks pass, create user in Firebase Auth
+    return createUserWithEmailAndPassword(auth, emailInput, password);
+  })
+  .then((userCredential) => {
+    return set(ref(db, 'users/' + userCredential.user.uid), {
+      firstName,
+      surname,
+      email: emailInput,
+      phone
+    });
+  })
+  .then(() => {
+    showPopup("✅ Signup successful!");
+  })
+  .catch((error) => {
+    showPopup(error.message || "🚫 Signup failed.");
+  })
+  .finally(() => {
+    signupBtn.disabled = false;
+    signupBtn.innerHTML = 'Sign Up';
   });
 };
 
@@ -383,25 +383,6 @@ window.loginUser = function () {
     return;
   }
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      showPopup("Login successful!");
-      window.location.href = "profile.html";
-    })
-    .catch((error) => showPopup(error.message));
-};
-
-
-
-window.loginUser = function () {
-  const input = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-  const email = input.includes("@") ? input : input + "@wefarm.login";
-
-  if (!input || !password) {
-    showPopup("Enter both email/phone and password");
-    return;
-  }
   signInWithEmailAndPassword(auth, email, password)
     .then(() => {
       showPopup("Login successful!");
