@@ -298,19 +298,31 @@ window.sendOTP = function () {
     .catch((err) => showPopup(err.message));
 };
 
+// ✅ FIREBASE SIGNUP WITH DUPLICATE CHECK (Realtime DB + Auth Level)
 window.signupUser = function () {
   const emailInput = document.getElementById("signupEmail").value.trim();
-  const phone = document.getElementById("signupPhone").value.trim();
   const password = document.getElementById("signupPassword").value;
-  const firstName = document.getElementById("firstName").value;
-  const surname = document.getElementById("surname").value;
+  const firstName = document.getElementById("firstName").value.trim();
+  const surname = document.getElementById("surname").value.trim();
+  const phone = document.getElementById("signupPhone").value.trim();
 
-  if (!emailInput.includes("@")) {
-    showPopup("Please enter a valid email with '@'");
+  if (!firstName || !surname || !emailInput || !password || !phone) {
+    showPopup("Please fill all fields.");
     return;
   }
 
-  const email = emailInput;
+  if (!emailInput.includes("@")) {
+    showPopup("Please enter a valid email address with @");
+    return;
+  }
+
+  const email = emailInput.includes("@") ? emailInput : `${emailInput}@wefarm.login`;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showPopup("Invalid email format");
+    return;
+  }
 
   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password)) {
@@ -318,70 +330,38 @@ window.signupUser = function () {
     return;
   }
 
-  if (!firstName || !surname || !email || !password || !phone) {
-    showPopup("Please fill all fields.");
-    return;
-  }
-
+  // 🔍 Check if email or phone exists in Firebase Realtime DB
   const usersRef = ref(db, 'users');
-  get(usersRef)
-    .then((snapshot) => {
-      let emailExists = false;
-      let phoneExists = false;
-
-      snapshot.forEach((childSnapshot) => {
-        const userData = childSnapshot.val();
-        if (userData.email === email) {
-          emailExists = true;
-        }
-        if (userData.phone === phone) {
-          phoneExists = true;
-        }
-      });
-
-      if (emailExists) {
-        showPopup("This email is already registered.");
-        return;
+  get(usersRef).then((snapshot) => {
+    let exists = false;
+    snapshot.forEach((child) => {
+      const data = child.val();
+      if (data.email === email) {
+        showPopup("Email already registered");
+        exists = true;
+      } else if (data.phone === phone) {
+        showPopup("Phone number already registered");
+        exists = true;
       }
-
-      if (phoneExists) {
-        showPopup("This phone number is already registered.");
-        return;
-      }
-
-      // Proceed with Firebase signup
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          set(ref(db, 'users/' + userCredential.user.uid), {
-            firstName: firstName,
-            surname: surname,
-            email: email,
-            phone: phone
-          });
-          showPopup("Signup successful!");
-        })
-        .catch((error) => showPopup(error.message));
-    })
-    .catch((error) => showPopup("Error checking data: " + error.message));
-};
-
-window.verifyOTP = function () {
-  const code = document.getElementById("otpCode").value;
-
-  if (!confirmationResult) {
-    showPopup("Please request OTP first.");
-    return;
-  }
-
-  confirmationResult.confirm(code)
-    .then(() => {
-      showPopup("Phone verified successfully!");
-      // Optionally: proceed to signup or enable signup button
-    })
-    .catch(() => {
-      showPopup("Invalid OTP. Please try again.");
     });
+
+    if (exists) return;
+
+    // ✅ Firebase Auth create user
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        set(ref(db, 'users/' + userCredential.user.uid), {
+          firstName: firstName,
+          surname: surname,
+          email: email,
+          phone: phone
+        });
+        showPopup("Signup successful!");
+      })
+      .catch((error) => showPopup(error.message));
+  });
 };
+
 
 window.loginUser = function () {
   const input = document.getElementById("loginEmail").value;
