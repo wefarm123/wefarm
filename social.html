@@ -533,7 +533,12 @@ function validateField(fieldName) {
 for (let field in fields) {
   fields[field].addEventListener("blur", () => validateField(field));
 }
-
+function showError(input, errorId, message) {
+  input.classList.add("invalid");
+  const errorEl = document.getElementById(errorId);
+  errorEl.textContent = message;
+  errorEl.style.display = "block";
+}
 
   window.forgotPassword = function () {
     const email = document.getElementById("loginEmail").value;
