@@ -305,42 +305,36 @@ window.signupUser = function () {
   const surname = document.getElementById("surname").value.trim();
   const phone = document.getElementById("signupPhone").value.trim();
 
+  console.log("DEBUG: signup triggered");
+  console.log("DEBUG: Email entered =>", emailInput);
+
   if (!firstName || !surname || !emailInput || !password || !phone) {
     showPopup("⚠️ Please fill all fields.");
     return;
   }
 
-  console.log("Email input received:", emailInput); 
-
-  // ✅ STRICT Email format check (must include @domain)
+  // ✅ STRICT EMAIL CHECK — MUST INCLUDE @ and domain
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(emailInput)) {
     showPopup("❌ Enter a valid email address with @ and domain.");
     return;
   }
 
-  // ✅ Password strength check
   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password)) {
-    showPopup("🔒 Password must be 8+ chars, include letter, number, and !@#$%");
+    showPopup("🔒 Password must be 8+ chars, include letter, number, and one of !@#$%");
     return;
   }
 
-  if (!phone.startsWith("+91") || phone.length < 10) {
-    showPopup("📱 Enter a valid Indian phone number starting with +91.");
-    return;
-  }
-
-  // 🔍 Check Realtime DB for duplicates
   const usersRef = ref(db, "users");
   get(usersRef).then((snapshot) => {
     let emailExists = false;
     let phoneExists = false;
 
     snapshot.forEach((child) => {
-      const user = child.val();
-      if (user.email?.toLowerCase() === emailInput.toLowerCase()) emailExists = true;
-      if (user.phone === phone) phoneExists = true;
+      const data = child.val();
+      if (data.email?.toLowerCase() === emailInput.toLowerCase()) emailExists = true;
+      if (data.phone === phone) phoneExists = true;
     });
 
     if (emailExists) {
@@ -353,7 +347,7 @@ window.signupUser = function () {
       return;
     }
 
-    // ✅ Proceed to Firebase Auth
+    // ✅ Create user
     createUserWithEmailAndPassword(auth, emailInput, password)
       .then((userCredential) => {
         return set(ref(db, "users/" + userCredential.user.uid), {
@@ -367,14 +361,15 @@ window.signupUser = function () {
         showPopup("✅ Signup successful!");
       })
       .catch((error) => {
-        console.error(error);
+        console.error("SIGNUP ERROR", error);
         showPopup("🚫 " + error.message);
       });
   }).catch((err) => {
-    console.error("DB error:", err);
-    showPopup("❌ Could not check for duplicates.");
+    console.error("DB CHECK FAILED", err);
+    showPopup("⚠️ Failed to verify existing users.");
   });
 };
+
 
   
 window.loginUser = function () {
