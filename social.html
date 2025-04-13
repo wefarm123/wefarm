@@ -301,15 +301,35 @@ window.sendOTP = function () {
 
 
 window.signupUser = function () {
-  const email = document.getElementById("signupEmail").value;
+  const emailInput = document.getElementById("signupEmail").value.trim();
   const password = document.getElementById("signupPassword").value;
-  const firstName = document.getElementById("firstName").value;
-  const surname = document.getElementById("surname").value;
+  const firstName = document.getElementById("firstName").value.trim();
+  const surname = document.getElementById("surname").value.trim();
 
-  if (!email || !password || !firstName || !surname) {
+  // Auto-add domain if missing '@'
+  const email = emailInput.includes("@") ? emailInput : `${emailInput}@wefarm.login`;
+
+  // Email format validation (only if @ is present)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (emailInput.includes("@") && !emailRegex.test(email)) {
+    showPopup("Invalid email format");
+    return;
+  }
+
+  // Password strength check
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    showPopup("Password must be 8+ chars, include a letter, number, and !@#$%");
+    return;
+  }
+
+  // Empty field check
+  if (!firstName || !surname || !emailInput || !password) {
     showPopup("Please fill all fields.");
     return;
   }
+
+  // Firebase signup
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       set(ref(db, 'users/' + userCredential.user.uid), {
