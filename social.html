@@ -340,6 +340,24 @@ window.verifyOTP = function () {
     });
 };
 
+window.loginUser = function () {
+  const input = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+  const email = input.includes("@") ? ;
+
+  if (!input || !password) {
+    showPopup("Enter both email/phone and password");
+    return;
+  }
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      showPopup("Login successful!");
+      window.location.href = "profile.html";
+    })
+    .catch((error) => showPopup(error.message));
+};
+
 
 window.loginUser = function () {
   const input = document.getElementById("loginEmail").value;
