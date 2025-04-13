@@ -314,7 +314,7 @@ window.signupUser = function () {
   }
 
   // ✅ STRICT EMAIL CHECK — MUST INCLUDE @ and domain
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!emailRegex.test(emailInput)) {
     showPopup("❌ Enter a valid email address with @ and domain.");
     return;
