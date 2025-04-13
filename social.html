@@ -363,7 +363,7 @@ window.verifyOTP = function () {
 window.loginUser = function () {
   const input = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
-  const email = input.includes("@") ? ;
+  const email = input.includes("@") ? input : input + "@wefarm.login";
 
   if (!input || !password) {
     showPopup("Enter both email/phone and password");
@@ -377,6 +377,7 @@ window.loginUser = function () {
     })
     .catch((error) => showPopup(error.message));
 };
+
 
 
 window.loginUser = function () {
