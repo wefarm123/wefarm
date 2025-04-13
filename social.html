@@ -301,7 +301,7 @@ function startResendCountdown() {
       btn.disabled = true;
       const originalText = btn.textContent;
       btn.innerHTML = 'Sending... <span class="spinner"></span>';
-      setTimeout(() => {
+      
         if (!recaptchaInitialized) {
           recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
             size: 'normal', callback: () => {}
@@ -321,7 +321,7 @@ function startResendCountdown() {
             btn.disabled = false;
             btn.textContent = originalText;
           });
-      }, 3000);
+     
     };
 
     window.resendOTP = function () {
