@@ -533,11 +533,37 @@ function validateField(fieldName) {
 for (let field in fields) {
   fields[field].addEventListener("blur", () => validateField(field));
 }
-function showError(input, errorId, message) {
-  input.classList.add("invalid");
-  const errorEl = document.getElementById(errorId);
-  errorEl.textContent = message;
-  errorEl.style.display = "block";
+window.verifyOTP = function () {
+  const code = document.getElementById("otpCode").value;
+  if (!confirmationResult) {
+    showPopup("Please request OTP first.");
+    return;
+  }
+  confirmationResult.confirm(code)
+    .then(() => {
+      showPopup("Phone verified successfully!");
+      signupBtn.disabled = false;
+      signupBtn.style.backgroundColor = "#2E7D32";
+      signupBtn.style.cursor = "pointer";
+    })
+    .catch(() => showPopup("Invalid OTP. Please try again."));
+};
+
+const signupBtn = document.getElementById("signupBtn");
+signupBtn.disabled = true;
+signupBtn.style.backgroundColor = "#ccc";
+signupBtn.style.cursor = "not-allowed";
+
+function validateSignupFields() {
+  const allValid = Object.keys(fields).every((key) => {
+    const field = fields[key];
+    return !field.classList.contains("invalid") && field.value.trim() !== "";
+  });
+
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  sendOtpBtn.disabled = !allValid;
+  sendOtpBtn.style.backgroundColor = allValid ? "#2E7D32" : "#ccc";
+  sendOtpBtn.style.cursor = allValid ? "pointer" : "not-allowed";
 }
 
   window.forgotPassword = function () {
