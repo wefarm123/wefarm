@@ -144,6 +144,17 @@
   transform-origin: top left;
 }
 
+    .error-message {
+  font-size: 12px;
+  color: red;
+  margin-top: -8px;
+  margin-bottom: 5px;
+  display: none;
+}
+input.invalid {
+  border: 2px solid red !important;
+}
+
   </style>
 </head>
 <body>
@@ -170,9 +181,17 @@
     <div class="card-face back">
       <h2 id="signupTitle">Create Account</h2>
       <input id="firstName" type="text" placeholder="First Name" />
+      <span class="error-message" id="firstNameError"></span>
+
       <input id="surname" type="text" placeholder="Surname" />
+      <span class="error-message" id="surnameError"></span>
+
       <input id="signupEmail" type="text" placeholder="Email" />
+      <span class="error-message" id="emailError"></span>
+
       <input id="signupPhone" type="tel" placeholder="Phone Number" />
+      <span class="error-message" id="phoneError"></span>
+
     <div id="recaptcha-container" class="captcha-style"></div>
       <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
       <div id="otpSection">
@@ -181,6 +200,8 @@
         <button id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
       </div>
       <input id="signupPassword" type="password" placeholder="Password" />
+      <span class="error-message" id="passwordError"></span>
+
       <button onclick="signupUser()" id="signupBtn">Sign Up</button>
       <div class="toggle" onclick="flipCard()" id="backToLogin">Back to Login</div>
     </div>
@@ -299,33 +320,76 @@ window.sendOTP = function () {
 };
 
 window.signupUser = function () {
-  const emailInput = document.getElementById("signupEmail").value.trim();
-  const password = document.getElementById("signupPassword").value;
-  const firstName = document.getElementById("firstName").value.trim();
-  const surname = document.getElementById("surname").value.trim();
-  const phone = document.getElementById("signupPhone").value.trim();
+  const fields = {
+    firstName: document.getElementById("firstName"),
+    surname: document.getElementById("surname"),
+    email: document.getElementById("signupEmail"),
+    phone: document.getElementById("signupPhone"),
+    password: document.getElementById("signupPassword")
+  };
 
-  console.log("DEBUG: signup triggered");
-  console.log("DEBUG: Email entered =>", emailInput);
+  const errors = {
+    firstName: document.getElementById("firstNameError"),
+    surname: document.getElementById("surnameError"),
+    email: document.getElementById("emailError"),
+    phone: document.getElementById("phoneError"),
+    password: document.getElementById("passwordError")
+  };
 
-  if (!firstName || !surname || !emailInput || !password || !phone) {
-    showPopup("⚠️ Please fill all fields.");
-    return;
+  // Clear previous errors
+  for (let key in fields) {
+    fields[key].classList.remove("invalid");
+    errors[key].style.display = "none";
+    errors[key].innerText = "";
   }
 
-  // ✅ STRICT EMAIL CHECK — MUST INCLUDE @ and domain
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailRegex.test(emailInput)) {
-    showPopup("❌ Enter a valid email address with @ and domain.");
-    return;
+  const nameRegex = /^[A-Za-z]{2,}$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+
+  let hasError = false;
+
+  if (!nameRegex.test(fields.firstName.value.trim())) {
+    fields.firstName.classList.add("invalid");
+    errors.firstName.innerText = "Only letters allowed, min 2 characters.";
+    errors.firstName.style.display = "block";
+    hasError = true;
   }
 
-  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+  if (!nameRegex.test(fields.surname.value.trim())) {
+    fields.surname.classList.add("invalid");
+    errors.surname.innerText = "Only letters allowed, min 2 characters.";
+    errors.surname.style.display = "block";
+    hasError = true;
+  }
+
+  if (!emailRegex.test(fields.email.value.trim())) {
+    fields.email.classList.add("invalid");
+    errors.email.innerText = "Enter a valid Gmail/Yahoo/Outlook email.";
+    errors.email.style.display = "block";
+    hasError = true;
+  }
+
+  const phone = fields.phone.value.trim();
+  if (!phone.startsWith("+91") || phone.length < 10) {
+    fields.phone.classList.add("invalid");
+    errors.phone.innerText = "Phone must start with +91 and be valid.";
+    errors.phone.style.display = "block";
+    hasError = true;
+  }
+
+  const password = fields.password.value;
   if (!passwordRegex.test(password)) {
-    showPopup("🔒 Password must be 8+ chars, include letter, number, and one of !@#$%");
-    return;
+    fields.password.classList.add("invalid");
+    errors.password.innerText = "Min 8 chars, 1 uppercase, number & special (!@#$%).";
+    errors.password.style.display = "block";
+    hasError = true;
   }
 
+  if (hasError) return;
+
+  // Firebase DB duplicate check
+  const email = fields.email.value.trim();
   const usersRef = ref(db, "users");
   get(usersRef).then((snapshot) => {
     let emailExists = false;
@@ -333,28 +397,32 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     snapshot.forEach((child) => {
       const data = child.val();
-      if (data.email?.toLowerCase() === emailInput.toLowerCase()) emailExists = true;
+      if (data.email?.toLowerCase() === email.toLowerCase()) emailExists = true;
       if (data.phone === phone) phoneExists = true;
     });
 
     if (emailExists) {
-      showPopup("📧 Email already registered.");
+      fields.email.classList.add("invalid");
+      errors.email.innerText = "Email already registered.";
+      errors.email.style.display = "block";
       return;
     }
 
     if (phoneExists) {
-      showPopup("📱 Phone number already registered.");
+      fields.phone.classList.add("invalid");
+      errors.phone.innerText = "Phone number already registered.";
+      errors.phone.style.display = "block";
       return;
     }
 
-    // ✅ Create user
-    createUserWithEmailAndPassword(auth, emailInput, password)
+    // Create user in Firebase
+    createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         return set(ref(db, "users/" + userCredential.user.uid), {
-          firstName,
-          surname,
-          email: emailInput,
-          phone,
+          firstName: fields.firstName.value.trim(),
+          surname: fields.surname.value.trim(),
+          email,
+          phone
         });
       })
       .then(() => {
@@ -364,9 +432,6 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         console.error("SIGNUP ERROR", error);
         showPopup("🚫 " + error.message);
       });
-  }).catch((err) => {
-    console.error("DB CHECK FAILED", err);
-    showPopup("⚠️ Failed to verify existing users.");
   });
 };
 
