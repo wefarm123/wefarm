@@ -300,46 +300,49 @@ window.sendOTP = function () {
 
 
 
-window.signupUser = function () {
-  const emailInput = document.getElementById("signupEmail").value.trim();
-  const password = document.getElementById("signupPassword").value;
-  const firstName = document.getElementById("firstName").value.trim();
-  const surname = document.getElementById("surname").value.trim();
+window.sendOTP = function () {
+  const phone = document.getElementById("signupPhone").value;
+  const email = document.getElementById("signupEmail").value.trim();
+  const btn = document.getElementById("sendOtpBtn");
 
-  // Auto-add domain if missing '@'
-  const email = emailInput.includes("@") ? emailInput : `${emailInput}@wefarm.login`;
-
-  // Email format validation (only if @ is present)
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (emailInput.includes("@") && !emailRegex.test(email)) {
-    showPopup("Invalid email format");
+  // ✅ Check email must contain "@"
+  if (!email.includes("@")) {
+    showPopup("Please enter a valid email with '@'");
     return;
   }
 
-  // Password strength check
-  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
-  if (!passwordRegex.test(password)) {
-    showPopup("Password must be 8+ chars, include a letter, number, and !@#$%");
+  if (!phone.startsWith("+91")) {
+    showPopup("Please enter phone in +91 format");
     return;
   }
 
-  // Empty field check
-  if (!firstName || !surname || !emailInput || !password) {
-    showPopup("Please fill all fields.");
-    return;
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.innerHTML = 'Sending... <span class="spinner"></span>';
+
+  // ✅ Initialize reCAPTCHA once
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'normal',
+      callback: (response) => {
+        // CAPTCHA solved
+      }
+    });
+    window.recaptchaVerifier.render(); // render only once
   }
 
-  // Firebase signup
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      set(ref(db, 'users/' + userCredential.user.uid), {
-        firstName: firstName,
-        surname: surname,
-        email: email
-      });
-      showPopup("Signup successful!");
+  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+    .then((res) => {
+      confirmationResult = res;
+      document.getElementById("otpSection").style.display = "block";
+      showPopup("OTP sent successfully!");
+      startResendCountdown();
     })
-    .catch((error) => showPopup(error.message));
+    .catch((err) => showPopup(err.message))
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    });
 };
 
 window.verifyOTP = function () {
