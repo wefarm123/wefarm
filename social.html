@@ -298,51 +298,71 @@ window.sendOTP = function () {
     .catch((err) => showPopup(err.message));
 };
 
+window.signupUser = function () {
+  const emailInput = document.getElementById("signupEmail").value.trim();
+  const phone = document.getElementById("signupPhone").value.trim();
+  const password = document.getElementById("signupPassword").value;
+  const firstName = document.getElementById("firstName").value;
+  const surname = document.getElementById("surname").value;
 
-
-window.sendOTP = function () {
-  const phone = document.getElementById("signupPhone").value;
-  const email = document.getElementById("signupEmail").value.trim();
-  const btn = document.getElementById("sendOtpBtn");
-
-  // ✅ Check email must contain "@"
-  if (!email.includes("@")) {
+  if (!emailInput.includes("@")) {
     showPopup("Please enter a valid email with '@'");
     return;
   }
 
-  if (!phone.startsWith("+91")) {
-    showPopup("Please enter phone in +91 format");
+  const email = emailInput;
+
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    showPopup("Password must be 8+ chars, include a letter, number, and !@#$%");
     return;
   }
 
-  btn.disabled = true;
-  const originalText = btn.textContent;
-  btn.innerHTML = 'Sending... <span class="spinner"></span>';
-
-  // ✅ Initialize reCAPTCHA once
-  if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'normal',
-      callback: (response) => {
-        // CAPTCHA solved
-      }
-    });
-    window.recaptchaVerifier.render(); // render only once
+  if (!firstName || !surname || !email || !password || !phone) {
+    showPopup("Please fill all fields.");
+    return;
   }
 
-  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-    .then((res) => {
-      confirmationResult = res;
-      document.getElementById("otpSection").style.display = "block";
-      showPopup("OTP sent successfully!");
-      startResendCountdown();
+  const usersRef = ref(db, 'users');
+  get(usersRef)
+    .then((snapshot) => {
+      let emailExists = false;
+      let phoneExists = false;
+
+      snapshot.forEach((childSnapshot) => {
+        const userData = childSnapshot.val();
+        if (userData.email === email) {
+          emailExists = true;
+        }
+        if (userData.phone === phone) {
+          phoneExists = true;
+        }
+      });
+
+      if (emailExists) {
+        showPopup("This email is already registered.");
+        return;
+      }
+
+      if (phoneExists) {
+        showPopup("This phone number is already registered.");
+        return;
+      }
+
+      // Proceed with Firebase signup
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          set(ref(db, 'users/' + userCredential.user.uid), {
+            firstName: firstName,
+            surname: surname,
+            email: email,
+            phone: phone
+          });
+          showPopup("Signup successful!");
+        })
+        .catch((error) => showPopup(error.message));
     })
-    .catch((err) => showPopup(err.message))
-    .finally(() => {
-      btn.disabled = false;
-      btn.textContent = originalText;
-    });
+    .catch((error) => showPopup("Error checking data: " + error.message));
 };
 
 window.verifyOTP = function () {
