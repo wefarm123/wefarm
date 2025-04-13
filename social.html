@@ -469,41 +469,70 @@ input.invalid {
       });
   };
 
-function validateSignupFields() {
-  const firstName = document.getElementById("firstName").value.trim();
-  const surname = document.getElementById("surname").value.trim();
-  const email = document.getElementById("signupEmail").value.trim();
-  const phone = document.getElementById("signupPhone").value.trim();
-  const password = document.getElementById("signupPassword").value;
+const fields = {
+  firstName: document.getElementById("firstName"),
+  surname: document.getElementById("surname"),
+  email: document.getElementById("signupEmail"),
+  phone: document.getElementById("signupPhone"),
+  password: document.getElementById("signupPassword")
+};
 
-  const nameRegex = /^[A-Za-z]{2,}$/;
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
-  const isValid =
-    nameRegex.test(firstName) &&
-    nameRegex.test(surname) &&
-    emailRegex.test(email) &&
-    phone.startsWith("+91") && phone.length >= 10 &&
-    passwordRegex.test(password);
+const errors = {
+  firstName: document.getElementById("firstNameError"),
+  surname: document.getElementById("surnameError"),
+  email: document.getElementById("emailError"),
+  phone: document.getElementById("phoneError"),
+  password: document.getElementById("passwordError")
+};
 
-  document.getElementById("sendOtpBtn").disabled = !isValid;
+const nameRegex = /^[A-Za-z]{2,}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+
+function validateField(fieldName) {
+  const value = fields[fieldName].value.trim();
+  let valid = true;
+  let message = "";
+
+  if (fieldName === "firstName" || fieldName === "surname") {
+    if (!nameRegex.test(value)) {
+      valid = false;
+      message = "Only letters allowed, min 2 characters.";
+    }
+  } else if (fieldName === "email") {
+    if (!emailRegex.test(value)) {
+      valid = false;
+      message = "Must be a Gmail, Yahoo, or Outlook email.";
+    }
+  } else if (fieldName === "phone") {
+    if (!value.startsWith("+91") || value.length < 10) {
+      valid = false;
+      message = "Phone must start with +91 and be valid.";
+    }
+  } else if (fieldName === "password") {
+    if (!passwordRegex.test(value)) {
+      valid = false;
+      message = "Min 8 chars, 1 uppercase, number & special (!@#$%).";
+    }
+  }
+
+  if (!valid) {
+    fields[fieldName].classList.add("invalid");
+    errors[fieldName].innerText = message;
+    errors[fieldName].style.display = "block";
+  } else {
+    fields[fieldName].classList.remove("invalid");
+    errors[fieldName].innerText = "";
+    errors[fieldName].style.display = "none";
+  }
+
+  validateSignupFields(); // recheck if all valid for enabling send OTP
 }
 
-// Attach listeners to run validation live
-["firstName", "surname", "signupEmail", "signupPhone", "signupPassword"].forEach((id) => {
-  document.getElementById(id).addEventListener("input", validateSignupFields);
-});
-
-    window.verifyOTP = function () {
-      const code = document.getElementById("otpCode").value;
-      if (!confirmationResult) {
-        showPopup("Please request OTP first.");
-        return;
-      }
-      confirmationResult.confirm(code)
-        .then(() => showPopup("Phone verified successfully!"))
-        .catch(() => showPopup("Invalid OTP. Please try again."));
-    };
+// Attach blur listeners for real-time inline validation
+for (let field in fields) {
+  fields[field].addEventListener("blur", () => validateField(field));
+}
 
 
   window.forgotPassword = function () {
