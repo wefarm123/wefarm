@@ -319,7 +319,6 @@ window.sendOTP = function () {
     .catch((err) => showPopup(err.message));
 };
 
-<script>
 window.signupUser = function () {
   const firstName = document.getElementById("firstName");
   const surname = document.getElementById("surname");
@@ -378,7 +377,7 @@ function showInlineError(inputEl, message) {
   error.innerText = message;
   inputEl.parentNode.insertBefore(error, inputEl.nextSibling);
 }
-</script>
+
 
 window.loginUser = function () {
   const input = document.getElementById("loginEmail").value;
