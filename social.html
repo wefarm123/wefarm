@@ -399,6 +399,18 @@
       });
   };
 
+    window.verifyOTP = function () {
+      const code = document.getElementById("otpCode").value;
+      if (!confirmationResult) {
+        showPopup("Please request OTP first.");
+        return;
+      }
+      confirmationResult.confirm(code)
+        .then(() => showPopup("Phone verified successfully!"))
+        .catch(() => showPopup("Invalid OTP. Please try again."));
+    };
+
+
   window.forgotPassword = function () {
     const email = document.getElementById("loginEmail").value;
     if (!email.includes("@")) {
