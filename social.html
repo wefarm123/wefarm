@@ -299,7 +299,7 @@ window.sendOTP = function () {
 };
 
 // ✅ FIREBASE SIGNUP WITH DUPLICATE CHECK (Realtime DB + Auth Level)
-window.signupUser = function () {
+window.signupUser = async function () {
   const emailInput = document.getElementById("signupEmail").value.trim();
   const password = document.getElementById("signupPassword").value;
   const firstName = document.getElementById("firstName").value.trim();
@@ -311,47 +311,42 @@ window.signupUser = function () {
     return;
   }
 
-  if (!emailInput.includes("@")) {
-    showPopup("Please enter a valid email address with @");
-    return;
-  }
-
-  const email = emailInput;
+  // ✅ Strict email format validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  if (!emailRegex.test(emailInput)) {
     showPopup("Invalid email format");
     return;
   }
 
+  const email = emailInput;
+
+  // ✅ Strong password rule
   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password)) {
     showPopup("Password must be 8+ chars, include a letter, number, and !@#$%");
     return;
   }
 
-  // 🔍 Check for existing email or phone in DB
-  const usersRef = ref(db, 'users');
-  get(usersRef).then((snapshot) => {
-    let emailExists = false;
-    let phoneExists = false;
+  // 🔍 Check Realtime Database for duplicates
+  try {
+    const usersRef = ref(db, 'users');
+    const snapshot = await get(usersRef);
+    let duplicate = false;
 
     snapshot.forEach((child) => {
       const data = child.val();
-      if (data.email === email) emailExists = true;
-      if (data.phone === phone) phoneExists = true;
+      if (data.email === email) {
+        showPopup("Email already registered.");
+        duplicate = true;
+      } else if (data.phone === phone) {
+        showPopup("Phone number already registered.");
+        duplicate = true;
+      }
     });
 
-    if (emailExists) {
-      showPopup("Email already registered");
-      return;
-    }
+    if (duplicate) return;
 
-    if (phoneExists) {
-      showPopup("Phone number already registered");
-      return;
-    }
-
-    // ✅ Proceed with signup
+    // ✅ Create user in Firebase Auth
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         set(ref(db, 'users/' + userCredential.user.uid), {
@@ -362,11 +357,18 @@ window.signupUser = function () {
         });
         showPopup("Signup successful!");
       })
-      .catch((error) => showPopup(error.message));
-  }).catch((error) => {
-    console.error("Database read error: ", error);
-    showPopup("Error checking existing users");
-  });
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          showPopup("Email is already in use.");
+        } else {
+          showPopup(error.message);
+        }
+      });
+
+  } catch (error) {
+    console.error("Error checking duplicates:", error);
+    showPopup("Something went wrong. Try again later.");
+  }
 };
 
 
