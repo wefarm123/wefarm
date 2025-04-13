@@ -305,42 +305,42 @@ window.signupUser = function () {
   const surname = document.getElementById("surname").value.trim();
   const phone = document.getElementById("signupPhone").value.trim();
 
-  // 🔒 Field validation
   if (!firstName || !surname || !emailInput || !password || !phone) {
     showPopup("⚠️ Please fill all fields.");
     return;
   }
 
-  // 📧 Email format check
+  console.log("Email input received:", emailInput); 
+
+  // ✅ STRICT Email format check (must include @domain)
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(emailInput)) {
-    showPopup("❌ Please enter a valid email address (with @ and domain).");
+    showPopup("❌ Enter a valid email address with @ and domain.");
     return;
   }
 
-  // 🔐 Password strength check (8+ chars, letter, number, special)
+  // ✅ Password strength check
   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password)) {
-    showPopup("🔒 Password must be 8+ chars, include letter, number, and one of !@#$%");
+    showPopup("🔒 Password must be 8+ chars, include letter, number, and !@#$%");
     return;
   }
 
-  // 📛 Phone format check
   if (!phone.startsWith("+91") || phone.length < 10) {
-    showPopup("📱 Phone must start with +91 and be valid.");
+    showPopup("📱 Enter a valid Indian phone number starting with +91.");
     return;
   }
 
-  // 🔍 Check Firebase DB for duplicate email or phone
+  // 🔍 Check Realtime DB for duplicates
   const usersRef = ref(db, "users");
   get(usersRef).then((snapshot) => {
     let emailExists = false;
     let phoneExists = false;
 
     snapshot.forEach((child) => {
-      const data = child.val();
-      if (data.email?.toLowerCase() === emailInput.toLowerCase()) emailExists = true;
-      if (data.phone === phone) phoneExists = true;
+      const user = child.val();
+      if (user.email?.toLowerCase() === emailInput.toLowerCase()) emailExists = true;
+      if (user.phone === phone) phoneExists = true;
     });
 
     if (emailExists) {
@@ -353,7 +353,7 @@ window.signupUser = function () {
       return;
     }
 
-    // ✅ Proceed with Firebase Auth signup
+    // ✅ Proceed to Firebase Auth
     createUserWithEmailAndPassword(auth, emailInput, password)
       .then((userCredential) => {
         return set(ref(db, "users/" + userCredential.user.uid), {
@@ -371,13 +371,12 @@ window.signupUser = function () {
         showPopup("🚫 " + error.message);
       });
   }).catch((err) => {
-    console.error("DB Check Failed", err);
-    showPopup("⚠️ Failed to verify user data. Try again.");
+    console.error("DB error:", err);
+    showPopup("❌ Could not check for duplicates.");
   });
 };
 
-
-
+  
 window.loginUser = function () {
   const input = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
