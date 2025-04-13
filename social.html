@@ -145,14 +145,16 @@
     }
     /* New inline error message style */
     .error-message {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-      padding: 10px;
-      border-radius: 5px;
-      margin: 10px 0;
-      display: none;
-    }
+  font-size: 12px;
+  color: red;
+  margin-top: -8px;
+  margin-bottom: 5px;
+  display: none;
+}
+input.invalid {
+  border: 2px solid red !important;
+}
+
   </style>
 </head>
 <body>
@@ -182,10 +184,19 @@
         <h2 id="signupTitle">Create Account</h2>
         <!-- Inline error container for signup -->
         <div id="signupError" class="error-message"></div>
-        <input id="firstName" type="text" placeholder="First Name" />
-        <input id="surname" type="text" placeholder="Surname" />
-        <input id="signupEmail" type="text" placeholder="Email" />
-        <input id="signupPhone" type="tel" placeholder="Phone Number" />
+
+       <input id="firstName" type="text" placeholder="First Name" />
+<span class="error-message" id="firstNameError"></span>
+
+<input id="surname" type="text" placeholder="Surname" />
+<span class="error-message" id="surnameError"></span>
+
+<input id="signupEmail" type="text" placeholder="Email" />
+<span class="error-message" id="emailError"></span>
+
+<input id="signupPhone" type="tel" placeholder="Phone Number" />
+<span class="error-message" id="phoneError"></span>
+
         <div id="recaptcha-container" class="captcha-style"></div>
         <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
         <div id="otpSection">
@@ -194,6 +205,8 @@
           <button id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
         </div>
         <input id="signupPassword" type="password" placeholder="Password" />
+        <span class="error-message" id="passwordError"></span>
+
         <button onclick="signupUser()" id="signupBtn">Sign Up</button>
         <div class="toggle" onclick="flipCard()" id="backToLogin">Back to Login</div>
       </div>
@@ -311,65 +324,122 @@
       .catch((err) => showPopup(err.message));
   };
 
-  window.signupUser = function () {
-    const signupError = document.getElementById("signupError");
-    signupError.style.display = "none";
-    signupError.innerText = "";
+ window.signupUser = function () {
+  const fields = {
+    firstName: document.getElementById("firstName"),
+    surname: document.getElementById("surname"),
+    email: document.getElementById("signupEmail"),
+    phone: document.getElementById("signupPhone"),
+    password: document.getElementById("signupPassword")
+  };
 
-    const email = document.getElementById("signupEmail").value.trim();
-    const password = document.getElementById("signupPassword").value.trim();
-    const firstName = document.getElementById("firstName").value.trim();
-    const surname = document.getElementById("surname").value.trim();
+  const errors = {
+    firstName: document.getElementById("firstNameError"),
+    surname: document.getElementById("surnameError"),
+    email: document.getElementById("emailError"),
+    phone: document.getElementById("phoneError"),
+    password: document.getElementById("passwordError")
+  };
 
-    let errors = [];
+  // Clear previous errors
+  for (let key in fields) {
+    fields[key].classList.remove("invalid");
+    errors[key].style.display = "none";
+    errors[key].innerText = "";
+  }
 
-    // Validate first name and surname: must contain only alphabets (A-Z or a-z)
-    if (!/^[A-Za-z]+$/.test(firstName)) {
-      errors.push("First name must contain only alphabets.");
-    }
-    if (!/^[A-Za-z]+$/.test(surname)) {
-      errors.push("Surname must contain only alphabets.");
-    }
+  const nameRegex = /^[A-Za-z]{2,}$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
 
-    // Validate email: must contain '@'
-    if (!email.includes("@")) {
-      errors.push("Email must contain '@'.");
-    } else {
-      // Check if the email domain is one of the popular ones
-      const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
-      // Extract the domain from the email (using the substring after the last '@')
-      const domain = email.substring(email.lastIndexOf("@") + 1).toLowerCase();
-      if (!allowedDomains.includes(domain)) {
-        errors.push("Email domain must be gmail, yahoo, outlook, or hotmail.");
-      }
-    }
+  let hasError = false;
 
-    // Validate password: at least 8 characters; requires one uppercase, one lowercase, one number, and one special character
-    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password)) {
-      errors.push("Password must be at least 8 characters long, containing uppercase, lowercase, a number, and a special character.");
-    }
+  if (!nameRegex.test(fields.firstName.value.trim())) {
+    fields.firstName.classList.add("invalid");
+    errors.firstName.innerText = "Only letters allowed, min 2 characters.";
+    errors.firstName.style.display = "block";
+    hasError = true;
+  }
 
-    if (errors.length > 0) {
-      signupError.innerText = errors.join(" ");
-      signupError.style.display = "block";
+  if (!nameRegex.test(fields.surname.value.trim())) {
+    fields.surname.classList.add("invalid");
+    errors.surname.innerText = "Only letters allowed, min 2 characters.";
+    errors.surname.style.display = "block";
+    hasError = true;
+  }
+
+  if (!emailRegex.test(fields.email.value.trim())) {
+    fields.email.classList.add("invalid");
+    errors.email.innerText = "Enter a valid Gmail/Yahoo/Outlook email.";
+    errors.email.style.display = "block";
+    hasError = true;
+  }
+
+  const phone = fields.phone.value.trim();
+  if (!phone.startsWith("+91") || phone.length < 10) {
+    fields.phone.classList.add("invalid");
+    errors.phone.innerText = "Phone must start with +91 and be valid.";
+    errors.phone.style.display = "block";
+    hasError = true;
+  }
+
+  const password = fields.password.value;
+  if (!passwordRegex.test(password)) {
+    fields.password.classList.add("invalid");
+    errors.password.innerText = "Min 8 chars, 1 uppercase, number & special (!@#$%).";
+    errors.password.style.display = "block";
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  // Firebase DB duplicate check
+  const email = fields.email.value.trim();
+  const usersRef = ref(db, "users");
+  get(usersRef).then((snapshot) => {
+    let emailExists = false;
+    let phoneExists = false;
+
+    snapshot.forEach((child) => {
+      const data = child.val();
+      if (data.email?.toLowerCase() === email.toLowerCase()) emailExists = true;
+      if (data.phone === phone) phoneExists = true;
+    });
+
+    if (emailExists) {
+      fields.email.classList.add("invalid");
+      errors.email.innerText = "Email already registered.";
+      errors.email.style.display = "block";
       return;
     }
 
-    // Proceed with Firebase signup if validations pass
+    if (phoneExists) {
+      fields.phone.classList.add("invalid");
+      errors.phone.innerText = "Phone number already registered.";
+      errors.phone.style.display = "block";
+      return;
+    }
+
+    // Create user in Firebase
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        set(ref(db, 'users/' + userCredential.user.uid), {
-          firstName: firstName,
-          surname: surname,
-          email: email
+        return set(ref(db, "users/" + userCredential.user.uid), {
+          firstName: fields.firstName.value.trim(),
+          surname: fields.surname.value.trim(),
+          email,
+          phone
         });
-        showPopup("Signup successful!");
+      })
+      .then(() => {
+        showPopup("✅ Signup successful!");
       })
       .catch((error) => {
-        signupError.innerText = error.message;
-        signupError.style.display = "block";
+        console.error("SIGNUP ERROR", error);
+        showPopup("🚫 " + error.message);
       });
-  };
+  });
+};
+
 
   window.loginUser = function () {
     const loginError = document.getElementById("loginError");
