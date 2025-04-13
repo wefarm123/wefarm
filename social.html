@@ -159,6 +159,7 @@
       100% { transform: rotate(360deg); }
     }
 
+    
   </style>
 </head>
 <body>
@@ -266,83 +267,81 @@ function startResendCountdown() {
     }
   }, 1000);
 }
-</script> 
-
+</script>
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-      authDomain: "wefarmproject.firebaseapp.com",
-      databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "wefarmproject",
-      storageBucket: "wefarmproject.firebasestorage.app",
-      messagingSenderId: "260514820964",
-      appId: "1:260514820964:web:400135c256ed2554388071"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+  authDomain: "wefarmproject.firebaseapp.com",
+  databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "wefarmproject",
+  storageBucket: "wefarmproject.firebasestorage.app",
+  messagingSenderId: "260514820964",
+  appId: "1:260514820964:web:400135c256ed2554388071"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-    let recaptchaVerifier;
-    let recaptchaInitialized = false;
-    let confirmationResult;
+window.sendOTP = function () {
+  const phone = document.getElementById("signupPhone").value;
+  if (!phone.startsWith("+91")) {
+    showPopup("Please enter phone in +91 format");
+    return;
+  }
 
-    window.sendOTP = function () {
-      const phone = document.getElementById("signupPhone").value;
-      const btn = document.getElementById("sendOtpBtn");
-      if (!phone.startsWith("+91")) {
-        showPopup("Please enter phone in +91 format");
-        return;
-      }
-      btn.disabled = true;
+  btn.disabled = true;
       const originalText = btn.textContent;
       btn.innerHTML = 'Sending... <span class="spinner"></span>';
-      
-        if (!recaptchaInitialized) {
-          recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-            size: 'normal', callback: () => {}
-          }, auth);
-          recaptchaVerifier.render();
-          recaptchaInitialized = true;
-        }
-        signInWithPhoneNumber(auth, phone, recaptchaVerifier)
-          .then((res) => {
-            confirmationResult = res;
-            document.getElementById("otpSection").style.display = "block";
-            showPopup("OTP sent successfully!");
-            startResendCountdown();
-          })
-          .catch((err) => showPopup(err.message))
-          .finally(() => {
-            btn.disabled = false;
-            btn.textContent = originalText;
-          });
-     
-    };
 
-    window.resendOTP = function () {
-      const phone = document.getElementById("signupPhone").value;
-      const btn = document.getElementById("resendBtn");
-      if (!phone.startsWith("+91")) {
-        showPopup("Please enter phone in +91 format");
-        return;
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'normal',
+      callback: (response) => {
+        // CAPTCHA solved
       }
-      btn.disabled = true;
-      btn.innerHTML = `Resend OTP (30s) <span class="spinner"></span>`;
-      signInWithPhoneNumber(auth, phone, recaptchaVerifier)
-        .then((res) => {
-          confirmationResult = res;
-          showPopup("OTP resent successfully!");
-          startResendCountdown();
-        })
-        .catch((err) => showPopup(err.message));
-    };
+    });
+    window.recaptchaVerifier.render(); // render only once
+  }
 
-    window.verifyOTP = function () {
+  signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+    .then((res) => {
+      confirmationResult = res;
+      document.getElementById("otpSection").style.display = "block";
+      showPopup("OTP sent successfully!");
+      startResendCountdown();
+    })
+    .catch((err) => showPopup(err.message));
+};
+
+
+
+window.signupUser = function () {
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+  const firstName = document.getElementById("firstName").value;
+  const surname = document.getElementById("surname").value;
+
+  if (!email || !password || !firstName || !surname) {
+    showPopup("Please fill all fields.");
+    return;
+  }
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      set(ref(db, 'users/' + userCredential.user.uid), {
+        firstName: firstName,
+        surname: surname,
+        email: email
+      });
+      showPopup("Signup successful!");
+    })
+    .catch((error) => showPopup(error.message));
+};
+ window.verifyOTP = function () {
       const code = document.getElementById("otpCode").value;
       if (!confirmationResult) {
         showPopup("Please request OTP first.");
@@ -369,29 +368,7 @@ function startResendCountdown() {
       }, 1000);
     };
 
-window.signupUser = function () {
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
-  const firstName = document.getElementById("firstName").value;
-  const surname = document.getElementById("surname").value;
-
-  if (!email || !password || !firstName || !surname) {
-    showPopup("Please fill all fields.");
-    return;
-  }
-
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      set(ref(db, 'users/' + userCredential.user.uid), {
-        firstName: firstName,
-        surname: surname,
-        email: email
-      });
-      showPopup("Signup successful!");
-    })
-    .catch((error) => showPopup(error.message));
-};
-
+  
 window.loginUser = function () {
   const input = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
@@ -401,7 +378,6 @@ window.loginUser = function () {
     showPopup("Enter both email/phone and password");
     return;
   }
-
   signInWithEmailAndPassword(auth, email, password)
     .then(() => {
       showPopup("Login successful!");
@@ -412,17 +388,17 @@ window.loginUser = function () {
 
 window.forgotPassword = function () {
   const email = document.getElementById("loginEmail").value;
-
   if (!email.includes("@")) {
     showPopup("Use email (not phone) for password reset");
     return;
   }
-
   sendPasswordResetEmail(auth, email)
     .then(() => showPopup("Reset link sent!"))
     .catch((error) => showPopup(error.message));
 };
+
 </script>
+
 <script>
   const canvas = document.getElementById("bubbleCanvas");
   const ctx = canvas.getContext("2d");
@@ -480,5 +456,5 @@ window.forgotPassword = function () {
   animateBubbles();
 </script>
 
-  </body>
+</body>
 </html>
