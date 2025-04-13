@@ -326,58 +326,62 @@ window.signupUser = function () {
   const phone = document.getElementById("signupPhone");
   const password = document.getElementById("signupPassword");
 
-  // Clear previous styles
+  // Reset
   [firstName, surname, email, phone, password].forEach(el => {
-    el.style.border = "1px solid #ccc";
-    if (el.nextElementSibling && el.nextElementSibling.classList.contains('error')) {
-      el.nextElementSibling.remove();
+    el.classList.remove("invalid");
+    const err = el.nextElementSibling;
+    if (err && err.classList.contains("error-message")) {
+      err.innerText = "";
+      err.style.display = "none";
     }
   });
 
   let hasError = false;
 
-  // Name Validation
+  // First name and surname validation
   const nameRegex = /^[A-Za-z]{2,}$/;
   if (!nameRegex.test(firstName.value)) {
-    showInlineError(firstName, "Only alphabets allowed in First Name.");
+    showError(firstName, "First name must be letters only (min 2 chars)");
     hasError = true;
   }
   if (!nameRegex.test(surname.value)) {
-    showInlineError(surname, "Only alphabets allowed in Surname.");
+    showError(surname, "Surname must be letters only (min 2 chars)");
     hasError = true;
   }
 
-  // Email Validation
-  const domainRegex = /^[^\s@]+@(gmail\.com|yahoo\.com|outlook\.com)$/i;
-  if (!domainRegex.test(email.value)) {
-    showInlineError(email, "Email must be gmail, yahoo or outlook only.");
+  // Email validation (gmail, yahoo, outlook)
+  const emailRegex = /^[^\s@]+@(gmail\.com|yahoo\.com|outlook\.com)$/i;
+  if (!emailRegex.test(email.value)) {
+    showError(email, "Only Gmail, Yahoo, or Outlook emails are allowed.");
     hasError = true;
   }
 
-  // Password Validation
+  // Password validation
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password.value)) {
-    showInlineError(password, "Password must be 8+ chars, include upper, number & !@#$%.");
+    showError(password, "Must be 8+ chars with upper, number & special (!@#$%)");
+    hasError = true;
+  }
+
+  // Optional: Phone format validation
+  if (!phone.value.startsWith("+91") || phone.value.length < 13) {
+    showError(phone, "Phone must start with +91 and be valid.");
     hasError = true;
   }
 
   if (hasError) return;
 
-  // Proceed to Firebase (code continues...)
-  showPopup("✅ All fields validated. Proceed to create account...");
+  showPopup("✅ Validated! Proceed to Firebase signup...");
 };
 
-function showInlineError(inputEl, message) {
-  inputEl.style.border = "2px solid red";
-  const error = document.createElement("div");
-  error.className = "error";
-  error.style.color = "red";
-  error.style.fontSize = "12px";
-  error.style.marginTop = "-8px";
-  error.innerText = message;
-  inputEl.parentNode.insertBefore(error, inputEl.nextSibling);
-}
-
+function showError(el, message) {
+  el.classList.add("invalid");
+  const errorEl = el.nextElementSibling;
+  if (errorEl && errorEl.classList.contains("error-message")) {
+    errorEl.innerText = message;
+    errorEl.style.display = "block";
+  }
+};
 
 window.loginUser = function () {
   const input = document.getElementById("loginEmail").value;
