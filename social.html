@@ -469,6 +469,33 @@ input.invalid {
       });
   };
 
+function validateSignupFields() {
+  const firstName = document.getElementById("firstName").value.trim();
+  const surname = document.getElementById("surname").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const phone = document.getElementById("signupPhone").value.trim();
+  const password = document.getElementById("signupPassword").value;
+
+  const nameRegex = /^[A-Za-z]{2,}$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+  const isValid =
+    nameRegex.test(firstName) &&
+    nameRegex.test(surname) &&
+    emailRegex.test(email) &&
+    phone.startsWith("+91") && phone.length >= 10 &&
+    passwordRegex.test(password);
+
+  document.getElementById("sendOtpBtn").disabled = !isValid;
+}
+
+// Attach listeners to run validation live
+["firstName", "surname", "signupEmail", "signupPhone", "signupPassword"].forEach((id) => {
+  document.getElementById(id).addEventListener("input", validateSignupFields);
+});
+
+
+   
     window.verifyOTP = function () {
       const code = document.getElementById("otpCode").value;
       if (!confirmationResult) {
