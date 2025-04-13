@@ -265,149 +265,152 @@
       }, 1000);
     }
   </script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
-  
-    const firebaseConfig = {
-      apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
-      authDomain: "wefarmproject.firebaseapp.com",
-      databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "wefarmproject",
-      storageBucket: "wefarmproject.firebasestorage.app",
-      messagingSenderId: "260514820964",
-      appId: "1:260514820964:web:400135c256ed2554388071"
-    };
-  
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-  
-    window.sendOTP = function () {
-      const phone = document.getElementById("signupPhone").value;
-      if (!phone.startsWith("+91")) {
-        showPopup("Please enter phone in +91 format");
-        return;
-      }
-  
-      if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-          size: 'normal',
-          callback: (response) => {
-            // CAPTCHA solved
-          }
-        });
-        window.recaptchaVerifier.render();
-      }
-  
-      signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-        .then((res) => {
-          confirmationResult = res;
-          document.getElementById("otpSection").style.display = "block";
-          showPopup("OTP sent successfully!");
-          startResendCountdown();
-        })
-        .catch((err) => showPopup(err.message));
-    };
-  
-    window.signupUser = function () {
-      const signupError = document.getElementById("signupError");
-      signupError.style.display = "none";
-      signupError.innerText = "";
-  
-      const email = document.getElementById("signupEmail").value.trim();
-      const password = document.getElementById("signupPassword").value.trim();
-      const firstName = document.getElementById("firstName").value.trim();
-      const surname = document.getElementById("surname").value.trim();
-  
-      let errors = [];
-  
-      // Validate first name and surname (alphabetic characters only)
-      if (!/^[A-Za-z]+$/.test(firstName)) {
-        errors.push("First name must contain only alphabets.");
-      }
-      if (!/^[A-Za-z]+$/.test(surname)) {
-        errors.push("Surname must contain only alphabets.");
-      }
-  
-      // Validate email domain
-      const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
-      const emailParts = email.split("@");
-      if (emailParts.length !== 2) {
-        errors.push("Invalid email format.");
-      } else {
-        const domain = emailParts[1].toLowerCase();
-        if (!allowedDomains.includes(domain)) {
-          errors.push("Email must be from gmail, yahoo, outlook, or hotmail.");
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
+    authDomain: "wefarmproject.firebaseapp.com",
+    databaseURL: "https://wefarmproject-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "wefarmproject",
+    storageBucket: "wefarmproject.firebasestorage.app",
+    messagingSenderId: "260514820964",
+    appId: "1:260514820964:web:400135c256ed2554388071"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  window.sendOTP = function () {
+    const phone = document.getElementById("signupPhone").value;
+    if (!phone.startsWith("+91")) {
+      showPopup("Please enter phone in +91 format");
+      return;
+    }
+
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'normal',
+        callback: (response) => {
+          // CAPTCHA solved
         }
+      });
+      window.recaptchaVerifier.render();
+    }
+
+    signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+      .then((res) => {
+        confirmationResult = res;
+        document.getElementById("otpSection").style.display = "block";
+        showPopup("OTP sent successfully!");
+        startResendCountdown();
+      })
+      .catch((err) => showPopup(err.message));
+  };
+
+  window.signupUser = function () {
+    const signupError = document.getElementById("signupError");
+    signupError.style.display = "none";
+    signupError.innerText = "";
+
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value.trim();
+    const firstName = document.getElementById("firstName").value.trim();
+    const surname = document.getElementById("surname").value.trim();
+
+    let errors = [];
+
+    // Validate first name and surname: must contain only alphabets (A-Z or a-z)
+    if (!/^[A-Za-z]+$/.test(firstName)) {
+      errors.push("First name must contain only alphabets.");
+    }
+    if (!/^[A-Za-z]+$/.test(surname)) {
+      errors.push("Surname must contain only alphabets.");
+    }
+
+    // Validate email: must contain '@'
+    if (!email.includes("@")) {
+      errors.push("Email must contain '@'.");
+    } else {
+      // Check if the email domain is one of the popular ones
+      const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
+      // Extract the domain from the email (using the substring after the last '@')
+      const domain = email.substring(email.lastIndexOf("@") + 1).toLowerCase();
+      if (!allowedDomains.includes(domain)) {
+        errors.push("Email domain must be gmail, yahoo, outlook, or hotmail.");
       }
-  
-      // Validate password: at least 8 characters; requires one uppercase, one lowercase, one number, and one special character
-      if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password)) {
-        errors.push("Password must be at least 8 characters long, containing uppercase, lowercase, a number, and a special character.");
-      }
-  
-      if (errors.length > 0) {
-        signupError.innerText = errors.join(" ");
+    }
+
+    // Validate password: at least 8 characters; requires one uppercase, one lowercase, one number, and one special character
+    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password)) {
+      errors.push("Password must be at least 8 characters long, containing uppercase, lowercase, a number, and a special character.");
+    }
+
+    if (errors.length > 0) {
+      signupError.innerText = errors.join(" ");
+      signupError.style.display = "block";
+      return;
+    }
+
+    // Proceed with Firebase signup if validations pass
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        set(ref(db, 'users/' + userCredential.user.uid), {
+          firstName: firstName,
+          surname: surname,
+          email: email
+        });
+        showPopup("Signup successful!");
+      })
+      .catch((error) => {
+        signupError.innerText = error.message;
         signupError.style.display = "block";
-        return;
-      }
-  
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          set(ref(db, 'users/' + userCredential.user.uid), {
-            firstName: firstName,
-            surname: surname,
-            email: email
-          });
-          showPopup("Signup successful!");
-        })
-        .catch((error) => {
-          signupError.innerText = error.message;
-          signupError.style.display = "block";
-        });
-    };
-  
-    window.loginUser = function () {
-      const loginError = document.getElementById("loginError");
-      loginError.style.display = "none";
-      loginError.innerText = "";
-  
-      const input = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-  
-      if (!input || !password) {
-        loginError.innerText = "Enter both email/phone and password";
+      });
+  };
+
+  window.loginUser = function () {
+    const loginError = document.getElementById("loginError");
+    loginError.style.display = "none";
+    loginError.innerText = "";
+
+    const input = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    if (!input || !password) {
+      loginError.innerText = "Enter both email/phone and password";
+      loginError.style.display = "block";
+      return;
+    }
+
+    // Determine if input is email or phone-based login
+    const email = input.includes("@") ? input : input + "@wefarm.login";
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        showPopup("Login successful!");
+        window.location.href = "profile.html";
+      })
+      .catch((error) => {
+        loginError.innerText = error.message;
         loginError.style.display = "block";
-        return;
-      }
-  
-      // Determine if input is email or phone-based login
-      const email = input.includes("@") ? input : input + "@wefarm.login";
-  
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          showPopup("Login successful!");
-          window.location.href = "profile.html";
-        })
-        .catch((error) => {
-          loginError.innerText = error.message;
-          loginError.style.display = "block";
-        });
-    };
-  
-    window.forgotPassword = function () {
-      const email = document.getElementById("loginEmail").value;
-      if (!email.includes("@")) {
-        showPopup("Use email (not phone) for password reset");
-        return;
-      }
-      sendPasswordResetEmail(auth, email)
-        .then(() => showPopup("Reset link sent!"))
-        .catch((error) => showPopup(error.message));
-    };
-  </script>
+      });
+  };
+
+  window.forgotPassword = function () {
+    const email = document.getElementById("loginEmail").value;
+    if (!email.includes("@")) {
+      showPopup("Use email (not phone) for password reset");
+      return;
+    }
+    sendPasswordResetEmail(auth, email)
+      .then(() => showPopup("Reset link sent!"))
+      .catch((error) => showPopup(error.message));
+  };
+</script>
+
   <script>
     const canvas = document.getElementById("bubbleCanvas");
     const ctx = canvas.getContext("2d");
