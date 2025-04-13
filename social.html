@@ -304,73 +304,78 @@ window.signupUser = function () {
   const firstName = document.getElementById("firstName").value.trim();
   const surname = document.getElementById("surname").value.trim();
   const phone = document.getElementById("signupPhone").value.trim();
-  const signupBtn = document.getElementById("signupBtn");
 
-  // Disable button to prevent double clicks
-  signupBtn.disabled = true;
-  signupBtn.innerHTML = 'Processing...';
-
-  // ✅ Check required fields
+  // 🔒 Field validation
   if (!firstName || !surname || !emailInput || !password || !phone) {
     showPopup("⚠️ Please fill all fields.");
-    signupBtn.disabled = false;
-    signupBtn.innerHTML = 'Sign Up';
     return;
   }
 
-  // ✅ Validate email format
+  // 📧 Email format check
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(emailInput)) {
-    showPopup("❌ Please enter a valid email address.");
-    signupBtn.disabled = false;
-    signupBtn.innerHTML = 'Sign Up';
+    showPopup("❌ Please enter a valid email address (with @ and domain).");
     return;
   }
 
-  // ✅ Validate strong password
+  // 🔐 Password strength check (8+ chars, letter, number, special)
   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password)) {
-    showPopup("🔒 Password must be 8+ chars, include a letter, number, and one of !@#$%");
-    signupBtn.disabled = false;
-    signupBtn.innerHTML = 'Sign Up';
+    showPopup("🔒 Password must be 8+ chars, include letter, number, and one of !@#$%");
     return;
   }
 
-  // ✅ Check for duplicates in Realtime DB
-  const usersRef = ref(db, 'users');
+  // 📛 Phone format check
+  if (!phone.startsWith("+91") || phone.length < 10) {
+    showPopup("📱 Phone must start with +91 and be valid.");
+    return;
+  }
+
+  // 🔍 Check Firebase DB for duplicate email or phone
+  const usersRef = ref(db, "users");
   get(usersRef).then((snapshot) => {
+    let emailExists = false;
+    let phoneExists = false;
+
     snapshot.forEach((child) => {
-      const user = child.val();
-      if (user.email?.toLowerCase() === emailInput.toLowerCase()) {
-        throw new Error("📧 Email already registered.");
-      }
-      if (user.phone === phone) {
-        throw new Error("📱 Phone number already registered.");
-      }
+      const data = child.val();
+      if (data.email?.toLowerCase() === emailInput.toLowerCase()) emailExists = true;
+      if (data.phone === phone) phoneExists = true;
     });
 
-    // ✅ If all checks pass, create user in Firebase Auth
-    return createUserWithEmailAndPassword(auth, emailInput, password);
-  })
-  .then((userCredential) => {
-    return set(ref(db, 'users/' + userCredential.user.uid), {
-      firstName,
-      surname,
-      email: emailInput,
-      phone
-    });
-  })
-  .then(() => {
-    showPopup("✅ Signup successful!");
-  })
-  .catch((error) => {
-    showPopup(error.message || "🚫 Signup failed.");
-  })
-  .finally(() => {
-    signupBtn.disabled = false;
-    signupBtn.innerHTML = 'Sign Up';
+    if (emailExists) {
+      showPopup("📧 Email already registered.");
+      return;
+    }
+
+    if (phoneExists) {
+      showPopup("📱 Phone number already registered.");
+      return;
+    }
+
+    // ✅ Proceed with Firebase Auth signup
+    createUserWithEmailAndPassword(auth, emailInput, password)
+      .then((userCredential) => {
+        return set(ref(db, "users/" + userCredential.user.uid), {
+          firstName,
+          surname,
+          email: emailInput,
+          phone,
+        });
+      })
+      .then(() => {
+        showPopup("✅ Signup successful!");
+      })
+      .catch((error) => {
+        console.error(error);
+        showPopup("🚫 " + error.message);
+      });
+  }).catch((err) => {
+    console.error("DB Check Failed", err);
+    showPopup("⚠️ Failed to verify user data. Try again.");
   });
 };
+
 
 
 window.loginUser = function () {
