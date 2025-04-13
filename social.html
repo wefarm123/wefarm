@@ -289,6 +289,7 @@ const db = getDatabase(app);
 
 window.sendOTP = function () {
   const phone = document.getElementById("signupPhone").value;
+  const sendBtn = document.getElementById("sendOtpBtn"); // ✅ this was missing
   if (!phone.startsWith("+91")) {
     showPopup("Please enter phone in +91 format");
     return;
