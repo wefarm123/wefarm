@@ -255,7 +255,7 @@ function startResendCountdown() {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCop_ZiP-q7YSWB54kYytKoJKvjFecoiRU",
@@ -316,8 +316,7 @@ window.signupUser = function () {
     return;
   }
 
-  const email = emailInput.includes("@") ? emailInput : `${emailInput}@wefarm.login`;
-
+  const email = emailInput;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     showPopup("Invalid email format");
@@ -330,37 +329,46 @@ window.signupUser = function () {
     return;
   }
 
-  // 🔍 Check if email or phone exists in Firebase Realtime DB
+  // 🔍 Check for existing email or phone in DB
   const usersRef = ref(db, 'users');
   get(usersRef).then((snapshot) => {
-    let exists = false;
+    let emailExists = false;
+    let phoneExists = false;
+
     snapshot.forEach((child) => {
       const data = child.val();
-      if (data.email === email) {
-        showPopup("Email already registered");
-        exists = true;
-      } else if (data.phone === phone) {
-        showPopup("Phone number already registered");
-        exists = true;
-      }
+      if (data.email === email) emailExists = true;
+      if (data.phone === phone) phoneExists = true;
     });
 
-    if (exists) return;
+    if (emailExists) {
+      showPopup("Email already registered");
+      return;
+    }
 
-    // ✅ Firebase Auth create user
+    if (phoneExists) {
+      showPopup("Phone number already registered");
+      return;
+    }
+
+    // ✅ Proceed with signup
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         set(ref(db, 'users/' + userCredential.user.uid), {
-          firstName: firstName,
-          surname: surname,
-          email: email,
-          phone: phone
+          firstName,
+          surname,
+          email,
+          phone
         });
         showPopup("Signup successful!");
       })
       .catch((error) => showPopup(error.message));
+  }).catch((error) => {
+    console.error("Database read error: ", error);
+    showPopup("Error checking existing users");
   });
 };
+
 
 
 window.loginUser = function () {
