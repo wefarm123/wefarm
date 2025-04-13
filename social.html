@@ -474,7 +474,7 @@ function validateSignupFields() {
   const surname = document.getElementById("surname").value.trim();
   const email = document.getElementById("signupEmail").value.trim();
   const phone = document.getElementById("signupPhone").value.trim();
-  const password = document.getElementById("signupPassword").value;
+  
 
   const nameRegex = /^[A-Za-z]{2,}$/;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
@@ -484,8 +484,7 @@ function validateSignupFields() {
     nameRegex.test(surname) &&
     emailRegex.test(email) &&
     phone.startsWith("+91") && phone.length >= 10 &&
-    passwordRegex.test(password);
-
+  
   document.getElementById("sendOtpBtn").disabled = !isValid;
 }
 
