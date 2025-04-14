@@ -248,40 +248,69 @@ input.invalid {
       setTimeout(() => popup.style.display = "none", 3000);
     }
     function toggleLanguage() {
-      const lang = document.getElementById("langSwitch").value;
-      const strings = {
-        en: {
-          headerTitle: "WEFARM Social",
-          loginTitle: "Login",
-          signupTitle: "Create Account",
-          forgotPassword: "Forgot your password?",
-          loginBtn: "Log In",
-          signupBtn: "Sign Up",
-          createNew: "Create New Account",
-          backToLogin: "Back to Login",
-          sendOtpBtn: "Send OTP",
-          verifyOtp: "Verify OTP",
-          resendBtn: "Resend OTP"
-        },
-        hi: {
-          headerTitle: "वीफार्म सोशल",
-          loginTitle: "लॉग इन करें",
-          signupTitle: "खाता बनाएं",
-          forgotPassword: "पासवर्ड भूल गए?",
-          loginBtn: "लॉग इन",
-          signupBtn: "साइन अप करें",
-          createNew: "नया खाता बनाएं",
-          backToLogin: "लॉगिन पर वापस जाएं",
-          sendOtpBtn: "ओटीपी भेजें",
-          verifyOtp: "ओटीपी सत्यापित करें",
-          resendBtn: "ओटीपी पुनः भेजें"
-        }
-      }[lang];
-      for (const id in strings) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = strings[id];
-      }
+  const lang = document.getElementById("langSwitch").value;
+  const strings = {
+    en: {
+      headerTitle: "WEFARM Social",
+      loginTitle: "Login",
+      signupTitle: "Create Account",
+      forgotPassword: "Forgot your password?",
+      loginBtn: "Log In",
+      signupBtn: "Sign Up",
+      createNew: "Create New Account",
+      backToLogin: "Back to Login",
+      sendOtpBtn: "Send OTP",
+      verifyOtp: "Verify OTP",
+      resendBtn: "Resend OTP",
+      yearLabel: "Select Year of Birth",
+      genderOptions: ["Select Gender", "Male", "Female", "Other"],
+      professionOptions: ["Select Profession", "Farmer", "Dealer", "Individual"]
+    },
+    hi: {
+      headerTitle: "वीफार्म सोशल",
+      loginTitle: "लॉग इन करें",
+      signupTitle: "खाता बनाएं",
+      forgotPassword: "पासवर्ड भूल गए?",
+      loginBtn: "लॉग इन",
+      signupBtn: "साइन अप करें",
+      createNew: "नया खाता बनाएं",
+      backToLogin: "लॉगिन पर वापस जाएं",
+      sendOtpBtn: "ओटीपी भेजें",
+      verifyOtp: "ओटीपी सत्यापित करें",
+      resendBtn: "ओटीपी पुनः भेजें",
+      yearLabel: "जन्म का वर्ष चुनें",
+      genderOptions: ["लिंग चुनें", "पुरुष", "महिला", "अन्य"],
+      professionOptions: ["व्यवसाय चुनें", "किसान", "व्यापारी", "व्यक्तिगत"]
     }
+  }[lang];
+
+  for (const id in strings) {
+    const el = document.getElementById(id);
+    if (el && typeof strings[id] === 'string') {
+      el.textContent = strings[id];
+    }
+  }
+      document.getElementById("birthYear").options[0].text = strings.yearLabel;
+
+  const gender = document.getElementById("gender");
+  gender.innerHTML = "";
+  strings.genderOptions.forEach((g, i) => {
+    const opt = document.createElement("option");
+    opt.value = i === 0 ? "" : g.toLowerCase();
+    opt.textContent = g;
+    gender.appendChild(opt);
+  });
+
+  const profession = document.getElementById("profession");
+  profession.innerHTML = "";
+  strings.professionOptions.forEach((p, i) => {
+    const opt = document.createElement("option");
+    opt.value = i === 0 ? "" : p.toLowerCase();
+    opt.textContent = p;
+    profession.appendChild(opt);
+  });
+}
+    
     let confirmationResult;
     let resendTimer;
     function startResendCountdown() {
@@ -579,10 +608,22 @@ signupBtn.style.backgroundColor = "#ccc";
 signupBtn.style.cursor = "not-allowed";
 
 function validateSignupFields() {
-  const allValid = Object.keys(fields).every((key) => {
+  const allValidFields = Object.keys(fields).every((key) => {
     const field = fields[key];
     return !field.classList.contains("invalid") && field.value.trim() !== "";
   });
+
+  const year = document.getElementById("birthYear").value;
+  const gender = document.getElementById("gender").value;
+  const profession = document.getElementById("profession").value;
+
+  const additionalValid = year !== "" && gender !== "" && profession !== "";
+
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  sendOtpBtn.disabled = !(allValidFields && additionalValid);
+  sendOtpBtn.style.backgroundColor = !sendOtpBtn.disabled ? "#2E7D32" : "#ccc";
+  sendOtpBtn.style.cursor = !sendOtpBtn.disabled ? "pointer" : "not-allowed";
+}
 
   const sendOtpBtn = document.getElementById("sendOtpBtn");
   sendOtpBtn.disabled = !allValid;
