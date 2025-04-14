@@ -586,6 +586,11 @@ function validateField(fieldName) {
 for (let field in fields) {
   fields[field].addEventListener("blur", () => validateField(field));
 }
+
+["birthYear", "gender", "profession"].forEach(id => {
+  document.getElementById(id).addEventListener("change", validateSignupFields);
+});
+
 window.verifyOTP = function () {
   const code = document.getElementById("otpCode").value;
   if (!confirmationResult) {
