@@ -152,41 +152,22 @@
     input.invalid {
       border: 2px solid red !important;
     }
-    input.otp-shake {
-      animation: shake 0.3s;
+    input.shake {
+      animation: shake 0.4s ease-in-out;
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
     }
-    .phone-verified {
+    input.valid {
       border: 2px solid #28a745 !important;
-      box-shadow: 0 0 5px #28a745;
-      background-image: url('https://img.icons8.com/fluency/24/000000/checked.png');
+      background-image: url('data:image/svg+xml,<svg fill="green" height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.292 5.708l-11.3 11.3-5.29-5.29L2 13.418l6 6 13-13z"/></svg>');
       background-repeat: no-repeat;
       background-position: right 10px center;
       background-size: 20px 20px;
+      padding-right: 36px;
     }
-    .otp-verified {
-      border: 2px solid #4CAF50 !important;
-      background-image: url('https://cdn-icons-png.flaticon.com/512/190/190411.png');
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      background-size: 20px 20px;
-      animation: tickFadeIn 0.5s ease-in-out;
-    }
-    @keyframes tickFadeIn {
-      from { background-size: 0 0; opacity: 0.2; }
-      to { background-size: 20px 20px; opacity: 1; }
-    }
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(20px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(20px); }
-}
-
   </style>
 </head>
 <body>
@@ -200,9 +181,6 @@
       </select>
     </div>
   </header>
-
-
-
   <div class="card-container">
     <div class="card" id="flipCard">
       <div class="card-face front">
@@ -640,47 +618,45 @@ for (let field in fields) {
   document.getElementById(id).addEventListener("change", validateSignupFields);
 });
 
-window.verifyOTP = function () {
-  const code = document.getElementById("otpCode");
-  const phoneField = document.getElementById("signupPhone");
-  const sendOtpBtn = document.getElementById("sendOtpBtn");
-  const resendBtn = document.getElementById("resendBtn");
-  const verifyBtn = document.getElementById("verifyOtp");
+ window.verifyOTP = function () {
+      const code = document.getElementById("otpCode");
+      const phoneField = document.getElementById("signupPhone");
+      const sendOtpBtn = document.getElementById("sendOtpBtn");
+      const resendBtn = document.getElementById("resendBtn");
+      const verifyBtn = document.getElementById("verifyOtp");
 
-  if (!confirmationResult) {
-    showToast("Please request OTP first.");
-    return;
-  }
+      if (!confirmationResult) {
+        showToast("Please request OTP first.");
+        return;
+      }
 
-  confirmationResult.confirm(code.value)
-    .then(() => {
-      showToast("✅ Phone verified successfully!");
-      signupBtn.disabled = false;
-      signupBtn.style.backgroundColor = "#2E7D32";
-      signupBtn.style.cursor = "pointer";
+      confirmationResult.confirm(code.value)
+        .then(() => {
+          showToast("✅ Phone verified successfully!");
+          signupBtn.disabled = false;
+          signupBtn.style.backgroundColor = "#2E7D32";
+          signupBtn.style.cursor = "pointer";
 
-      // UI Lockdown after success
-      sendOtpBtn.disabled = true;
-      resendBtn.disabled = true;
-      verifyBtn.disabled = true;
-      clearInterval(resendTimer);
+          // UI Lockdown after success
+          sendOtpBtn.disabled = true;
+          resendBtn.disabled = true;
+          verifyBtn.disabled = true;
+          clearInterval(resendTimer);
 
-      sendOtpBtn.style.backgroundColor = resendBtn.style.backgroundColor = verifyBtn.style.backgroundColor = "#ccc";
-      sendOtpBtn.style.cursor = resendBtn.style.cursor = verifyBtn.style.cursor = "not-allowed";
+          sendOtpBtn.style.backgroundColor = resendBtn.style.backgroundColor = verifyBtn.style.backgroundColor = "#ccc";
+          sendOtpBtn.style.cursor = resendBtn.style.cursor = verifyBtn.style.cursor = "not-allowed";
 
-      phoneField.readOnly = true;
-      code.classList.remove("invalid");
-      code.classList.add("valid");
-    })
-    .catch(() => {
-      showToast("❌ Invalid OTP. Please try again.");
-      code.classList.add("invalid");
-
-      // 🔁 Shake animation
-      code.classList.add("shake");
-      setTimeout(() => code.classList.remove("shake"), 600);
-    });
-};
+          phoneField.readOnly = true;
+          code.classList.remove("invalid", "shake");
+          code.classList.add("valid");
+        })
+        .catch(() => {
+          showToast("❌ Invalid OTP. Please try again.");
+          code.classList.remove("valid");
+          code.classList.add("invalid", "shake");
+          setTimeout(() => code.classList.remove("shake"), 600);
+        });
+    }
 
 function startResendCountdown() {
   const btn = document.getElementById("resendBtn");
