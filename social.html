@@ -180,6 +180,12 @@
       from { background-size: 0 0; opacity: 0.2; }
       to { background-size: 20px 20px; opacity: 1; }
     }
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(20px); }
+}
 
   </style>
 </head>
@@ -194,6 +200,9 @@
       </select>
     </div>
   </header>
+
+
+
   <div class="card-container">
     <div class="card" id="flipCard">
       <div class="card-face front">
@@ -259,16 +268,34 @@
     </div>
   </div>
   <div id="popup" class="popup"></div>
+<div id="toast" style="
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #333;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  z-index: 10000;
+  display: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  animation: fadeInOut 3s ease forwards;
+"></div>
+
   <script>
     function flipCard() {
       document.getElementById("flipCard").classList.toggle("flipped");
     }
-    function showPopup(message) {
-      const popup = document.getElementById("popup");
-      popup.innerText = message;
-      popup.style.display = "block";
-      setTimeout(() => popup.style.display = "none", 3000);
-    }
+   function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.style.display = "block";
+  toast.style.animation = 'none'; // reset animation
+  void toast.offsetWidth; // reflow trick
+  toast.style.animation = 'fadeInOut 3s ease forwards';
+}
+
     function toggleLanguage() {
   const lang = document.getElementById("langSwitch").value;
   const strings = {
@@ -375,7 +402,7 @@
   window.sendOTP = function () {
     const phone = document.getElementById("signupPhone").value;
     if (!phone.startsWith("+91")) {
-      showPopup("Please enter phone in +91 format");
+      showToast("Please enter phone in +91 format");
       return;
     }
 
@@ -393,10 +420,10 @@
       .then((res) => {
         confirmationResult = res;
         document.getElementById("otpSection").style.display = "block";
-        showPopup("OTP sent successfully!");
+        showToast("OTP sent successfully!");
         startResendCountdown();
       })
-      .catch((err) => showPopup(err.message));
+      .catch((err) => showToast(err.message));
   };
 
  window.signupUser = function () {
@@ -506,11 +533,11 @@
         });
       })
       .then(() => {
-        showPopup("✅ Signup successful!");
+        showToast("✅ Signup successful!");
       })
       .catch((error) => {
         console.error("SIGNUP ERROR", error);
-        showPopup("🚫 " + error.message);
+        showToast("🚫 " + error.message);
       });
   });
 };
@@ -535,7 +562,7 @@
 
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        showPopup("Login successful!");
+        showToast("Login successful!");
         window.location.href = "profile.html";
       })
       .catch((error) => {
@@ -702,12 +729,12 @@ function validateSignupFields() {
   window.forgotPassword = function () {
     const email = document.getElementById("loginEmail").value;
     if (!email.includes("@")) {
-      showPopup("Use email (not phone) for password reset");
+      showToast("Use email (not phone) for password reset");
       return;
     }
     sendPasswordResetEmail(auth, email)
-      .then(() => showPopup("Reset link sent!"))
-      .catch((error) => showPopup(error.message));
+      .then(() => showToast("Reset link sent!"))
+      .catch((error) => showToast(error.message));
   };
 
    const strengthMeter = document.getElementById("strengthMeter");
