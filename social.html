@@ -593,40 +593,57 @@ for (let field in fields) {
 
 window.verifyOTP = function () {
   const code = document.getElementById("otpCode").value;
-  const otpInput = document.getElementById("otpCode");
-  const phoneInput = document.getElementById("signupPhone");
+  const phoneField = document.getElementById("signupPhone");
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
   const resendBtn = document.getElementById("resendBtn");
-  const verifyBtn = document.getElementById("verifyOtp");
 
   if (!confirmationResult) {
-    otpInput.classList.add("invalid");
-    otpInput.placeholder = "Please request OTP first";
+    showPopup("Please request OTP first.");
     return;
   }
 
   confirmationResult.confirm(code)
     .then(() => {
-      otpInput.classList.remove("invalid");
-      otpInput.style.border = "2px solid green";
-      otpInput.placeholder = "✅ Verified";
-
+      showPopup("Phone verified successfully!");
       signupBtn.disabled = false;
       signupBtn.style.backgroundColor = "#2E7D32";
       signupBtn.style.cursor = "pointer";
 
-      // Disable OTP and phone input after success
-      verifyBtn.disabled = true;
-      verifyBtn.style.backgroundColor = "#ccc";
+      // Disable resend and send OTP buttons
       resendBtn.disabled = true;
-      resendBtn.style.backgroundColor = "#ccc";
-      phoneInput.disabled = true;
-      phoneInput.style.backgroundColor = "#f5f5f5";
+      resendBtn.classList.add("resend-disabled");
+      clearInterval(resendTimer);
+
+      sendOtpBtn.disabled = true;
+      sendOtpBtn.style.backgroundColor = "#ccc";
+      sendOtpBtn.style.cursor = "not-allowed";
+
+      // Make phone number read-only
+      phoneField.readOnly = true;
     })
     .catch(() => {
-      otpInput.classList.add("invalid");
-      otpInput.placeholder = "Invalid OTP. Try again.";
+      showPopup("Invalid OTP. Please try again.");
     });
 };
+
+function startResendCountdown() {
+  const btn = document.getElementById("resendBtn");
+  let timeLeft = 60;
+  btn.disabled = true;
+  btn.classList.add("resend-disabled");
+  btn.textContent = `Resend OTP (60s)`;
+  resendTimer = setInterval(() => {
+    timeLeft--;
+    btn.textContent = `Resend OTP (${timeLeft}s)`;
+    if (timeLeft <= 0) {
+      clearInterval(resendTimer);
+      btn.disabled = false;
+      btn.textContent = "Resend OTP";
+      btn.classList.remove("resend-disabled");
+    }
+  }, 1000);
+}
+
 
 const signupBtn = document.getElementById("signupBtn");
 signupBtn.disabled = true;
