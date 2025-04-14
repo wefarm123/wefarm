@@ -572,18 +572,27 @@ input:focus, select:focus {
       return;
     }
 
-    // Determine if input is email or phone-based login
     const email = input.includes("@") ? input : input + "@wefarm.login";
+      // Show spinner and update button text
+  document.getElementById("loginBtnText").textContent = "Logging in...";
+  document.getElementById("loginSpinner").style.display = "inline-block";
+
 
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        showToast("Login successful!");
-        window.location.href = "profile.html";
-      })
-      .catch((error) => {
-        loginError.innerText = error.message;
-        loginError.style.display = "block";
-      });
+       .then(() => {
+    showToast("Login successful!");
+    window.location.href = "profile.html";
+  })
+  .catch((error) => {
+    loginError.innerText = error.message;
+    loginError.style.display = "block";
+  })
+  .finally(() => {
+    // Reset button after login attempt
+    document.getElementById("loginBtnText").textContent = "Log In";
+    document.getElementById("loginSpinner").style.display = "none";
+  });
+
   };
 
 const fields = {
