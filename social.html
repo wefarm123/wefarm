@@ -616,39 +616,53 @@ for (let field in fields) {
 });
 
 window.verifyOTP = function () {
-  const code = document.getElementById("otpCode");
+  const code = document.getElementById("otpCode").value;
   const phoneField = document.getElementById("signupPhone");
   const sendOtpBtn = document.getElementById("sendOtpBtn");
   const resendBtn = document.getElementById("resendBtn");
   const verifyBtn = document.getElementById("verifyOtp");
+  const otpInput = document.getElementById("otpCode");
 
   if (!confirmationResult) {
     showPopup("Please request OTP first.");
     return;
   }
 
-  confirmationResult.confirm(code.value)
+  confirmationResult.confirm(code)
     .then(() => {
       showPopup("Phone verified successfully!");
       signupBtn.disabled = false;
       signupBtn.style.backgroundColor = "#2E7D32";
       signupBtn.style.cursor = "pointer";
 
-      // UI Lock & Animation
+      // Add verified tick style to OTP field
+      otpInput.classList.add("otp-verified");
+
+      // Disable OTP-related buttons
       sendOtpBtn.disabled = true;
+      sendOtpBtn.style.backgroundColor = "#ccc";
+      sendOtpBtn.style.cursor = "not-allowed";
+
       resendBtn.disabled = true;
+      resendBtn.classList.add("resend-disabled");
+      resendBtn.style.backgroundColor = "#ccc";
+      resendBtn.style.cursor = "not-allowed";
+
       verifyBtn.disabled = true;
-      code.classList.remove("invalid", "otp-shake");
-      phoneField.readOnly = true;
-      phoneField.classList.add("phone-verified");
+      verifyBtn.style.backgroundColor = "#ccc";
+      verifyBtn.style.cursor = "not-allowed";
+
       if (resendTimer) clearInterval(resendTimer);
+
+      phoneField.readOnly = true;
     })
     .catch(() => {
-      code.classList.add("invalid", "otp-shake");
       showPopup("Invalid OTP. Please try again.");
-      setTimeout(() => code.classList.remove("otp-shake"), 300);
+      otpInput.classList.remove("otp-verified");
+      otpInput.classList.add("invalid"); // Optional: shake or red
     });
 };
+
 function startResendCountdown() {
   const btn = document.getElementById("resendBtn");
   let timeLeft = 60;
