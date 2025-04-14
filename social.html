@@ -630,11 +630,7 @@ function validateSignupFields() {
   sendOtpBtn.style.cursor = !sendOtpBtn.disabled ? "pointer" : "not-allowed";
 }
 
-  const sendOtpBtn = document.getElementById("sendOtpBtn");
-  sendOtpBtn.disabled = !allValid;
-  sendOtpBtn.style.backgroundColor = allValid ? "#2E7D32" : "#ccc";
-  sendOtpBtn.style.cursor = allValid ? "pointer" : "not-allowed";
-}
+  
 
   window.forgotPassword = function () {
     const email = document.getElementById("loginEmail").value;
