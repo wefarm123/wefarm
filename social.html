@@ -593,18 +593,39 @@ for (let field in fields) {
 
 window.verifyOTP = function () {
   const code = document.getElementById("otpCode").value;
+  const otpInput = document.getElementById("otpCode");
+  const phoneInput = document.getElementById("signupPhone");
+  const resendBtn = document.getElementById("resendBtn");
+  const verifyBtn = document.getElementById("verifyOtp");
+
   if (!confirmationResult) {
-    showPopup("Please request OTP first.");
+    otpInput.classList.add("invalid");
+    otpInput.placeholder = "Please request OTP first";
     return;
   }
+
   confirmationResult.confirm(code)
     .then(() => {
-      showPopup("Phone verified successfully!");
+      otpInput.classList.remove("invalid");
+      otpInput.style.border = "2px solid green";
+      otpInput.placeholder = "✅ Verified";
+
       signupBtn.disabled = false;
       signupBtn.style.backgroundColor = "#2E7D32";
       signupBtn.style.cursor = "pointer";
+
+      // Disable OTP and phone input after success
+      verifyBtn.disabled = true;
+      verifyBtn.style.backgroundColor = "#ccc";
+      resendBtn.disabled = true;
+      resendBtn.style.backgroundColor = "#ccc";
+      phoneInput.disabled = true;
+      phoneInput.style.backgroundColor = "#f5f5f5";
     })
-    .catch(() => showPopup("Invalid OTP. Please try again."));
+    .catch(() => {
+      otpInput.classList.add("invalid");
+      otpInput.placeholder = "Invalid OTP. Try again.";
+    });
 };
 
 const signupBtn = document.getElementById("signupBtn");
