@@ -133,11 +133,15 @@
       display: none;
     }
     #otpSection { display: none; }
-    @media screen and (max-width: 480px) {
-      .card-face h2 { font-size: 20px; }
-      button, input, select { font-size: 13px; padding: 10px; }
-      header { font-size: 22px; padding: 8px 0; }
-    }
+    @media (max-width: 600px) {
+  .card-container {
+    width: 95%;
+    padding: 10px;
+  }
+  input, select, button {
+    font-size: 14px;
+  }
+}
     .captcha-style {
       margin: 10px 0;
       transform: scale(0.90);
