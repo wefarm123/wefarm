@@ -168,20 +168,18 @@
       background-position: right 10px center;
       background-size: 20px 20px;
     }
-
-.otp-verified {
-  border: 2px solid #4CAF50 !important;
-  background-image: url('https://cdn-icons-png.flaticon.com/512/190/190411.png'); /* tick icon */
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 20px 20px;
-  animation: tickFadeIn 0.5s ease-in-out;
-}
-
-@keyframes tickFadeIn {
-  from { background-size: 0 0; opacity: 0.2; }
-  to { background-size: 20px 20px; opacity: 1; }
-}
+    .otp-verified {
+      border: 2px solid #4CAF50 !important;
+      background-image: url('https://cdn-icons-png.flaticon.com/512/190/190411.png');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 20px 20px;
+      animation: tickFadeIn 0.5s ease-in-out;
+    }
+    @keyframes tickFadeIn {
+      from { background-size: 0 0; opacity: 0.2; }
+      to { background-size: 20px 20px; opacity: 1; }
+    }
 
   </style>
 </head>
@@ -616,50 +614,44 @@ for (let field in fields) {
 });
 
 window.verifyOTP = function () {
-  const code = document.getElementById("otpCode").value;
+  const code = document.getElementById("otpCode");
   const phoneField = document.getElementById("signupPhone");
   const sendOtpBtn = document.getElementById("sendOtpBtn");
   const resendBtn = document.getElementById("resendBtn");
   const verifyBtn = document.getElementById("verifyOtp");
-  const otpInput = document.getElementById("otpCode");
 
   if (!confirmationResult) {
-    showPopup("Please request OTP first.");
+    showToast("Please request OTP first.");
     return;
   }
 
-  confirmationResult.confirm(code)
+  confirmationResult.confirm(code.value)
     .then(() => {
-      showPopup("Phone verified successfully!");
+      showToast("✅ Phone verified successfully!");
       signupBtn.disabled = false;
       signupBtn.style.backgroundColor = "#2E7D32";
       signupBtn.style.cursor = "pointer";
 
-      // Add verified tick style to OTP field
-      otpInput.classList.add("otp-verified");
-
-      // Disable OTP-related buttons
+      // UI Lockdown after success
       sendOtpBtn.disabled = true;
-      sendOtpBtn.style.backgroundColor = "#ccc";
-      sendOtpBtn.style.cursor = "not-allowed";
-
       resendBtn.disabled = true;
-      resendBtn.classList.add("resend-disabled");
-      resendBtn.style.backgroundColor = "#ccc";
-      resendBtn.style.cursor = "not-allowed";
-
       verifyBtn.disabled = true;
-      verifyBtn.style.backgroundColor = "#ccc";
-      verifyBtn.style.cursor = "not-allowed";
+      clearInterval(resendTimer);
 
-      if (resendTimer) clearInterval(resendTimer);
+      sendOtpBtn.style.backgroundColor = resendBtn.style.backgroundColor = verifyBtn.style.backgroundColor = "#ccc";
+      sendOtpBtn.style.cursor = resendBtn.style.cursor = verifyBtn.style.cursor = "not-allowed";
 
       phoneField.readOnly = true;
+      code.classList.remove("invalid");
+      code.classList.add("valid");
     })
     .catch(() => {
-      showPopup("Invalid OTP. Please try again.");
-      otpInput.classList.remove("otp-verified");
-      otpInput.classList.add("invalid"); // Optional: shake or red
+      showToast("❌ Invalid OTP. Please try again.");
+      code.classList.add("invalid");
+
+      // 🔁 Shake animation
+      code.classList.add("shake");
+      setTimeout(() => code.classList.remove("shake"), 600);
     });
 };
 
