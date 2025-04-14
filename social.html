@@ -191,6 +191,22 @@ input.invalid {
 <input id="surname" type="text" placeholder="Surname" />
 <span class="error-message" id="surnameError"></span>
 
+<select id="birthYear">
+  <option value="">Select Year of Birth</option>
+</select>
+<select id="gender">
+  <option value="">Select Gender</option>
+  <option value="male">Male</option>
+  <option value="female">Female</option>
+  <option value="other">Other</option>
+</select>
+<select id="profession">
+  <option value="">Select Profession</option>
+  <option value="farmer">Farmer</option>
+  <option value="dealer">Dealer</option>
+  <option value="individual">Individual</option>
+</select>
+
 <input id="signupEmail" type="text" placeholder="Email" />
 <span class="error-message" id="emailError"></span>
 
@@ -198,15 +214,18 @@ input.invalid {
 
 <span class="error-message" id="phoneError"></span>
 
-        <div id="recaptcha-container" class="captcha-style"></div>
+        <input id="signupPassword" type="password" placeholder="Password" />
+        <progress id="strengthMeter" value="0" max="100" style="width: 100%; height: 5px;"></progress>
+        <small id="strengthText"></small>
+        <span class="error-message" id="passwordError"></span>
+
+<div id="recaptcha-container" class="captcha-style"></div>
         <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
         <div id="otpSection">
           <input id="otpCode" type="text" placeholder="Enter OTP" />
           <button onclick="verifyOTP()" id="verifyOtp">Verify OTP</button>
           <button id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
-        </div>
-        <input id="signupPassword" type="password" placeholder="Password" />
-        <span class="error-message" id="passwordError"></span>
+</div>
 
         <button onclick="signupUser()" id="signupBtn">Sign Up</button>
         <div class="toggle" onclick="flipCard()" id="backToLogin">Back to Login</div>
@@ -577,6 +596,35 @@ function validateSignupFields() {
       .then(() => showPopup("Reset link sent!"))
       .catch((error) => showPopup(error.message));
   };
+
+   const strengthMeter = document.getElementById("strengthMeter");
+const strengthText = document.getElementById("strengthText");
+
+fields.password.addEventListener("input", () => {
+  const val = fields.password.value;
+  let strength = 0;
+  if (val.length >= 8) strength += 25;
+  if (/[A-Z]/.test(val)) strength += 25;
+  if (/\d/.test(val)) strength += 25;
+  if (/[\W_]/.test(val)) strength += 25;
+
+  strengthMeter.value = strength;
+  strengthText.textContent =
+    strength < 50 ? "Weak" :
+    strength < 75 ? "Moderate" : "Strong";
+  strengthText.style.color = strength < 50 ? "red" : strength < 75 ? "orange" : "green";
+});
+
+const birthYearSelect = document.getElementById("birthYear");
+const currentYear = new Date().getFullYear();
+for (let i = currentYear; i >= currentYear - 100; i--) {
+  const option = document.createElement("option");
+  option.value = i;
+  option.textContent = i;
+  birthYearSelect.appendChild(option);
+}
+
+   
 </script>
 
   <script>
