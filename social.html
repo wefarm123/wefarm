@@ -168,6 +168,21 @@
       background-position: right 10px center;
       background-size: 20px 20px;
     }
+
+.otp-verified {
+  border: 2px solid #4CAF50 !important;
+  background-image: url('https://cdn-icons-png.flaticon.com/512/190/190411.png'); /* tick icon */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px 20px;
+  animation: tickFadeIn 0.5s ease-in-out;
+}
+
+@keyframes tickFadeIn {
+  from { background-size: 0 0; opacity: 0.2; }
+  to { background-size: 20px 20px; opacity: 1; }
+}
+
   </style>
 </head>
 <body>
