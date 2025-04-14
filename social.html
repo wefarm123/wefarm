@@ -596,6 +596,7 @@ window.verifyOTP = function () {
   const phoneField = document.getElementById("signupPhone");
   const sendOtpBtn = document.getElementById("sendOtpBtn");
   const resendBtn = document.getElementById("resendBtn");
+  const verifyBtn = document.getElementById("verifyOtp");
 
   if (!confirmationResult) {
     showPopup("Please request OTP first.");
@@ -609,16 +610,24 @@ window.verifyOTP = function () {
       signupBtn.style.backgroundColor = "#2E7D32";
       signupBtn.style.cursor = "pointer";
 
-      // Disable resend and send OTP buttons
-      resendBtn.disabled = true;
-      resendBtn.classList.add("resend-disabled");
-      clearInterval(resendTimer);
-
+      // Disable Send OTP, Resend OTP, and Verify OTP buttons
       sendOtpBtn.disabled = true;
       sendOtpBtn.style.backgroundColor = "#ccc";
       sendOtpBtn.style.cursor = "not-allowed";
 
-      // Make phone number read-only
+      resendBtn.disabled = true;
+      resendBtn.classList.add("resend-disabled");
+      resendBtn.style.backgroundColor = "#ccc";
+      resendBtn.style.cursor = "not-allowed";
+
+      verifyBtn.disabled = true;
+      verifyBtn.style.backgroundColor = "#ccc";
+      verifyBtn.style.cursor = "not-allowed";
+
+      // Stop countdown if running
+      if (resendTimer) clearInterval(resendTimer);
+
+      // Make phone number field read-only
       phoneField.readOnly = true;
     })
     .catch(() => {
