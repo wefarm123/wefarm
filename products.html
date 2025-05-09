@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   navToggle.addEventListener('click', () => {
     mobileMenu.classList.remove('translate-x-full');
-    navImage.src = imageList[currentIdx];
+   
     currentIdx = (currentIdx + 1) % imageList.length;
   });
   navClose.addEventListener('click', () => {
