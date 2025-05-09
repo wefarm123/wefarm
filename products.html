@@ -78,20 +78,22 @@
   </div>
 </header>
 
-<video
-  class="hero-video"
-  autoplay
-  muted
-  loop
-  playsinline
-  preload="auto"
-  disablepictureinpicture
-  disableremoteplayback
-  controlslist="nodownload nofullscreen noremoteplayback"
->
-  <source src="image/video1.mp4" type="video/mp4">
-  <source src="image/video1.webm" type="video/webm">
-</video>
+
+<section class="video-hero relative w-screen h-screen overflow-hidden">
+  <video
+    class="absolute inset-0 w-full h-full object-cover"
+    autoplay muted loop playsinline preload="auto"
+    disablepictureinpicture disableremoteplayback
+    controlslist="nodownload nofullscreen noremoteplayback"
+  >
+    <source src="image/video1.mp4" type="video/mp4">
+    <source src="image/video1.webm" type="video/webm">
+  </video>
+  <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-center px-4">
+    
+  </div>
+</section>
+
 
 
   <!-- LIVE COUNTER -->
