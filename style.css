@@ -27,16 +27,57 @@ body {
 }
 
 @media (max-width: 768px) {
-  #mobileMenu {
-    
-    background: url('image/pineapplenavgif.gif') center top/cover no-repeat;
+
+  /* Wrapper covers पूरी overlay */
+  .fruit-wrap {
+    position: absolute;
+    inset: 0;                /* top:0; right:0; bottom:0; left:0; */
+    pointer-events: none;    /* clicks fruit-wrap पर नहीं रुकेंगे */
+    overflow: hidden;
+    z-index: 0;              /* menu-content से नीचे */
   }
 
-  #mobileMenu > * {
+  /* बेसिक fruit स्टाइल */
+  .fruit {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: fall 3s linear infinite;
+  }
+
+  /* तीनों फ्रूट positions + images + delay */
+  .fruit-1 {
+    left: 20%;
+    background-image: url('image/applenav.png');
+    animation-delay: 0s;
+  }
+  .fruit-2 {
+    left: 50%;
+    background-image: url('image/pinapplenav.webp');
+    animation-delay: 1s;
+  }
+  .fruit-3 {
+    left: 80%;
+    background-image: url('image/orangenav.webp');
+    animation-delay: 2s;
+  }
+
+  /* Keyframes: ऊपर से नीचे गिरना */
+  @keyframes fall {
+    0%   { transform: translateY(-60px); opacity: 0; }
+    10%  { opacity: 1; }
+    100% { transform: translateY(110vh); opacity: 0; }
+  }
+
+  /* Ensure menu-items ऊपर रहें */
+  #mobileMenu > *:not(.fruit-wrap) {
     position: relative;
     z-index: 1;
   }
 }
+
 .custom-logo {
   font-family: 'juice_it_upregular', sans-serif;
   font-size: 3.1rem;
