@@ -1,6 +1,9 @@
+@import url('font/font3/stylesheet.css');
+
 @font-face {
-  font-family: 'JuiceItUp';
-  src: url('font/font3/JuiceItUpItalic-ZMGz.ttf') format('truetype');
+  font-family: 'JuiceItUpWeb';
+  src: url('juiceitup-3pw8-webfont.woff2') format('woff2'),
+       url('juiceitup-3pw8-webfont.woff') format('woff');
   font-weight: normal;
   font-style: italic;
   font-display: swap;
@@ -30,11 +33,10 @@ body {
   background: #fff;
 }
 .custom-logo {
-  font-family: 'JuiceItUp', sans-serif;
-  font-size: 3.1rem;        
-  letter-spacing: 0.05em;    
-  text-transform: uppercase; 
-  color: var(--grass);       
+   font-family: 'JuiceItUpWeb', sans-serif;
+  font-size: 2.8rem;
+  letter-spacing: 0.05em;
+  color: var(--grass);
 }
 
 /* VIDEO HERO */
