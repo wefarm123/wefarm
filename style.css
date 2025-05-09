@@ -25,6 +25,18 @@ body {
   padding: 20px 40px;
   background: #fff;
 }
+
+@media (max-width: 768px) {
+  #mobileMenu {
+    
+    background: url('image/pineapplenavgif.gif') center top/cover no-repeat;
+  }
+
+  #mobileMenu > * {
+    position: relative;
+    z-index: 1;
+  }
+}
 .custom-logo {
   font-family: 'juice_it_upregular', sans-serif;
   font-size: 3.1rem;
