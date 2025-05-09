@@ -338,6 +338,16 @@ document.addEventListener('DOMContentLoaded', () => {
     cartDrawer.classList.add('translate-x-full');
   });
 });
+document.querySelectorAll('.buy-btn').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    e.preventDefault();
+    const prod = JSON.parse(btn.dataset.product);
+    cart.push(prod);
+    localStorage.setItem('wefarmCart', JSON.stringify(cart));
+    updateBadge();
+    alert(`${prod.name} added to cart!`);
+  });
+});
 </script>
 
 
