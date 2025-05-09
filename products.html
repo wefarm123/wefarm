@@ -56,11 +56,10 @@
       <li><a href="#" class="font-poppins uppercase text-lg text-gray-800">Contact</a></li>
     </ul>
 
-   <!-- Bottom Rotating Image -->
-<div class="px-8 pb-8 flex justify-center">
+  <div class="px-8 pb-8 flex justify-center">
   <img
     id="navImage"
-    src="image/apple.png"
+    src="image/applenav.png"
     alt="Rotating Fruit"
     class="w-32 mx-auto"
   >
@@ -145,44 +144,41 @@
 
  <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // AOS + Counter (जैसे पहले)
+  // AOS init...
   AOS.init({ duration: 800, once: true });
+
+  // Live counter...
   let count=0, target=314;
   const el=document.getElementById('bottleCount');
-  (function inc(){ if(count<target){ el.innerText=++count; setTimeout(inc,20);} })();
+  (function inc(){
+    if(count<target){
+      el.innerText=++count;
+      setTimeout(inc,20);
+    }
+  })();
 
-  // Mobile overlay toggle + rotating image
-  const navToggle   = document.getElementById('navToggle');
-  const navClose    = document.getElementById('navClose');
-  const mobileMenu  = document.getElementById('mobileMenu');
-  const navImage    = document.getElementById('navImage');
+  // Mobile menu + rotating images
+  const navToggle  = document.getElementById('navToggle');
+  const navClose   = document.getElementById('navClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const navImage   = document.getElementById('navImage');
 
-  // अपनी 3 images का रास्ता
   const imageList = [
     'image/applenav.png',
-    'image/pineapplenav.png',
-    'image/orangenav.png'
+    'image/pinapplenav.webp',
+    'image/orangenav.webp'
   ];
   let currentIdx = 0;
 
   navToggle.addEventListener('click', () => {
-    // Overlay खोलो
     mobileMenu.classList.remove('translate-x-full');
-    // इमेज चेंज करो
     navImage.src = imageList[currentIdx];
     currentIdx = (currentIdx + 1) % imageList.length;
   });
-
   navClose.addEventListener('click', () => {
     mobileMenu.classList.add('translate-x-full');
   });
 });
-
-// QR Modal placeholder
-function openTraceModal() {
-  alert('QR Trace Modal अभी implement होना बाकी है!');
-}
 </script>
-
 </body>
 </html>
