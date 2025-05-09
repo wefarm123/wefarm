@@ -37,17 +37,17 @@ body {
     z-index: 0;              /* menu-content से नीचे */
   }
 
-  /* बेसिक fruit स्टाइल */
+  
   .fruit {
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     background-size: contain;
     background-repeat: no-repeat;
     animation: fall 3s linear infinite;
   }
 
-  /* तीनों फ्रूट positions + images + delay */
+  
   .fruit-1 {
     left: 20%;
     background-image: url('image/applenav.png');
@@ -55,13 +55,13 @@ body {
   }
   .fruit-2 {
     left: 50%;
-    background-image: url('image/pinapplenav.webp');
-    animation-delay: 1s;
+    background-image: url('image/pinapplenav.png');
+    animation-delay: 2s;
   }
   .fruit-3 {
     left: 80%;
-    background-image: url('image/orangenav.webp');
-    animation-delay: 2s;
+    background-image: url('image/orange1.png');
+    animation-delay: 4s;
   }
 
   /* Keyframes: ऊपर से नीचे गिरना */
