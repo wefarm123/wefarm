@@ -19,19 +19,29 @@
 </head>
 <body class="font-poppins">
 
-  <!-- NAVBAR -->
   <header class="bg-white shadow-md">
-    <nav class="container mx-auto px-4 flex items-center justify-between py-4">
-      <div class="text-2xl font-playfair text-green-700">WEFARM</div>
-      <ul class="flex gap-6 text-green-800">
-        <li><a href="#">Home</a></li>
-        <li><a href="#juices">Juices</a></li>
-        <li><a href="#">Trace</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+  <nav class="container mx-auto px-4 flex items-center justify-between py-4">
+    <!-- Logo -->
+    <a href="#" class="text-2xl font-playfair text-green-700">WEFARM</a>
+
+    <!-- Hamburger (Mobile) -->
+    <button id="navToggle" class="md:hidden text-green-800 focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+
+    <!-- Nav Links -->
+    <ul id="navMenu" class="hidden md:flex gap-6 text-green-800">
+      <li><a href="#">Home</a></li>
+      <li><a href="#juices">Juices</a></li>
+      <li><a href="#">Trace</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+</header>
 
   <!-- VIDEO HERO -->
   <section class="relative h-screen overflow-hidden">
@@ -112,5 +122,14 @@
     // Placeholder for Trace Modal function
     function openTraceModal() { /* ... */ }
   </script>
+
+<script>
+  const navToggle = document.getElementById('navToggle');
+  const navMenu   = document.getElementById('navMenu');
+
+  navToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('hidden');
+  });
+</script>
 </body>
 </html>
