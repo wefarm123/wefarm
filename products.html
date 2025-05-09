@@ -125,7 +125,7 @@
   </section>
 
   <!-- INIT SCRIPTS: AOS, Counter & Mobile Menu -->
-  <script>
+<script>
     document.addEventListener('DOMContentLoaded', () => {
       // AOS init
       AOS.init({ duration: 800, once: true });
@@ -139,10 +139,8 @@
           setTimeout(inc, 20);
         }
       })();
- </script>
 
-     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+      // Mobile overlay toggle only
       const navToggle  = document.getElementById('navToggle');
       const navClose   = document.getElementById('navClose');
       const mobileMenu = document.getElementById('mobileMenu');
@@ -154,6 +152,11 @@
         mobileMenu.classList.add('translate-x-full');
       });
     });
+
+    // Placeholder for Trace Modal
+    function openTraceModal() {
+      alert('QR Trace Modal अभी implement होना बाकी है!');
+    }
   </script>
 </body>
 </html>
