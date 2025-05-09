@@ -66,10 +66,11 @@ video::-moz-media-controls    { display: none !important; }
 
 .script-title {
   font-family: 'Great Vibes', cursive;
-  font-size: 2.8rem;        /* tweak as needed */
-  color: var(--dark-green); /* or your preferred color */
+  font-size: 2.8rem;        
+  color: var(--dark-green);
   margin-bottom: 1.5rem;
 }
+
 
 .product-card h3 {
   font-family: 'Great Vibes', cursive;
