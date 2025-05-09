@@ -222,16 +222,27 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   const navToggle  = document.getElementById('navToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const navClose   = document.getElementById('navClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuClose  = document.getElementById('menuClose');
 
-    navToggle.addEventListener('click', () => {
-      mobileMenu.classList.remove('translate-x-full');
-      mobileMenu.classList.add('translate-x-0');
-    });
-    navClose.addEventListener('click', () => {
-      mobileMenu.classList.add('translate-x-full');
-    });
+  navToggle.addEventListener('click', () => {
+    mobileMenu.classList.replace('translate-x-full', 'translate-x-0');
+  });
+  menuClose.addEventListener('click', () => {
+    mobileMenu.classList.replace('translate-x-0', 'translate-x-full');
+  });
+
+  // 2) Cart drawer toggle
+  const cartToggle = document.getElementById('cartToggle');
+  const cartDrawer = document.getElementById('cartDrawer');
+  const cartClose  = document.getElementById('cartClose');
+
+  cartToggle.addEventListener('click', () => {
+    cartDrawer.classList.replace('translate-x-full', 'translate-x-0');
+  });
+  cartClose.addEventListener('click', () => {
+    cartDrawer.classList.replace('translate-x-0', 'translate-x-full');
+  });
 });
 </script>
 <script>
