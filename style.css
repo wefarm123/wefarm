@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Juico';
-  src: url('font/font1/Juico-GO11m.otf') format('opentype');
+  src: url('font/font2/Javamangodemo-lxKGw.ttf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -31,7 +31,7 @@ body {
   background: #fff;
 }
 .custom-logo {
-  font-family: 'Juico', sans-serif;
+  font-family: 'mango', sans-serif;
   font-size: 2.8rem;
   letter-spacing: 0.05em;
   color: var(--grass);
