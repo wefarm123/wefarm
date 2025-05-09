@@ -1,13 +1,6 @@
 @import url('font/font3/stylesheet.css');
 
-@font-face {
-  font-family: 'JuiceItUpWeb';
-  src: url('juiceitup-3pw8-webfont.woff2') format('woff2'),
-       url('juiceitup-3pw8-webfont.woff') format('woff');
-  font-weight: normal;
-  font-style: italic;
-  font-display: swap;
-}
+
 :root {
   --grass: #4CAF50;
   --dark-green: #2e7d32;
