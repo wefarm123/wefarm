@@ -68,14 +68,7 @@
       <li><a href="#" class="font-poppins uppercase text-lg text-gray-800">Contact</a></li>
     </ul>
 
-  <div class="px-8 pb-8 flex justify-center">
-  <img
-    id="navImage"
-    src="image/applenav.png"
-    alt="Rotating Fruit"
-    class="w-32 mx-auto"
-  >
-</div>
+  
 
     <!-- Social Icons -->
     <div class="px-8 pb-8">
@@ -178,27 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })();
 
-  // Mobile menu + rotating images
-  const navToggle  = document.getElementById('navToggle');
-  const navClose   = document.getElementById('navClose');
-  const mobileMenu = document.getElementById('mobileMenu');
-  const navImage   = document.getElementById('navImage');
-
-  const imageList = [
-    'image/applenav.png',
-    'image/pinapplenav.png',
-    'image/orangenav.png'
-  ];
-  let currentIdx = 0;
-
-  navToggle.addEventListener('click', () => {
-    mobileMenu.classList.remove('translate-x-full');
-    navImage.src = imageList[currentIdx];
-    currentIdx = (currentIdx + 1) % imageList.length;
-  });
-  navClose.addEventListener('click', () => {
-    mobileMenu.classList.add('translate-x-full');
-  });
+ 
 });
 </script>
 </body>
