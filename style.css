@@ -1,11 +1,10 @@
 @font-face {
-  font-family: 'mango';
-  src: url('font/font2/Javamangodemo-lxKGw.ttf') format('opentype');
+  font-family: 'Juico';
+  src: url('font/font1/Juico-GO11m.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
-
 :root {
   --grass: #4CAF50;
   --dark-green: #2e7d32;
@@ -31,8 +30,8 @@ body {
   background: #fff;
 }
 .custom-logo {
-  font-family: 'mango', sans-serif;
-  font-size: 3.8rem;
+  font-family: 'Juico', sans-serif;
+  font-size: 2.8rem;
   letter-spacing: 0.05em;
   color: var(--grass);
 }
