@@ -4,69 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-  <!-- Tailwind & AOS -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- AOS -->
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-<script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
-
-
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="style.css">
-
-  <title>WEFARM - Premium Juice</title>
+  <title>WEFARM - Products</title>
 </head>
 <body class="font-poppins">
 
+  <!-- NAVBAR + MOBILE MENU OVERLAY -->
   <header class="bg-white shadow-md relative z-50">
-  <nav class="container mx-auto px-4 flex items-center justify-between py-4">
-    <!-- Logo -->
-    <a href="#" class="text-2xl font-playfair text-green-700">WEFARM</a>
-    <!-- Hamburger -->
-    <button id="navToggle" class="md:hidden text-green-800 focus:outline-none">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
-    </button>
-    <!-- Desktop Links -->
-    <ul class="hidden md:flex gap-6 text-green-800">
-      <li><a href="#">Home</a></li>
-      <li><a href="#juices">Juices</a></li>
-      <li><a href="#">Trace</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
-  </nav>
+    <nav class="container mx-auto px-4 flex items-center justify-between py-4">
+      <!-- Logo -->
+      <a href="#" class="text-2xl font-playfair text-green-700">WEFARM</a>
 
-  <!-- Mobile Menu Overlay -->
-  <div id="mobileMenu"
-       class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-50 flex flex-col">
-    <!-- Close Button -->
-    <div class="flex justify-end p-4">
-      <button id="navClose" class="text-2xl text-green-800 focus:outline-none">&times;</button>
+      <!-- Hamburger (Mobile) -->
+      <button id="navToggle" class="md:hidden text-green-800 focus:outline-none">
+        <!-- Inline SVG icon -->
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <!-- Desktop Links -->
+      <ul class="hidden md:flex gap-6 text-green-800">
+        <li><a href="#">Home</a></li>
+        <li><a href="#juices">Juices</a></li>
+        <li><a href="#">Trace</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu"
+         class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-40 flex flex-col">
+      <!-- Close Button -->
+      <div class="flex justify-end p-4">
+        <button id="navClose" class="text-3xl text-green-800 focus:outline-none">&times;</button>
+      </div>
+      <!-- Menu Items -->
+      <ul class="flex-1 flex flex-col justify-center items-start space-y-6 px-8 text-xl font-semibold text-green-800">
+        <li><a href="#">Home</a></li>
+        <li><a href="#juices">Juices</a></li>
+        <li><a href="#">Trace</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
     </div>
-    <!-- Menu Items -->
-    <ul class="flex-1 flex flex-col justify-center items-start space-y-6 px-8 text-xl font-semibold text-green-800">
-      <li><a href="#" class="block w-full">Home</a></li>
-      <li><a href="#juices" class="block w-full">Juices</a></li>
-      <li><a href="#" class="block w-full">Trace</a></li>
-      <li><a href="#" class="block w-full">About</a></li>
-      <li><a href="#" class="block w-full">Contact</a></li>
-    </ul>
-    <!-- Social Icons -->
-    <div class="p-8 flex space-x-6 text-2xl text-green-800">
-      <a href="#"><i class="fab fa-facebook-f"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-pinterest-p"></i></a>
-      <a href="#"><i class="fab fa-linkedin-in"></i></a>
-    </div>
-  </div>
-</header>
+  </header>
 
   <!-- VIDEO HERO -->
   <section class="relative h-screen overflow-hidden">
@@ -129,12 +117,15 @@
     </div>
   </section>
 
-  <!-- Initialize AOS & Counter Script -->
-  <script>
+<!-- INIT SCRIPTS: AOS, Counter, Desktop & Mobile Menu -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. AOS init
     AOS.init({ duration: 800, once: true });
 
-    // Live counter
-    let count = 0, target = 314;
+    // 2. Live counter
+    let count = 0;
+    const target = 314;
     const el = document.getElementById('bottleCount');
     function inc() {
       if (count < target) {
@@ -142,31 +133,24 @@
         setTimeout(inc, 20);
       }
     }
-    window.onload = inc;
+    inc(); // window.onload की जगह सीधे चलाओ
 
-    // Placeholder for Trace Modal function
-    function openTraceModal() { /* ... */ }
-  </script>
+    // 3. Desktop hamburger toggle (hidden <-> flex)
+    const navToggle = document.getElementById('navToggle');
+    const navMenu   = document.getElementById('navMenu');
+    navToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('hidden');
+    });
 
-<script>
-  const navToggle = document.getElementById('navToggle');
-  const navMenu   = document.getElementById('navMenu');
-
-  navToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('hidden');
-  });
-</script>
-
-<script>
-  const navToggle = document.getElementById('navToggle');
-  const navClose  = document.getElementById('navClose');
-  const mobileMenu = document.getElementById('mobileMenu');
-
-  navToggle.addEventListener('click', () => {
-    mobileMenu.classList.remove('translate-x-full');
-  });
-  navClose.addEventListener('click', () => {
-    mobileMenu.classList.add('translate-x-full');
+    // 4. Mobile full-screen overlay toggle
+    const navClose   = document.getElementById('navClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      mobileMenu.classList.remove('translate-x-full');
+    });
+    navClose.addEventListener('click', () => {
+      mobileMenu.classList.add('translate-x-full');
+    });
   });
 </script>
 
