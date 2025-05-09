@@ -3,22 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind & AOS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-  <title>WEFARM - Premium Juice</title>
+  <!-- Custom Styles -->
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <title>WEFARM - Premium Juice</title>
 </head>
-<body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">WEFARM</div>
-      <ul class="nav-links">
+<body class="font-poppins">
+
+  <!-- NAVBAR -->
+  <header class="bg-white shadow-md">
+    <nav class="container mx-auto px-4 flex items-center justify-between py-4">
+      <div class="text-2xl font-playfair text-green-700">WEFARM</div>
+      <ul class="flex gap-6 text-green-800">
         <li><a href="#">Home</a></li>
-        <li><a href="#">Juices</a></li>
+        <li><a href="#juices">Juices</a></li>
         <li><a href="#">Trace</a></li>
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
@@ -26,74 +33,84 @@
     </nav>
   </header>
 
-<section class="video-hero">
-  <video autoplay muted loop playsinline class="hero-video">
-    <source src="image/video1.mp4" type="video/mp4">
-    Your browser does not support HTML5 video.
-  </video>
-  <div class="overlay">
-    <h1>Khet Se Bottle Tak</h1>
-    <p>Pure. Sustainable. Traceable.</p>
-    <a href="#juices" class="cta-button">Explore Juices</a>
-  </div>
-</section>
-
-
-  <section class="hero">
-<section class="products" id="juices">
-  <h2 class="section-title">Our Cold-Pressed Juices</h2>
-  <div class="product-grid">
-
-    <!-- Juice Card 1 -->
-    <div class="product-card" data-aos="fade-up">
-      <img src="image/clm.png" alt="Green Detox Juice" class="product-image">
-      <h3>Green Detox</h3>
-      <p>Green Apple, Cucumber, Mint</p>
-      <div class="price">₹199</div>
-      <div class="card-buttons">
-        <a href="#" class="buy-btn">Buy Now</a>
-        <a href="#" class="trace-btn">Trace Product</a>
-      </div>
-    </div>
-
-    <!-- Juice Card 2 -->
-    <div class="product-card" data-aos="fade-up" data-aos-delay="100">
-      <img src="image/abc.png" alt="Red Booster Juice" class="product-image">
-      <h3>Red Booster</h3>
-      <p>Beetroot, Carrot, Ginger</p>
-      <div class="price">₹189</div>
-      <div class="card-buttons">
-        <a href="#" class="buy-btn">Buy Now</a>
-        <a href="#" class="trace-btn">Trace Product</a>
-      </div>
-    </div>
-
-    <!-- Juice Card 3 -->
-    <div class="product-card" data-aos="fade-up" data-aos-delay="200">
-      <img src="image/got.png" alt="Berry Blend Juice" class="product-image">
-      <h3>Berry Blend</h3>
-      <p>Strawberry, Blueberry, Pomegranate</p>
-      <div class="price">₹229</div>
-      <div class="card-buttons">
-        <a href="#" class="buy-btn">Buy Now</a>
-        <a href="#" class="trace-btn">Trace Product</a>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-    <div class="hero-content">
-      <h1>Khet Se Bottle Tak</h1>
-      <p>Cold-pressed | Fresh | Traceable | PLA Bottles</p>
-      <a href="#" class="cta-button">Explore Juices</a>
+  <!-- VIDEO HERO -->
+  <section class="relative h-screen overflow-hidden">
+    <video class="absolute w-full h-full object-cover" autoplay muted loop>
+      <source src="image/video1.mp4" type="video/mp4">
+    </video>
+    <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-center px-4">
+      <h1 class="text-5xl md:text-6xl font-playfair text-white mb-4">Khet Se Bottle Tak</h1>
+      <p class="text-lg md:text-xl text-white mb-6">Pure. Sustainable. Traceable.</p>
+      <a href="#juices" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-full transition">Explore Juices</a>
     </div>
   </section>
-<script>
-    AOS.init({
-      duration: 800,
-      once: true
-    });
+
+  <!-- LIVE COUNTER -->
+  <section class="bg-green-50 py-8 text-center">
+    <div class="text-3xl md:text-4xl font-semibold text-green-700">
+      <span id="bottleCount">0</span> Bottles Pressed Today 🍹
+    </div>
+  </section>
+
+  <!-- PRODUCTS GRID -->
+  <section id="juices" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-playfair text-center text-green-800 mb-12">Our Cold-Pressed Juices</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <div class="bg-gray-50 rounded-xl shadow-lg p-6 transform hover:-translate-y-2 transition" data-aos="fade-up">
+          <img src="image/clm.png" alt="Green Detox" class="w-full h-64 object-contain mb-4">
+          <h3 class="text-xl font-semibold text-green-600 mb-1">Green Detox</h3>
+          <p class="text-gray-600 mb-2">Green Apple, Cucumber, Mint</p>
+          <div class="text-lg font-bold text-gray-800 mb-4">₹199</div>
+          <div class="flex gap-4">
+            <a href="#" class="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Buy Now</a>
+            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">Trace</button>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-gray-50 rounded-xl shadow-lg p-6 transform hover:-translate-y-2 transition" data-aos="fade-up" data-aos-delay="100">
+          <img src="image/abc.png" alt="Red Booster" class="w-full h-64 object-contain mb-4">
+          <h3 class="text-xl font-semibold text-green-600 mb-1">Red Booster</h3>
+          <p class="text-gray-600 mb-2">Beetroot, Carrot, Ginger</p>
+          <div class="text-lg font-bold text-gray-800 mb-4">₹189</div>
+          <div class="flex gap-4">
+            <a href="#" class="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Buy Now</a>
+            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">Trace</button>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-gray-50 rounded-xl shadow-lg p-6 transform hover:-translate-y-2 transition" data-aos="fade-up" data-aos-delay="200">
+          <img src="image/got.png" alt="Berry Blend" class="w-full h-64 object-contain mb-4">
+          <h3 class="text-xl font-semibold text-green-600 mb-1">Berry Blend</h3>
+          <p class="text-gray-600 mb-2">Strawberry, Blueberry, Pomegranate</p>
+          <div class="text-lg font-bold text-gray-800 mb-4">₹229</div>
+          <div class="flex gap-4">
+            <a href="#" class="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Buy Now</a>
+            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">Trace</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Initialize AOS & Counter Script -->
+  <script>
+    AOS.init({ duration: 800, once: true });
+
+    // Live counter
+    let count = 0, target = 314;
+    const el = document.getElementById('bottleCount');
+    function inc() {
+      if (count < target) {
+        el.innerText = ++count;
+        setTimeout(inc, 20);
+      }
+    }
+    window.onload = inc;
+
+    // Placeholder for Trace Modal function
+    function openTraceModal() { /* ... */ }
   </script>
 </body>
 </html>
