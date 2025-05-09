@@ -78,18 +78,14 @@
   </div>
 </header>
 
-  <video
-  autoplay
-  muted
-  loop
-  playsinline      <!-- iOS/Safari में बिना full-screen जाए प्ले -->
-  preload="auto"   <!-- जल्दी से बफ़र करने को बोले -->
-  poster="image/video-poster.jpg"  <!-- fallback इमेज -->
-  class="absolute w-full h-full object-cover"
->
-  <source src="image/video1.mp4" type="video/mp4">
-  <source src="image/video1.webm" type="video/webm">  <!-- fallback format -->
-</video>
+ <section class="video-hero relative h-screen overflow-hidden">
+    <video class="absolute w-full h-full object-cover"
+           autoplay muted loop playsinline preload="auto"
+           poster="image/video-poster.jpg">
+      <source src="image/video1.mp4" type="video/mp4">
+      <source src="image/video1.webm" type="video/webm">
+    </video>
+
     <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-center px-4">
       <h1 class="text-5xl md:text-6xl font-playfair text-white mb-4">Khet Se Bottle Tak</h1>
       <p class="text-lg md:text-xl text-white mb-6">Pure. Sustainable. Traceable.</p>
