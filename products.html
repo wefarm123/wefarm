@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Tailwind -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- AOS -->
+  <!-- AOS Animation -->
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <title>WEFARM - Products</title>
+
+  <title>WEFARM - Premium Juice</title>
 </head>
 <body class="font-poppins">
 
@@ -21,7 +22,6 @@
 
       <!-- Hamburger (Mobile) -->
       <button id="navToggle" class="md:hidden text-green-800 focus:outline-none">
-        <!-- Inline SVG icon -->
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4 6h16M4 12h16M4 18h16"/>
@@ -29,9 +29,7 @@
       </button>
 
       <!-- Desktop Links -->
-      
-        <ul id="navMenu" class="hidden md:flex gap-6 text-green-800">
-
+      <ul class="hidden md:flex gap-6 text-green-800">
         <li><a href="#">Home</a></li>
         <li><a href="#juices">Juices</a></li>
         <li><a href="#">Trace</a></li>
@@ -55,7 +53,6 @@
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
       </ul>
-
     </div>
   </header>
 
@@ -91,7 +88,7 @@
           <div class="text-lg font-bold text-gray-800 mb-4">₹199</div>
           <div class="flex gap-4">
             <a href="#" class="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Buy Now</a>
-            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">Trace</button>
+            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white">Trace</button>
           </div>
         </div>
         <!-- Card 2 -->
@@ -102,7 +99,7 @@
           <div class="text-lg font-bold text-gray-800 mb-4">₹189</div>
           <div class="flex gap-4">
             <a href="#" class="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Buy Now</a>
-            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">Trace</button>
+            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white">Trace</button>
           </div>
         </div>
         <!-- Card 3 -->
@@ -113,49 +110,46 @@
           <div class="text-lg font-bold text-gray-800 mb-4">₹229</div>
           <div class="flex gap-4">
             <a href="#" class="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">Buy Now</a>
-            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">Trace</button>
+            <button onclick="openTraceModal()" class="flex-1 px-4 py-2 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white">Trace</button>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-<!-- INIT SCRIPTS: AOS, Counter, Desktop & Mobile Menu -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // 1. AOS init
-    AOS.init({ duration: 800, once: true });
+  <!-- INIT SCRIPTS: AOS, Counter & Mobile Menu -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // AOS init
+      AOS.init({ duration: 800, once: true });
 
-    // 2. Live counter
-    let count = 0;
-    const target = 314;
-    const el = document.getElementById('bottleCount');
-    function inc() {
-      if (count < target) {
-        el.innerText = ++count;
-        setTimeout(inc, 20);
-      }
+      // Live counter
+      let count = 0, target = 314;
+      const el = document.getElementById('bottleCount');
+      (function inc(){
+        if (count < target) {
+          el.innerText = ++count;
+          setTimeout(inc, 20);
+        }
+      })();
+
+      // Mobile overlay toggle only
+      const navToggle  = document.getElementById('navToggle');
+      const navClose   = document.getElementById('navClose');
+      const mobileMenu = document.getElementById('mobileMenu');
+
+      navToggle.addEventListener('click', () => {
+        mobileMenu.classList.remove('translate-x-full');
+      });
+      navClose.addEventListener('click', () => {
+        mobileMenu.classList.add('translate-x-full');
+      });
+    });
+
+    // Placeholder for Trace Modal
+    function openTraceModal() {
+      alert('QR Trace Modal अभी implement होना बाकी है!');
     }
-    inc(); // window.onload की जगह सीधे चलाओ
-
-    // 3. Desktop hamburger toggle (hidden <-> flex)
-    const navToggle = document.getElementById('navToggle');
-    const navMenu   = document.getElementById('navMenu');
-    navToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('hidden');
-    });
-
-    // 4. Mobile full-screen overlay toggle
-    const navClose   = document.getElementById('navClose');
-    const mobileMenu = document.getElementById('mobileMenu');
-    navToggle.addEventListener('click', () => {
-      mobileMenu.classList.remove('translate-x-full');
-    });
-    navClose.addEventListener('click', () => {
-      mobileMenu.classList.add('translate-x-full');
-    });
-  });
-</script>
-
+  </script>
 </body>
 </html>
