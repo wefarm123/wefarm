@@ -78,15 +78,21 @@
   </div>
 </header>
 
- <section class="video-hero relative h-screen overflow-hidden">
-    <video class="absolute w-full h-full object-cover"
-           autoplay muted loop playsinline preload="auto"
-           poster="image/video-poster.jpg">
-      <source src="image/video1.mp4" type="video/mp4">
-      <source src="image/video1.webm" type="video/webm">
-    </video>
+<video
+  class="hero-video"
+  autoplay
+  muted
+  loop
+  playsinline
+  preload="auto"
+  disablepictureinpicture
+  disableremoteplayback
+  controlslist="nodownload nofullscreen noremoteplayback"
+>
+  <source src="image/video1.mp4" type="video/mp4">
+  <source src="image/video1.webm" type="video/webm">
+</video>
 
-  </section>
 
   <!-- LIVE COUNTER -->
   <section class="bg-green-50 py-8 text-center">
