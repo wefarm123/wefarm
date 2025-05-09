@@ -14,54 +14,65 @@
 </head>
 <body class="font-poppins">
 
-  <!-- NAVBAR + MOBILE OVERLAY -->
-  <header class="bg-white shadow-md relative z-50">
-    <nav class="container mx-auto px-4 flex items-center justify-between py-4">
-      <!-- Logo -->
-      <a href="#" class="font-playfair text-3xl text-green-800 uppercase tracking-wide">WEFARM</a>
+<!-- NAVBAR + MOBILE OVERLAY -->
+<header class="bg-white shadow-md relative z-50">
+  <nav class="container mx-auto px-4 flex items-center justify-between py-4">
+    <!-- Logo -->
+    <a href="#" class="font-playfair text-3xl uppercase tracking-wide text-black">WEFARM</a>
 
-      <!-- Hamburger -->
-      <button id="navToggle" class="md:hidden text-green-800 focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </button>
+    <!-- Hamburger -->
+    <button id="navToggle" class="md:hidden text-black focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
 
-      <!-- Desktop Links -->
-      <ul class="hidden md:flex gap-8 text-green-800">
-        <li><a href="#" class="font-poppins">Home</a></li>
-        <li><a href="#juices" class="font-poppins">Juices</a></li>
-        <li><a href="#" class="font-poppins">Trace</a></li>
-        <li><a href="#" class="font-poppins">About</a></li>
-        <li><a href="#" class="font-poppins">Contact</a></li>
-      </ul>
-    </nav>
+    <!-- Desktop Links -->
+    <ul class="hidden md:flex gap-8">
+      <li><a href="#" class="font-poppins uppercase text-black hover:text-green-600">Home</a></li>
+      <li><a href="#juices" class="font-poppins uppercase text-black hover:text-green-600">Juices</a></li>
+      <li><a href="#" class="font-poppins uppercase text-black hover:text-green-600">Trace</a></li>
+      <li><a href="#" class="font-poppins uppercase text-black hover:text-green-600">About</a></li>
+      <li><a href="#" class="font-poppins uppercase text-black hover:text-green-600">Contact</a></li>
+    </ul>
+  </nav>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileMenu"
-         class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-40 flex flex-col">
-      <!-- Top bar: Logo + Close -->
-      <div class="flex items-center justify-between px-8 py-4">
-        <span class="font-playfair text-4xl text-green-800 uppercase tracking-wide">WEFARM</span>
-        <button id="navClose" class="text-4xl font-bold text-green-800 focus:outline-none">&times;</button>
-      </div>
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenu"
+       class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-40 flex flex-col">
+    <!-- Top bar: Logo + Close -->
+    <div class="flex items-center justify-between px-8 py-4 border-b">
+      <span class="font-playfair text-4xl uppercase tracking-wide text-black">WEFARM</span>
+      <button id="navClose" class="text-4xl font-bold text-black focus:outline-none">&times;</button>
+    </div>
 
-      <!-- Menu Items -->
-      <ul class="flex-1 flex flex-col justify-start items-start space-y-6 px-8 text-xl font-poppins">
-        <li><a href="#" class="font-semibold text-green-600">Home</a></li>
-        <li><a href="#juices" class="text-gray-700">Juices</a></li>
-        <li><a href="#" class="text-gray-700">Trace</a></li>
-        <li><a href="#" class="text-gray-700">About</a></li>
-        <li><a href="#" class="text-gray-700">Contact</a></li>
-      </ul>
+    <!-- Menu Items -->
+    <ul class="flex-1 flex flex-col justify-start items-start space-y-6 px-8 py-6">
+      <li><a href="#" class="font-poppins uppercase text-lg font-semibold text-green-600">Home</a></li>
+      <li><a href="#juices" class="font-poppins uppercase text-lg text-gray-800">Juices</a></li>
+      <li><a href="#" class="font-poppins uppercase text-lg text-gray-800">Trace</a></li>
+      <li><a href="#" class="font-poppins uppercase text-lg text-gray-800">About</a></li>
+      <li><a href="#" class="font-poppins uppercase text-lg text-gray-800">Contact</a></li>
+    </ul>
 
-      <!-- Bottom Image -->
-      <div class="p-8 flex justify-center">
-        <img src="image/applenav.png" alt="WeFarm Apple" class="w-32">
+    <!-- Bottom Image -->
+    <div class="px-8 pb-8">
+      <img src="image/applenav.png" alt="WeFarm Apple" class="w-32 mx-auto">
+    </div>
+
+    <!-- Social Icons -->
+    <div class="px-8 pb-8">
+      <div class="flex space-x-4 justify-center text-2xl text-gray-800">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
       </div>
     </div>
-  </header>
+  </div>
+</header>
 
   <!-- VIDEO HERO -->
   <section class="relative h-screen overflow-hidden">
