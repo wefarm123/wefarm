@@ -15,21 +15,35 @@ body {
 }
 
 /* NAVBAR */
-.navbar { /* … जैसा पहले */ }
+.navbar { 
 .logo   { font-family:'Playfair Display'; color: var(--grass); }
 
 /* HERO */
 .hero {
   height: 90vh;
   background: url('image/juice-banner.jpg') center/cover no-repeat;
-  /* … बाकी */
+ 
 }
-.hero h1 { font-family:'Playfair Display'; color: var(--dark-green); }
+.video-hero {
+  position: relative;               
+  width: 100vw;                    
+  height: 100vh;                   
+  margin-left: calc(-50vw + 50%);   
+  overflow: hidden;                
+}
 
-/* VIDEO HERO */
-.video-hero { position:relative; height:100vh; overflow:hidden; }
-.hero-video { width:100%; height:100%; object-fit:cover; }
-video::-webkit-media-controls { display:none!important; }
+.hero-video {
+  position: absolute;  
+  top: 0;
+  left: 0;
+  width: 100%;         
+  height: 100%;         
+  object-fit: cover;    
+}
+
+
+video::-webkit-media-controls { display: none !important; }
+video::-moz-media-controls    { display: none !important; }
 
 /* BUTTON */
 .cta-button {
