@@ -57,8 +57,22 @@ video::-moz-media-controls    { display: none !important; }
 .product-grid { /* … */ }
 .product-card:hover { /* … */ }
 
-/* RESPONSIVE */
+
 @media (max-width:640px) {
   .hero h1 { font-size:2.5rem; }
   .cta-button { padding:10px 24px; }
+}
+
+
+.script-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.8rem;        /* tweak as needed */
+  color: var(--dark-green); /* or your preferred color */
+  margin-bottom: 1.5rem;
+}
+
+.product-card h3 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.6rem;
+  color: var(--grass);
 }
