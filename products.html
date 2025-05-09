@@ -212,5 +212,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 1) पहले existing cart count लो localStorage से
+  let cart = JSON.parse(localStorage.getItem('wefarmCart')) || [];
+  updateBadge(cart.length);
+
+  // 2) सभी Buy buttons पे listener लगाओ
+  document.querySelectorAll('.buy-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();   // लिंक की default scroll-away रोको
+
+      // 3) product info पढ़ो
+      const product = JSON.parse(btn.dataset.product);
+
+      // 4) cart में जोड़ो
+      cart.push(product);
+      localStorage.setItem('wefarmCart', JSON.stringify(cart));
+
+      // 5) badge अपडेट करो
+      updateBadge(cart.length);
+
+      // 6) यूज़र को feedback दो (toast, alert, etc.)
+      alert(product.name + ' added to cart!');
+    });
+  });
+
+  // helper: badge update
+  function updateBadge(count) {
+    document.getElementById('cartCountBadge').innerText = count;
+  }
+});
+</script>
+
 </body>
 </html>
