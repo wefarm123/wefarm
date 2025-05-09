@@ -1,8 +1,8 @@
 @font-face {
-  font-family: 'Juico';
-  src: url('font/font1/Juico-GO11m.otf') format('opentype');
+  font-family: 'JuiceItUp';
+  src: url('font/font3/JuiceItUpItalic-ZMGz.ttf') format('truetype');
   font-weight: normal;
-  font-style: normal;
+  font-style: italic;
   font-display: swap;
 }
 :root {
@@ -30,10 +30,11 @@ body {
   background: #fff;
 }
 .custom-logo {
-  font-family: 'Juico', sans-serif;
-  font-size: 2.8rem;
-  letter-spacing: 0.05em;
-  color: var(--grass);
+  font-family: 'JuiceItUp', sans-serif;
+  font-size: 3.8rem;        
+  letter-spacing: 0.06em;    
+  text-transform: uppercase; 
+  color: var(--grass);       
 }
 
 /* VIDEO HERO */
