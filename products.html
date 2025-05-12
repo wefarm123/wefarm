@@ -360,6 +360,21 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Trace feature अभी implement होना बाकी है!');
     }
   </script>
+<script src="https://unpkg.com/rellax/rellax.min.js"></script>
+<script>
+  // DOM loaded ke baad init karenge
+  document.addEventListener('DOMContentLoaded', () => {
+    // speed jitna zyada negative, utna zyada up–scroll par slow move
+    new Rellax('.product-card', {
+      speed: -2,
+      center: false,
+      wrapper: null,
+      round: true,
+      vertical: true,
+      horizontal: false
+    });
+  });
+</script>
 
 </body>
 </html>
