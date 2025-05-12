@@ -181,7 +181,7 @@
     Trace
   </button>
 </div>
-          Pomegranate -->
+       
           <div class="bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col justify-between flex-none w-1/4">
             <img src="image/pombliss.png" alt="Pomegranate" class="w-full h-48 object-contain mb-4"/>
             <div>
@@ -210,7 +210,7 @@
           </div>
           <!-- Slide 4: Green Apple & Kiwi -->
           <div class="bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col justify-between flex-none w-1/4">
-            <img src="image/greenapple1.png" alt="Green Apple & Kiwi" class="w-full h-48 object-contain mb-4"/>
+            <img src="image/ak.png" alt="Green Apple & Kiwi" class="w-full h-48 object-contain mb-4"/>
             <div>
               <h3 class="text-xl font-semibold text-green-600 mb-1">Green Apple & Kiwi</h3>
               <p class="text-gray-600 mb-2">Detox duo</p>
@@ -268,13 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const prevBtn  = document.getElementById('prevSlide');
   const nextBtn  = document.getElementById('nextSlide');
   const slides   = Array.from(track.children);
-  const total    = slides.length;
-  const visible  = 4;      // एक साथ दिखने वाले कार्ड्स
+  const visible  = 4;                    // एक बार में दिखने वाले slides
   let index      = 0;
 
   function update() {
-    // 25% * index का translate
-    track.style.transform = `translateX(-${index * 25}%)`;
+    // हर slide की width है 25%, तो offset = index * 25%
+    track.style.transform = `translateX(-${index * (100/visible)}%)`;
   }
 
   prevBtn.addEventListener('click', () => {
@@ -283,12 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   nextBtn.addEventListener('click', () => {
-    // आखिरी तक जाने से पहले क्लैम्प
-    index = Math.min(index + 1, total - visible);
+    index = Math.min(index + 1, slides.length - visible);
     update();
   });
 });
-
 </script>
 
 
