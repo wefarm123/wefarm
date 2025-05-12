@@ -272,29 +272,56 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const track    = document.getElementById('sliderTrack');
-  const prevBtn  = document.getElementById('prevSlide');
-  const nextBtn  = document.getElementById('nextSlide');
-  const slides   = Array.from(track.children);
-  const visible  = 4;                    // एक बार में दिखने वाले slides
-  let index      = 0;
+  const track   = document.getElementById('sliderTrack');
+  const prevBtn = document.getElementById('prevSlide');
+  const nextBtn = document.getElementById('nextSlide');
+  const slides  = Array.from(track.children);
+  let index     = 0;
+
+  function isDesktop() {
+    return window.innerWidth >= 768;
+  }
 
   function update() {
-    // हर slide की width है 25%, तो offset = index * 25%
-    track.style.transform = `translateX(-${index * (100/visible)}%)`;
+    if (isDesktop()) {
+      // desktop: 4 at once, each slide = 25%
+      track.style.transform = `translateX(-${index * 25}%)`;
+    } else {
+      // mobile: 1 at once, each slide = 100%
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+  }
+
+  function clampIndex(delta) {
+    if (isDesktop()) {
+      const maxIdx = slides.length - 4;
+      index = Math.min(Math.max(index + delta, 0), maxIdx);
+    } else {
+      const maxIdx = slides.length - 1;
+      index = Math.min(Math.max(index + delta, 0), maxIdx);
+    }
   }
 
   prevBtn.addEventListener('click', () => {
-    index = Math.max(index - 1, 0);
+    clampIndex(-1);
+    update();
+  });
+  nextBtn.addEventListener('click', () => {
+    clampIndex(+1);
     update();
   });
 
-  nextBtn.addEventListener('click', () => {
-    index = Math.min(index + 1, slides.length - visible);
+  window.addEventListener('resize', () => {
+    // re-clamp so you never overshoot when switching breakpoints
+    clampIndex(0);
     update();
   });
+
+  // initial paint
+  update();
 });
 </script>
+
 
 
   <!-- AOS & Counter & Menu Script -->
