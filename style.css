@@ -130,4 +130,22 @@ video::-moz-media-controls { display:none!important; }
   margin-bottom: 1rem;
 }
 
+@supports (animation-timeline: works) {
+  @scroll-timeline cards-scroll {
+    source: selector(body);
+    scroll-offsets:
+      selector(#cards) start 1,
+      selector(#cards) end 0;
+  }
+
+  .card {
+    animation: slide-up 1 linear both;
+    animation-timeline: cards-scroll;
+  }
+
+  @keyframes slide-up {
+    from   { transform: translateY(var(--card-top-offset)); }
+    to     { transform: translateY(0); }
+  }
+}
 
