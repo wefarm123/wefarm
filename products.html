@@ -113,54 +113,48 @@
  <!-- PRODUCTS SLIDER SECTION -->
 <section id="products-slider" class="py-16 bg-white relative">
   <div class="container mx-auto px-4">
-    <!-- Section Title -->
     <h2 class="text-4xl md:text-5xl text-center text-green-800 mb-8 script-title">
       Our Cold-Pressed Juices
     </h2>
 
     <div class="relative">
-      <!-- Prev Arrow -->
+      <!-- Prev -->
       <button id="prevSlide"
-              class="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10">
+              class="absolute left-0 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow z-10">
         <i class="fas fa-chevron-left text-xl text-green-700"></i>
       </button>
 
-      <!-- Slider Viewport -->
-      <div class="overflow-hidden">
-        <div id="sliderTrack" class="slider-track flex gap-8 transition-transform duration-300">
+      <!-- Viewport -->
+      <div class="slider-viewport overflow-hidden">
+        <div id="sliderTrack" class="slider-track flex gap-4 transition-transform duration-300 ease">
+         
+        <div class="min-w-[240px] bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col justify-between">
+            <img src="image/clm1.png" class="w-full h-48 object-contain mb-4" alt="Green Detox">
+            <div>
+              <h3 class="text-xl font-semibold text-green-600 mb-1">Green Detox</h3>
+              <p class="text-gray-600 mb-2">Green Apple, Cucumber, Mint</p>
+              <div class="text-lg font-bold text-gray-800 mb-4">₹199</div>
+            </div>
+            <button onclick="openTraceModal()"
+                    class="w-full px-4 py-3 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">
+              Trace
+            </button>
+          </div>
 
-<!-- Card 1 -->
-<div class="bg-gray-50 rounded-xl shadow-lg p-6 transform hover:-translate-y-2 transition flex flex-col justify-between">
-  <!-- IMAGE -->
-  <img src="image/clm1.png" alt="Green Detox" class="w-full h-64 object-contain mb-4"/>
-
-  <!-- CONTENT -->
-  <div>
-    <h3 class="text-xl font-semibold text-green-600 mb-1">Green Detox</h3>
-    <p class="text-gray-600 mb-2">Green Apple, Cucumber, Mint</p>
-    <div class="text-lg font-bold text-gray-800 mb-4">₹199</div>
-  </div>
-
-  <!-- BUTTON -->
-  <button onclick="openTraceModal()"
-          class="w-full px-4 py-3 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">
-    Trace
-  </button>
-</div>
 
 <!-- Card 2 -->
-<div class="bg-gray-50 rounded-xl shadow-lg p-6 transform hover:-translate-y-2 transition flex flex-col justify-between">
+<div class="min-w-[240px] bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col justify-between">
   <!-- IMAGE -->
   <img src="image/abc1.png" alt="Red Booster" class="w-full h-64 object-contain mb-4"/>
 
-  <!-- CONTENT -->
+
   <div>
     <h3 class="text-xl font-semibold text-green-600 mb-1">Red Booster</h3>
     <p class="text-gray-600 mb-2">Beetroot, Carrot, Ginger</p>
     <div class="text-lg font-bold text-gray-800 mb-4">₹189</div>
   </div>
 
-  <!-- BUTTON -->
+ 
   <button onclick="openTraceModal()"
           class="w-full px-4 py-3 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-600 hover:text-white transition">
     Trace
@@ -168,8 +162,8 @@
 </div>
 
 <!-- Card 3 -->
-<div class="bg-gray-50 rounded-xl shadow-lg p-6 transform hover:-translate-y-2 transition flex flex-col justify-between">
-  <!-- IMAGE -->
+          <div class="min-w-[240px] bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col justify-between">
+ 
   <img src="image/got1.png" alt="Berry Blend" class="w-full h-64 object-contain mb-4"/>
 
   <!-- CONTENT -->
@@ -294,33 +288,32 @@
 </section>
 
 <script>
-// slider JS
 document.addEventListener('DOMContentLoaded', () => {
-  const track     = document.getElementById('sliderTrack');
-  const prevBtn   = document.getElementById('prevSlide');
-  const nextBtn   = document.getElementById('nextSlide');
-  const slides    = track.children;
-  const count     = slides.length;
-  let index       = 0;
-
-  // calculate width + gap
-  const slideStyle = getComputedStyle(slides[0]);
-  const slideWidth = slides[0].getBoundingClientRect().width
-                     + parseInt(slideStyle.marginRight);
+  const track    = document.getElementById('sliderTrack');
+  const prevBtn  = document.getElementById('prevSlide');
+  const nextBtn  = document.getElementById('nextSlide');
+  const slides   = Array.from(track.children);
+  const total    = slides.length;
+  const visible  = 4;      // एक साथ दिखने वाले कार्ड्स
+  let index      = 0;
 
   function update() {
-    track.style.transform = `translateX(-${index * slideWidth}px)`;
+    // 25% * index का translate
+    track.style.transform = `translateX(-${index * 25}%)`;
   }
 
   prevBtn.addEventListener('click', () => {
     index = Math.max(index - 1, 0);
     update();
   });
+
   nextBtn.addEventListener('click', () => {
-    index = Math.min(index + 1, count - Math.floor(track.parentElement.clientWidth/slideWidth));
+    // आखिरी तक जाने से पहले क्लैम्प
+    index = Math.min(index + 1, total - visible);
     update();
   });
 });
+
 </script>
 
 
