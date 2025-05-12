@@ -229,6 +229,6 @@ video::-moz-media-controls { display:none!important; }
 
 .card__content > figure > img {
 	width: 80%;
-	height: 80%;
+	height: 50%;
 	object-fit: cover;
 
