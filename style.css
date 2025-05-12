@@ -203,11 +203,12 @@ video::-moz-media-controls { display:none!important; }
 	overflow: hidden;
 
 	display: grid;
-	grid-template-areas: "text img";
-	grid-template-columns: 1fr 1fr;
-	grid-template-rows: auto;
+  grid-template-areas: 
+    "text img";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;    
+  align-items: stretch;
 
-	align-items: stretch;
 	outline: var(--outline-width) solid lime;
 }
 
@@ -224,17 +225,16 @@ video::-moz-media-controls { display:none!important; }
 
 .card__content > figure {
   grid-area: img;
-  display: flex;           
+  display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-}
+  height: 100%;                      
+
 
 .card__content > figure > img {
- 
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;     
+  width: auto;                       
+  height: 100%;                      
+  object-fit: contain;              
   object-position: center;
 }
 
