@@ -83,3 +83,9 @@ video::-moz-media-controls { display:none!important; }
   flex: 0 0 25%;
   box-sizing: border-box;
 }
+
+/* style.css ke end mein */
+.js-parallax {
+  overflow: visible;
+}
+
