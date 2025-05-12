@@ -228,7 +228,7 @@ video::-moz-media-controls { display:none!important; }
 }
 
 .card__content > figure > img {
-	width: 80%;
-	height: 50%;
+	width: 50%;
+	height: 90%;
 	object-fit: cover;
 
