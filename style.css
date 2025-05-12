@@ -68,3 +68,17 @@ video::-moz-media-controls { display:none!important; }
   font-family: 'Great Vibes', cursive;
   font-size:1.6rem; color:var(--grass);
 }
+/* SLIDER VIEWPORT & TRACK */
+.slider-viewport {
+  overflow: hidden;
+}
+.slider-track {
+  display: flex;
+  gap: 1rem;                        /* जितनी spacing चाहिए उतनी सेट करो */
+  transition: transform 0.3s ease;  /* smooth slide */
+}
+/* हर एक स्लाइड कार्ड को 1/4 width दें */
+.slider-track > * {
+  flex: 0 0 25%;
+  box-sizing: border-box;
+}
