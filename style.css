@@ -224,11 +224,8 @@ video::-moz-media-controls { display:none!important; }
 }
 
 .card__content > figure {
-  grid-area: img;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;                      
+	grid-area: img;
+	overflow: hidden;
 }
 
 .card__content > figure > img {
