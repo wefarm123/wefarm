@@ -1,117 +1,70 @@
 @import url('font/font3/stylesheet.css');
 
-
 :root {
   --grass: #4CAF50;
   --dark-green: #2e7d32;
   --offwhite: #f5f5f5;
 }
 
-/* Reset */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Base */
 body {
   font-family: 'Poppins', sans-serif;
   background: var(--offwhite);
   color: #333;
 }
 
-/* NAVBAR */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  background: #fff;
-}
-
-@media (max-width: 768px) {
-
-  /* Wrapper covers पूरी overlay */
-  .fruit-wrap {
-    position: absolute;
-    inset: 0;                /* top:0; right:0; bottom:0; left:0; */
-    pointer-events: none;    /* clicks fruit-wrap पर नहीं रुकेंगे */
-    overflow: hidden;
-    z-index: 0;              /* menu-content से नीचे */
-  }
-
-  
-  .fruit {
-    position: absolute;
-    width: 70px;
-    height: 70px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    animation: fall 3s linear infinite;
-  }
-
-  
-  .fruit-1 {
-    left: 20%;
-    background-image: url('image/applenav.png');
-    animation-delay: 0s;
-  }
-  .fruit-2 {
-    left: 50%;
-    background-image: url('image/pinapplenav.png');
-    animation-delay: 2s;
-  }
-  .fruit-3 {
-    left: 80%;
-    background-image: url('image/orange1.png');
-    animation-delay: 4s;
-  }
-
-  /* Keyframes: ऊपर से नीचे गिरना */
-  @keyframes fall {
-    0%   { transform: translateY(-60px); opacity: 0; }
-    10%  { opacity: 1; }
-    100% { transform: translateY(110vh); opacity: 0; }
-  }
-
-  /* Ensure menu-items ऊपर रहें */
-  #mobileMenu > *:not(.fruit-wrap) {
-    position: relative;
-    z-index: 1;
-  }
-}
-
+/* NAVBAR LOGO */
 .custom-logo {
   font-family: 'juice_it_upregular', sans-serif;
   font-size: 3.1rem;
-  letter-spacing: 0.05em;
   color: var(--grass);
+}
+
+/* MOBILE FRUIT ANIMATION */
+@media (max-width: 768px) {
+  .fruit-wrap {
+    position: absolute; inset: 0;
+    overflow: hidden; pointer-events: none; z-index: 0;
+  }
+  .fruit {
+    position: absolute; width: 70px; height: 70px;
+    background-size: contain; background-repeat: no-repeat;
+    animation: fall 3s linear infinite;
+  }
+  .fruit-1 { left: 20%; background-image: url('image/applenav.png'); animation-delay: 0; }
+  .fruit-2 { left: 50%; background-image: url('image/pinapplenav.png'); animation-delay: 2s; }
+  .fruit-3 { left: 80%; background-image: url('image/orange1.png'); animation-delay: 4s; }
+
+  @keyframes fall {
+    0% { transform: translateY(-60px); opacity: 0; }
+    10% { opacity:1; }
+    100% { transform: translateY(110vh); opacity:0; }
+  }
+  #mobileMenu > *:not(.fruit-wrap) { position: relative; z-index:1; }
 }
 
 /* VIDEO HERO */
 .video-hero {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  margin-left: calc(-50vw + 50%);
-  overflow: hidden;
+  position: relative; width:100vw; height:100vh;
+  margin-left: calc(-50vw + 50%); overflow:hidden;
 }
 .hero-video {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
+  position:absolute; top:0; left:0;
+  width:100%; height:100%; object-fit:cover;
 }
-video::-webkit-media-controls { display: none!important; }
-video::-moz-media-controls    { display: none!important; }
+video::-webkit-media-controls,
+video::-moz-media-controls { display:none!important; }
 
-/* Section Title Script Font */
+/* SECTION TITLE FONT */
 .script-title {
   font-family: 'Great Vibes', cursive;
-  font-size: 2.8rem;
-  color: var(--dark-green);
-  margin-bottom: 1.5rem;
+  font-size:2.8rem; color:var(--dark-green);
+  margin-bottom:1.5rem;
 }
 
-/* Product Card Titles */
+/* CARD TITLE */
 .product-card h3 {
   font-family: 'Great Vibes', cursive;
-  font-size: 1.6rem;
-  color: var(--grass);
+  font-size:1.6rem; color:var(--grass);
+}
