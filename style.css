@@ -216,7 +216,7 @@ video::-moz-media-controls { display:none!important; }
 .card__content > div {
 	grid-area: text;
 	width: 80%;
-	place-self: center;
+	place-self: start center;
 	text-align: left;
 
 	display: grid;
