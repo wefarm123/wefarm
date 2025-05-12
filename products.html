@@ -276,6 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const prevBtn = document.getElementById('prevSlide');
   const nextBtn = document.getElementById('nextSlide');
   const slides  = Array.from(track.children);
+  const visible = window.innerWidth >= 768 ? 4 : 1; // desktop pe 4, mobile pe 1
   let index     = 0;
 
   function isDesktop() {
@@ -283,37 +284,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function update() {
-    if (isDesktop()) {
-      // desktop: 4 at once, each slide = 25%
-      track.style.transform = `translateX(-${index * 25}%)`;
-    } else {
-      // mobile: 1 at once, each slide = 100%
-      track.style.transform = `translateX(-${index * 100}%)`;
-    }
-  }
-
-  function clampIndex(delta) {
-    if (isDesktop()) {
-      const maxIdx = slides.length - 4;
-      index = Math.min(Math.max(index + delta, 0), maxIdx);
-    } else {
-      const maxIdx = slides.length - 1;
-      index = Math.min(Math.max(index + delta, 0), maxIdx);
-    }
+    const shift = isDesktop() ? (index * 100/visible) : (index * 100);
+    track.style.transform = `translateX(-${shift}%)`;
   }
 
   prevBtn.addEventListener('click', () => {
-    clampIndex(-1);
+    if (isDesktop()) {
+      // desktop: agar index 0 pe hai, wrap to last full page
+      index = index === 0 ? slides.length - visible : index - 1;
+    } else {
+      // mobile: agar first pe hai, wrap to last slide
+      index = index === 0 ? slides.length - 1 : index - 1;
+    }
     update();
   });
+
   nextBtn.addEventListener('click', () => {
-    clampIndex(+1);
+    if (isDesktop()) {
+      // desktop: agar last page pe hai, wrap to 0
+      index = index === slides.length - visible ? 0 : index + 1;
+    } else {
+      // mobile: agar last slide pe hai, wrap to 0
+      index = index === slides.length - 1 ? 0 : index + 1;
+    }
     update();
   });
 
   window.addEventListener('resize', () => {
-    // re-clamp so you never overshoot when switching breakpoints
-    clampIndex(0);
+    // breakpoint change hone pe clamping + repaint
+    // recalc visible
     update();
   });
 
@@ -321,8 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
   update();
 });
 </script>
-
-
 
   <!-- AOS & Counter & Menu Script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
