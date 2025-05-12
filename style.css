@@ -86,7 +86,7 @@ video::-moz-media-controls { display:none!important; }
 
 :root {
 	--card-height: 100vh;
-	--card-margin: 50vh;
+	--card-margin: 40vh;
 	--card-top-offset: 1em;
 	--numcards: 4;
 	--outline-width: 0px;
@@ -214,7 +214,7 @@ video::-moz-media-controls { display:none!important; }
 
 .card__content > figure > img {
 	width: 100%;
-	height: 100%;
+	height: 80%;
 	object-fit: cover;
 }
 
