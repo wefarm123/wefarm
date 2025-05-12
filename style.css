@@ -85,8 +85,8 @@ video::-moz-media-controls { display:none!important; }
 }
 
 :root {
-	--card-height: 35vw;
-	--card-margin: 15vw;
+	--card-height: 40vw;
+	--card-margin: 12vw;
 	--card-top-offset: 1em;
 	--numcards: 8;
 	--outline-width: 0px;
