@@ -363,11 +363,10 @@ document.addEventListener('DOMContentLoaded', () => {
   </script>
 
 <script src="https://unpkg.com/rellax/rellax.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // pura section id="juices" pe parallax
+ <script>
+  window.addEventListener('load', () => {
     new Rellax('.js-parallax', {
-      speed: -2,     // -2 se halki slow-upwards motion
+      speed: -2,
       center: false,
       round: true,
       vertical: true,
