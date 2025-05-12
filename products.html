@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function update() {
     // हर slide की width है 25%, तो offset = index * 25%
-    track.style.transform = `translateX(-${index * 100}%)`;
+    track.style.transform = `translateX(-${index * (100/visible)}%)`;
   }
 
   prevBtn.addEventListener('click', () => {
