@@ -229,7 +229,7 @@ video::-moz-media-controls { display:none!important; }
   align-items: center;
   justify-content: center;
   height: 100%;                      
-
+}
 
 .card__content > figure > img {
   width: auto;                       
@@ -238,3 +238,7 @@ video::-moz-media-controls { display:none!important; }
   object-position: center;
 }
 
+#juices-cards { display: flex; }
+#cardDescription { background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+#cards { list-style: none; margin: 0; padding: 0; }
+.card { margin-bottom: 4rem; /* jaise aapki scrolling effect ke liye */ }
