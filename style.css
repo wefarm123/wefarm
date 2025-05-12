@@ -239,7 +239,22 @@ video::-moz-media-controls { display:none!important; }
   object-position: center;
 }
 
+.text-wrapper {
+  position: relative;        /* ताकि child absolute से पोजिशन हो सके */
+  padding-top: 3rem;         /* ऊपर से थोड़á स्पेस, अपने अनुसार एडजस्ट करना */
+}
+
+.text-wrapper h3 {
+  position: absolute;
+  top: 0;                    /* बॉक्स के बिलकुल टॉप पर */
+  left: 50%;                 
+  transform: translateX(-50%);
+  margin: 0;
+}
+
 .desc {
   min-height: 3rem; 
   margin-top: 1rem;
 }
+
+
