@@ -278,40 +278,39 @@
 document.addEventListener('DOMContentLoaded', () => {
   const descTitle = document.getElementById('descTitle');
   const descBody  = document.getElementById('descBody');
+  const cards     = document.querySelectorAll('.card');
 
-  // simple typewriter effect
   function typeWriter(el, text, delay=40) {
     el.textContent = '';
     let i = 0;
-    function step() {
+    (function step() {
       if (i < text.length) {
         el.textContent += text.charAt(i++);
         setTimeout(step, delay);
       }
-    }
-    step();
+    })();
   }
 
-  // observe when card fully enters viewport
-  const cards = document.querySelectorAll('.card');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio === 1) {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
         const card = entry.target;
-        const title = card.dataset.title;
-        const text  = card.dataset.text;
+        // agar aap data-title/use kar rahe ho:
+        // const title = card.dataset.title;
+        // const text  = card.dataset.text;
+        // agar aap innerText use karna chahte ho:
+        const title = card.querySelector('h3').innerText;
+        const text  = card.querySelector('p').innerText;
         descTitle.textContent = title;
         typeWriter(descBody, text);
       }
     });
   }, {
     root: null,      // pura window scroll detect karega
-    threshold: 0.5        // fully visible
+    threshold: 0.5   // 50% visible hone pe trigger
   });
 
   cards.forEach(card => observer.observe(card));
 });
-</script>
-
 </body>
 </html>
