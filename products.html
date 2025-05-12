@@ -319,35 +319,30 @@ Allergen Info: None
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const cards = document.querySelectorAll('.card');
-
-  function typeWriter(el, text, delay = 40) {
+  // हर .typewriter element के लिए typewriter effect
+  document.querySelectorAll('.typewriter').forEach(el => {
+    const fullText = el.dataset.text.trim().split('\n');
     el.textContent = '';
-    let i = 0;
-    (function step() {
-      if (i < text.length) {
-        el.textContent += text.charAt(i++);
-        setTimeout(step, delay);
-      }
-    })();
-  }
+    let line = 0, char = 0;
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-        const card = entry.target;
-        const descEl = card.querySelector('.desc');
-        const fullText = card.dataset.desc || '';
-        typeWriter(descEl, fullText);
+    function typeLine() {
+      if (line < fullText.length) {
+        if (char <= fullText[line].length) {
+          el.textContent = fullText.slice(0, line).join('\n') + '\n' + fullText[line].slice(0, char++);
+          setTimeout(typeLine, 30);
+        } else {
+          // अगले लाइन पे चलते हैं, थोड़ी देर बाद
+          line++;
+          char = 0;
+          setTimeout(typeLine, 200);
+        }
       }
-    });
-  }, {
-    root: null,
-    threshold: 0.5
+    }
+
+    typeLine();
   });
-
-  cards.forEach(card => observer.observe(card));
 });
 </script>
+
 </body>
 </html>
