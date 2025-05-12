@@ -128,12 +128,18 @@
       Our Cold-Pressed Juices
     </h2>
 
-    
+    <div class="relative">
+      <!-- Prev -->
+      <button id="prevSlide"
+              class="absolute left-0 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow z-10">
+        <i class="fas fa-chevron-left text-xl text-green-700"></i>
+      </button>
 
-     <div class="swiper juices-slider">
-      <div class="swiper-wrapper">
+      <!-- Viewport -->
+      <div class="slider-viewport overflow-hidden">
+        <div id="sliderTrack" class="slider-track flex items-stretch gap-0 transition-transform duration-300 ease">
          
-  <div class="swiper-slide group bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
+  <div class="group flex-none w-full md:w-1/4 bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
             <img src="image/clm2.png"class="w-full h-80 object-contain mb-4 rounded-md transition-transform duration-300 group-hover:scale-105"
  alt="Green Detox">
             <div>
@@ -149,7 +155,7 @@
 
 
 <!-- Card 2 -->
-  <div class="swiper-slide group bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
+  <div class="group flex-none w-full md:w-1/4 bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
   <!-- IMAGE -->
   <img src="image/abc2.png" alt="Red Booster"class="w-full h-80 object-contain mb-4 rounded-md transition-transform duration-300 group-hover:scale-105"
 />
@@ -169,7 +175,7 @@
 </div>
 
 <!-- Card 3 -->
-  <div class="swiper-slide group bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
+  <div class="group flex-none w-full md:w-1/4 bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
  
   <img src="image/got2.png" alt="Berry Blend"class="w-full h-80 object-contain mb-4 rounded-md transition-transform duration-300 group-hover:scale-105"
 />
@@ -188,7 +194,7 @@
   </button>
 </div>
        
-  <div class="swiper-slide group bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
+  <div class="group flex-none w-full md:w-1/4 bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
             <img src="image/pombliss.png" alt="Pomegranate"class="w-full h-80 object-contain mb-4 rounded-md transition-transform duration-300 group-hover:scale-105"
 />
             <div>
@@ -203,7 +209,7 @@
           </div>
 
           
-  <div class="swiper-slide group bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
+  <div class="group flex-none w-full md:w-1/4 bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
             <img src="image/sugarcane2.png" alt="Sugarcane Juice"class="w-full h-80 object-contain mb-4 rounded-md transition-transform duration-300 group-hover:scale-105"
 />
             <div>
@@ -217,7 +223,7 @@
             </button>
           </div>
           <!-- Slide 4: Green Apple & Kiwi -->
-  <div class="swiper-slide group bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
+  <div class="group flex-none w-full md:w-1/4 bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
             <img src="image/ak.png" alt="Green Apple & Kiwi"class="w-full h-80 object-contain mb-4 rounded-md transition-transform duration-300 group-hover:scale-105"
 />
             <div>
@@ -232,7 +238,7 @@
           </div>
 
           <!-- NEW Slide 5: Orange Zing -->
-  <div class="swiper-slide group bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
+  <div class="group flex-none w-full md:w-1/4 bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
             <img src="image/orange.png" alt="Orange Zing"class="w-full h-80 object-contain mb-4 rounded-md transition-transform duration-300 group-hover:scale-105"
 />
             <div>
@@ -247,7 +253,7 @@
           </div>
 
           <!-- NEW Slide 6: Apple Crisp -->
-  <div class="swiper-slide group bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
+  <div class="group flex-none w-full md:w-1/4 bg-gray-50 rounded-xl shadow-lg p-6 flex flex-col h-full">
             <img src="image/apple1.png" alt="Apple Crisp"class="w-full h-80 object-contain mb-4 rounded-md transition-transform duration-300 group-hover:scale-105"
 />
             <div>
@@ -260,45 +266,69 @@
               Trace
             </button>
           </div>
-<!-- Arrows -->
-      <div class="swiper-button-prev text-green-700"></div>
-      <div class="swiper-button-next text-green-700"></div>
-
-      <!-- Dots (optional) -->
-      <div class="swiper-pagination"></div>
 
         </div>
       </div>
 
-      
+      <!-- Next Arrow -->
+      <button id="nextSlide"
+              class="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow z-10">
+        <i class="fas fa-chevron-right text-xl text-green-700"></i>
+      </button>
     </div>
   </div>
 </section>
-<script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
+
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const swiper = new Swiper('.juices-slider', {
-      loop: true,
-      slidesPerView: 1,
-      spaceBetween: 16,
+document.addEventListener('DOMContentLoaded', () => {
+  const track   = document.getElementById('sliderTrack');
+  const prevBtn = document.getElementById('prevSlide');
+  const nextBtn = document.getElementById('nextSlide');
+  const slides  = Array.from(track.children);
+  const visible = window.innerWidth >= 768 ? 4 : 1; // desktop pe 4, mobile pe 1
+  let index     = 0;
 
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
+  function isDesktop() {
+    return window.innerWidth >= 768;
+  }
 
-      breakpoints: {
-        640:  { slidesPerView: 2, spaceBetween: 20 },
-        1024: { slidesPerView: 4, spaceBetween: 32 },
-      },
-    });
+  function update() {
+    const shift = isDesktop() ? (index * 100/visible) : (index * 100);
+    track.style.transform = `translateX(-${shift}%)`;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    if (isDesktop()) {
+      // desktop: agar index 0 pe hai, wrap to last full page
+      index = index === 0 ? slides.length - visible : index - 1;
+    } else {
+      // mobile: agar first pe hai, wrap to last slide
+      index = index === 0 ? slides.length - 1 : index - 1;
+    }
+    update();
   });
-</script>
 
+  nextBtn.addEventListener('click', () => {
+    if (isDesktop()) {
+      // desktop: agar last page pe hai, wrap to 0
+      index = index === slides.length - visible ? 0 : index + 1;
+    } else {
+      // mobile: agar last slide pe hai, wrap to 0
+      index = index === slides.length - 1 ? 0 : index + 1;
+    }
+    update();
+  });
+
+  window.addEventListener('resize', () => {
+    // breakpoint change hone pe clamping + repaint
+    // recalc visible
+    update();
+  });
+
+  // initial paint
+  update();
+});
+</script>
 
   <!-- AOS & Counter & Menu Script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -335,22 +365,6 @@
       alert('Trace feature अभी implement होना बाकी है!');
     }
   </script>
-
-<script src="https://unpkg.com/rellax/rellax.min.js"></script>
-
- <script>
-  window.addEventListener('load', () => {
-    new Rellax('.js-parallax', {
-      speed: -2,
-      center: false,
-      round: true,
-      vertical: true,
-      horizontal: false
-    });
-  });
-</script>
-
-
 
 </body>
 </html>
