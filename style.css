@@ -208,7 +208,7 @@ video::-moz-media-controls { display:none!important; }
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr;    
   align-items: stretch;
-}
+
 
 	outline: var(--outline-width) solid lime;
 }
