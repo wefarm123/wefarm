@@ -239,6 +239,7 @@ video::-moz-media-controls { display:none!important; }
   object-position: center;
 }
 
-.card__content .desc {
-  min-height: 3rem; /* ya jitna space chahiye */
+.desc {
+  min-height: 3rem; 
+  margin-top: 1rem;
 }
