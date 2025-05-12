@@ -84,8 +84,5 @@ video::-moz-media-controls { display:none!important; }
   box-sizing: border-box;
 }
 
-/* style.css ke end mein */
-.js-parallax {
-  overflow: visible;
-}
+
 
