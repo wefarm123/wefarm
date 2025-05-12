@@ -202,12 +202,14 @@ video::-moz-media-controls { display:none!important; }
 	border-radius: 1em;
 	overflow: hidden;
 
-	display: grid;
+	.card__content {
+  display: grid;
   grid-template-areas: 
     "text img";
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr;    
   align-items: stretch;
+}
 
 	outline: var(--outline-width) solid lime;
 }
@@ -224,8 +226,11 @@ video::-moz-media-controls { display:none!important; }
 }
 
 .card__content > figure {
-	grid-area: img;
-	overflow: hidden;
+  grid-area: img;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;                     
 }
 
 .card__content > figure > img {
