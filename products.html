@@ -294,11 +294,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const descTitle = document.getElementById('descTitle');
-  const descBody  = document.getElementById('descBody');
-  const cards     = document.querySelectorAll('.card');
+  const cards = document.querySelectorAll('.card');
 
-  function typeWriter(el, text, delay=40) {
+  function typeWriter(el, text, delay = 40) {
     el.textContent = '';
     let i = 0;
     (function step() {
@@ -313,22 +311,18 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach(entry => {
       if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
         const card = entry.target;
-        // agar aap data-title/use kar rahe ho:
-        // const title = card.dataset.title;
-        // const text  = card.dataset.text;
-        // agar aap innerText use karna chahte ho:
-        const title = card.querySelector('h3').innerText;
-        const text  = card.querySelector('p').innerText;
-        descTitle.textContent = title;
-        typeWriter(descBody, text);
+        const descEl = card.querySelector('.desc');
+        const fullText = card.dataset.desc || '';
+        typeWriter(descEl, fullText);
       }
     });
   }, {
-    root: null,      // pura window scroll detect karega
-    threshold: 0.5   // 50% visible hone pe trigger
+    root: null,
+    threshold: 0.5
   });
 
   cards.forEach(card => observer.observe(card));
 });
+</script>
 </body>
 </html>
