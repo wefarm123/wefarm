@@ -86,9 +86,9 @@ video::-moz-media-controls { display:none!important; }
 
 :root {
 	--card-height: 40vw;
-	--card-margin: 4vw;
+	--card-margin: 10vw;
 	--card-top-offset: 1em;
-	--numcards: 4;
+	--numcards: 8;
 	--outline-width: 0px;
 }
 
@@ -111,6 +111,21 @@ video::-moz-media-controls { display:none!important; }
 
 #card_4 {
 	--index: 4;
+}
+#card_5 {
+	--index: 5;
+}
+
+#card_6 {
+	--index: 6;
+}
+
+#card_7 {
+	--index: 7;
+}
+
+#card_8 {
+	--index: 8;
 }
 
 .card {
@@ -214,7 +229,7 @@ video::-moz-media-controls { display:none!important; }
 
 .card__content > figure > img {
 	width: 80%;
-	height: 90%;
+	height: 80%;
 	object-fit: cover;
 }
 
