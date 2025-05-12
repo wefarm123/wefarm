@@ -115,7 +115,8 @@
   </section>
 
  <!-- PRODUCTS SLIDER SECTION -->
-<section id="juices" class="pt-16 /* 16 * 4px = 64px */ py-16 bg-white">
+<section id="juices" class="pt-16 /* 16 * 4px = 64px */ py-16 bg-white js-parallax"
+  data-rellax-speed="-2">
   <div class="container mx-auto px-4">
     <h2
       class="text-4xl md:text-5xl text-center text-green-800 mb-12 script-title"
@@ -360,15 +361,14 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Trace feature अभी implement होना बाकी है!');
     }
   </script>
+
 <script src="https://unpkg.com/rellax/rellax.min.js"></script>
 <script>
-  // DOM loaded ke baad init karenge
   document.addEventListener('DOMContentLoaded', () => {
-    // speed jitna zyada negative, utna zyada up–scroll par slow move
-    new Rellax('.product-card', {
-      speed: -2,
+    // pura section id="juices" pe parallax
+    new Rellax('.js-parallax', {
+      speed: -2,     // -2 se halki slow-upwards motion
       center: false,
-      wrapper: null,
       round: true,
       vertical: true,
       horizontal: false
