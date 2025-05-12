@@ -202,7 +202,6 @@ video::-moz-media-controls { display:none!important; }
 	border-radius: 1em;
 	overflow: hidden;
 
-	.card__content {
   display: grid;
   grid-template-areas: 
     "text img";
