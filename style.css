@@ -84,5 +84,50 @@ video::-moz-media-controls { display:none!important; }
   box-sizing: border-box;
 }
 
+:root {
+  --card-height: 80vh;           /* how tall each “panel” is */
+  --card-margin: 10vh;           /* bottom margin so you can scroll past last card */
+  --card-top-offset: 10vh;       /* controls the “stacked” offset spacing */
+  --numcards: 6;                 /* total number of cards */
+}
+
+/* 1) make room for all cards */
+#cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  padding-bottom: calc(var(--numcards) * var(--card-top-offset));
+  margin-bottom: var(--card-margin);
+}
+
+/* 2) each card sticks in place and then un-sticks in sequence */
+.card {
+  position: sticky;
+  top: 0;
+  height: var(--card-height);
+  padding-top: calc(var(--index) * var(--card-top-offset));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* assign an index to each card */
+#card_1 { --index: 1; }
+#card_2 { --index: 2; }
+#card_3 { --index: 3; }
+#card_4 { --index: 4; }
+/* …and so on up to #card_6 if you have 6 juices */
+
+/* 3) optional: style your card content */
+.card__content {
+  text-align: center;
+}
+.card__content img {
+  max-height: 60vh;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
 
 
