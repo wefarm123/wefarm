@@ -200,7 +200,7 @@ video::-moz-media-controls { display:none!important; }
 	background: rgb(255, 255, 255);
 	color: rgb(10, 5, 7);
 	border-radius: 1em;
-	overflow: hidden;
+	overflow: visible;
 
   display: grid;
   grid-template-areas: 
