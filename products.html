@@ -410,88 +410,56 @@ Allergen Info: None
 <!-- ──────────────────────────────────────────────────── -->
 <!-- 6. GOOGLE REVIEWS SECTION (paste right after juices) -->
 <!-- ──────────────────────────────────────────────────── -->
-<section id="google-reviews" class="py-16 bg-white">
+<section id="google-reviews" class="py-12 bg-white">
   <div class="container mx-auto px-4">
-    <!-- Title + summary -->
-    <div class="flex flex-col md:flex-row items-center md:justify-between mb-8">
-      <h2 class="text-3xl font-bold text-center md:text-left">Google Reviews</h2>
-      <div class="mt-4 md:mt-0 text-center md:text-right">
-        <span class="text-gray-600">Google rating score:</span>
-        <span class="font-semibold">4.5</span> 
-        <span class="text-gray-600">of 5, based on</span>
-        <span class="font-semibold">101 reviews</span>
-      </div>
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-3xl font-bold">Google Reviews</h2>
+      <p id="google-summary" class="text-gray-700">Google rating score: <span id="avg-rating">4.5</span> of 5, based on <span id="total-reviews">101</span> reviews</p>
     </div>
-
-    <!-- carousel wrapper -->
     <div class="relative">
-      <!-- left arrow -->
-      <button id="rev-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full border border-gray-300 bg-white z-10">
-        &larr;
+      <!-- Prev arrow -->
+      <button id="reviewsPrev" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100">
+        ‹
       </button>
 
-      <!-- reviews track -->
-      <ul id="rev-track" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-hidden">
-        <!-- Review 1 -->
-        <li class="bg-gray-100 rounded-xl p-6 flex flex-col">
-          <div class="flex items-center mb-4">
-            <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center mr-3">
-              S
+      <!-- Slider viewport -->
+      <div id="reviewsViewport" class="overflow-hidden">
+        <ul id="reviewsList" class="flex transition-transform duration-500">
+          <!-- Example review cards: copy/paste and replace with your fetched reviews -->
+          <li class="review-card flex-shrink-0 w-80 bg-gray-50 rounded-lg p-6 mr-4">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <div class="text-sm font-semibold">SANJEEV MALHOTRA</div>
+                <div class="text-xs text-gray-500">2024-09-07</div>
+              </div>
+              <div>
+                <!-- star icons -->
+                <span class="text-yellow-500">★★★★☆</span>
+              </div>
             </div>
-            <div class="flex-1">
-              <h3 class="font-semibold">SANJEEV MALHOTRA</h3>
-              <time class="text-sm text-gray-500">2024-09-07</time>
+            <p class="text-gray-700">Not visited</p>
+          </li>
+          <li class="review-card flex-shrink-0 w-80 bg-gray-50 rounded-lg p-6 mr-4">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <div class="text-sm font-semibold">Abhinav Kumar</div>
+                <div class="text-xs text-gray-500">2023-05-22</div>
+              </div>
+              <div><span class="text-yellow-500">★★★★★</span></div>
             </div>
-            <img src="https://www.gstatic.com/images/branding/product/1x/avatar_circle_grey_512dp.png"
-                 alt="Google" class="w-6 h-6">
-          </div>
-          <div class="mb-4 text-yellow-500">
-            ★★★★☆
-          </div>
-          <p class="text-gray-700 flex-1">Not visited</p>
-        </li>
-
-        <!-- Review 2 -->
-        <li class="bg-gray-100 rounded-xl p-6 flex flex-col">
-          <div class="flex items-center mb-4">
-            <img src="https://example.com/abhinav.jpg" alt="Abhinav Kumar"
-                 class="w-10 h-10 rounded-full mr-3 object-cover">
-            <div class="flex-1">
-              <h3 class="font-semibold">Abhinav Kumar</h3>
-              <time class="text-sm text-gray-500">2023-05-22</time>
+            <p class="text-gray-700">Absolutely pure juice. Nothing seems to be added, no preservatives no sugars.</p>
+          </li>
+          <li class="review-card flex-shrink-0 w-80 bg-gray-50 rounded-lg p-6 mr-4">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <div class="text-sm font-semibold">Puneet Tiwari</div>
+                <div class="text-xs text-gray-500">2023-03-24</div>
+              </div>
+              <div><span class="text-yellow-500">★★★★★</span></div>
             </div>
-            <img src="https://www.gstatic.com/images/branding/product/1x/avatar_circle_grey_512dp.png"
-                 alt="Google" class="w-6 h-6">
-          </div>
-          <div class="mb-4 text-yellow-500">
-            ★★★★★
-          </div>
-          <p class="text-gray-700 flex-1">
-            Absolutely pure juice. Nothing seems to be added, no preservatives no sugars.
-          </p>
-        </li>
-
-        <!-- Review 3 -->
-        <li class="bg-gray-100 rounded-xl p-6 flex flex-col">
-          <div class="flex items-center mb-4">
-            <img src="https://example.com/puneet.jpg" alt="Puneet Tiwari"
-                 class="w-10 h-10 rounded-full mr-3 object-cover">
-            <div class="flex-1">
-              <h3 class="font-semibold">Puneet Tiwari</h3>
-              <time class="text-sm text-gray-500">2023-03-24</time>
-            </div>
-            <img src="https://www.gstatic.com/images/branding/product/1x/avatar_circle_grey_512dp.png"
-                 alt="Google" class="w-6 h-6">
-          </div>
-          <div class="mb-4 text-yellow-500">
-            ★★★★★
-          </div>
-          <p class="text-gray-700 flex-1">
-            Very tasty fresh refreshing Juice in all flavours. No added sugar.
-          </p>
-        </li>
-
-<li class="bg-gray-100 rounded-xl p-6 flex flex-col">
+            <p class="text-gray-700">Very tasty fresh refreshing Juice in all flavours. No added sugar.</p>
+          </li>
+         <li class="bg-gray-100 rounded-xl p-6 flex flex-col">
           <div class="flex items-center mb-4">
             <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center mr-3">
               S
@@ -526,24 +494,46 @@ Allergen Info: None
           </div>
           <p class="text-gray-700 flex-1">Taste good and best in sector </p>
         </li>
-      </ul>
+   
+        </ul>
+      </div>
 
-      <!-- right arrow -->
-      <button id="rev-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full border border-gray-300 bg-white z-10">
-        &rarr;
+      <!-- Next arrow -->
+      <button id="reviewsNext" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100">
+        ›
       </button>
     </div>
   </div>
 </section>
 
+
 <script>
-  const track = document.getElementById('rev-track');
-  document.getElementById('rev-next').onclick = () => {
-    track.scrollBy({ left: track.offsetWidth * 0.8, behavior: 'smooth' });
-  };
-  document.getElementById('rev-prev').onclick = () => {
-    track.scrollBy({ left: -track.offsetWidth * 0.8, behavior: 'smooth' });
-  };
+  document.addEventListener('DOMContentLoaded', () => {
+    const list     = document.getElementById('reviewsList');
+    const prevBtn  = document.getElementById('reviewsPrev');
+    const nextBtn  = document.getElementById('reviewsNext');
+    const cards    = Array.from(list.children);
+    const cardWidth = cards[0].getBoundingClientRect().width + parseInt(getComputedStyle(cards[0]).marginRight);
+
+    let index = 0;
+    const maxIndex = cards.length - 1;
+
+    function update() {
+      // circular wrap
+      if (index < 0) index = maxIndex;
+      if (index > maxIndex) index = 0;
+      list.style.transform = `translateX(${-index * cardWidth}px)`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      index--;
+      update();
+    });
+    nextBtn.addEventListener('click', () => {
+      index++;
+      update();
+    });
+});
 </script>
 
   <!-- AOS & Counter & Menu Script -->
