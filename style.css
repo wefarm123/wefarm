@@ -255,6 +255,7 @@ video::-moz-media-controls { display:none!important; }
 .desc {
   min-height: 3rem; 
   margin-top: 1rem;
+white-space: pre-wrap;
 }
 
 
