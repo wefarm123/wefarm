@@ -321,7 +321,10 @@ white-space: pre-wrap;
 }
 }
 
-
+#reviewsViewport {
+  /* hide overflow, only show one (or 2) cards at a time */
+  overflow: hidden;
+}
 
 /* DESKTOP: 3 across, with 1rem gutter */
 #reviewsList .review-card {
