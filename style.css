@@ -258,4 +258,27 @@ video::-moz-media-controls { display:none!important; }
 white-space: pre-wrap;
 }
 
+/* style.css के अंत में जोड़ें */
+@media (max-width: 768px) {
+  /* जिस UL में सारे कार्ड हैं उसे full-screen scroll container बनाओ */
+  #cards {
+    height: 100vh;               /* viewport भर ले */
+    overflow-y: auto;            /* vertical scroll */
+    scroll-snap-type: y mandatory; /* हर कार्ड पर snap */
+  }
+
+  /* हर LI.card को viewport जितना ऊँचा करो + snap-align लगाओ */
+  .card {
+    height: 100vh;               /* पूरा स्क्रीन कवर */
+    scroll-snap-align: start;    /* जब शुरू में आए तो पक्का वहीं रुकना */
+  }
+
+  /* अंदर का कंटेंट चिपका रहे top पे */
+  .card__content {
+    position: sticky;
+    top: 0;
+    height: 100vh;               /* full screen height */
+    overflow: hidden;            /* सीधे वही कंटेंट दिखे */
+  }
+}
 
