@@ -260,36 +260,44 @@ white-space: pre-wrap;
 
 
 @media (max-width: 768px) {
-  /* 1) make the UL a full‐screen, padded, snap‐scroll container */
-  #cards {
-    display: block;                        /* stack cards vertically */
-    height: calc(100vh - 4rem);            /* full viewport minus header */
+   #cards {
+    display: block;                         /* stack vertically */
+    height: calc(100vh - 4rem);             /* fill viewport under header */
     overflow-y: auto;
     scroll-snap-type: y mandatory;
-    padding: 0 1rem;                       /* side padding so content isn’t flush */
+    padding: 0 1rem;                        /* side padding */
   }
 
-  /* 2) each card fills the screen and snaps into view */
   .card {
-    height: calc(100vh - 4rem);
-    scroll-snap-align: start;
-    margin-bottom: 1rem;                   /* gap between cards */
+    height: calc(100vh - 4rem);             /* each card = viewport */
+    scroll-snap-align: start;               /* snap to top */
+    margin-bottom: 1rem;                    /* gap between cards */
   }
 
+  /* --- Card Content: pinned at top, flex column --- */
   .card__content {
     display: flex;
     flex-direction: column;
-    position: sticky;                      /* keep it pinned at top */
-    top: 4rem;                             /* below the fixed header */
+    position: sticky;
+    top: 4rem;                              /* just below header */
     height: calc(100vh - 4rem);
+    overflow: visible !important;           /* allow image to show */
   }
 
+  /* --- Text area grows & scrolls internally --- */
   .text-wrapper {
-  height: 75vh;               
-  overflow-y: auto;
-   padding: 1.5rem 1rem;
- }
+    flex: 1 1 auto;                         /* fill free space */
+    padding: 1.5rem 1rem;                   /* roomy padding */
+    overflow-y: auto;                       /* scroll if too tall */
+  }
 
+  /* remove any min-height so desc can expand fully */
+  .desc {
+    /* min-height: 3rem; */                 /* ← make sure this line is deleted */
+    margin-bottom: 1rem;                    /* gap before image */
+  }
+
+  /* subtitles flow normally again */
   .text-wrapper h3,
   .text-wrapper h4 {
     position: static;
@@ -298,18 +306,17 @@ white-space: pre-wrap;
     margin: 0.5rem 0;
   }
 
-  .desc {
-    margin-bottom: 1rem;
-  }
-
+  /* --- Image pinned to bottom, smaller height --- */
   .card__content figure {
-    flex: 0 0 auto;                        /* never shrink */
-    margin-top: auto;                      /* push to bottom */
-    padding: 1rem 0;                       /* some bottom space */
+    flex: 0 0 auto;                         /* don’t shrink */
+    margin-top: auto;                       /* push it down */
+    padding: 1rem 0;                        /* bottom breathing room */
   }
-
   .card__content figure img {
-  
-  height: 15vh;
+    width: auto;
+    height: 15vh !important;                /* only ~15% of screen */
+    object-fit: contain;
+    object-position: center;
   }
+}
 }
