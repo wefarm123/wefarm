@@ -448,7 +448,7 @@ Allergen Info: None
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const cards = document.querySelectorAll('.card');
-  const container = document.getElementById('cards');  // अब ये scroll root होगा
+  
 
   function typeWriter(el, text, delay = 40) {
     el.textContent = '';
@@ -462,25 +462,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.75) {
-        const card = entry.target;
-        if (card.classList.contains('typed')) return;
-
-        const descEl   = card.querySelector('.desc');
-        const fullText = card.getAttribute('data-desc');
-        typeWriter(descEl, fullText);
-
-        card.classList.add('typed');
-        obs.unobserve(card);
-      }
-    });
-  }, {
-    root: container,   // अब इस scrollable UL को देखो
-    threshold: 0.75    // 75% दिखे तो टाइपराइटर चलाओ
+  entries.forEach(entry => {
+    if (!entry.isIntersecting || entry.intersectionRatio < 0.5) return;
+    const card   = entry.target;
+    if (card.classList.contains('typed')) return;
+    const descEl   = card.querySelector('.desc');
+    const fullText = card.getAttribute('data-desc');
+    typeWriter(descEl, fullText);
+    card.classList.add('typed');
+    obs.unobserve(card);
   });
+}, {
+  root: null,      // ← observe the viewport
+  threshold: 0.5   // ← fire when 50% visible
+});
 
-  cards.forEach(card => observer.observe(card));
+cards.forEach(card => observer.observe(card));
 });
 </script>
 
