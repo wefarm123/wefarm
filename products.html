@@ -496,31 +496,36 @@ Allergen Info: None
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  const track        = document.getElementById('reviews-track');
-  const cards        = track.children;
+  const track        = document.getElementById('reviewsList');
+  const cards        = track.querySelectorAll('.review-card');
   const prevBtn      = document.getElementById('prevBtn');
   const nextBtn      = document.getElementById('nextBtn');
-  let visibleCount   = window.innerWidth < 768 ? 1 : 4;
-  let index          = 0;                     // which card is at the left
+  let visibleCount   = window.innerWidth < 768 ? 1 : 3;
+  let index          = 0;  // which card is currently the first in view
 
   function render(){
-    // how much to shift in percent
+    // Calculate percentage shift
     const shiftPct = (100 / visibleCount) * index;
     track.style.transform = `translateX(-${shiftPct}%)`;
   }
 
   nextBtn.addEventListener('click', ()=>{
+    // move forward one card, wrap around
     index = (index + 1) % cards.length;
     render();
   });
 
   prevBtn.addEventListener('click', ()=>{
+    // move backward one card, wrap around
     index = (index - 1 + cards.length) % cards.length;
     render();
   });
 
   window.addEventListener('resize', ()=>{
-    visibleCount = window.innerWidth < 768 ? 1 : 4;
+    // recalc how many should be visible
+    visibleCount = window.innerWidth < 768 ? 1 : 3;
+    // clamp index so you never overshoot
+    index = Math.min(index, cards.length - visibleCount);
     render();
   });
 
@@ -528,6 +533,7 @@ document.addEventListener('DOMContentLoaded', function(){
   render();
 });
 </script>
+
 
 
   <!-- AOS & Counter & Menu Script -->
