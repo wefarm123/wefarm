@@ -200,7 +200,7 @@ video::-moz-media-controls { display:none!important; }
 	background: rgb(255, 255, 255);
 	color: rgb(10, 5, 7);
 	border-radius: 1em;
-	overflow: visible;
+	overflow: hidden;
 
   display: grid;
   grid-template-areas: 
@@ -261,13 +261,11 @@ white-space: pre-wrap;
 
 @media (max-width: 768px) {
   /* UL और LI जैसा पहले बताया */
-  #cards {
-    display: block !important;
+   #cards {
     height: calc(100vh - 4rem);
     overflow-y: auto;
     scroll-snap-type: y mandatory;
-    padding-left: 1rem;    /* थोड़ा लेफ्ट पैडिंग */
-    padding-right: 1rem;   /* ताकि राइट से बिलकुल चिपके नहीं */
+    padding: 0 1rem;          /* left & right padding */
   }
 
   .card {
@@ -277,25 +275,32 @@ white-space: pre-wrap;
     margin-bottom: 1rem;   /* कार्डों में गैप */
   }
 
-  /* टेक्स्ट-wrap को ही स्क्रॉल होने दें, इमेज दिखती रहे */
   .card__content {
+    /* turn into a vertical flex column: text first, image below */
     display: flex;
     flex-direction: column;
     position: sticky;
     top: 4rem;
     height: calc(100vh - 4rem);
+    overflow: visible;  /* allow the image at bottom to show */
   }
 
-  /* टेक्स्ट वाला हिस्सा scrollable */
-  .text-wrapper {
-    overflow-y: auto;
-    padding-right: 1rem;   /* स्क्रॉलबार के लिए जगह */
+.text-wrapper {
+    padding: 1.5rem;           /* padding all around */
+    max-height: 50vh;          /* up to half the viewport */
+    overflow-y: auto;          /* scroll inside if content overflows */
+    padding-right: 1rem;       /* room for scrollbar */
   }
 
   /* इमेज को हमेशा नीचे दिखने दो */
-  .card__content figure {
-    flex-shrink: 0;
-    margin-top: auto;      /* टेक्स्ट के नीचे अटैच */
-    padding-bottom: 1rem;  /* थोड़ा स्पेस बॉटम */
+ .card__content figure {
+    flex-shrink: 0;           /* keep the figure at its height */
+    margin-top: auto;         /* push it to the bottom */
+    padding-bottom: 1rem;
   }
-}
+.card__content > figure > img {
+    width: auto;
+    height: 40vh;             /* only 40% of viewport high */
+    object-fit: contain;
+    object-position: center;
+  }
