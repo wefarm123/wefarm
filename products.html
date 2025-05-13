@@ -130,39 +130,35 @@
 
 <main>
 <ul id="cards">
-<!-- Card 1 (Updated with typewriter) -->
-<li class="card" id="card_1">
-  <div class="card__content">
-    <div class="text-wrapper">
-      <!-- Juice Name (static) -->
-      <h3 class="text-2xl font-bold text-green-600 mb-2 text-center">Green Detox</h3>
-
-      
-      <p
-        class="typewriter text-gray-600 mb-4 leading-relaxed"
-        data-text="
-Fresh Green Detox
-
+<!-- Card 1 (Updated with full details + data-desc) -->
+<li class="card" id="card_1"
+    data-desc="
 Our Green Detox combines cold-pressed Green Apple, Cucumber and Mint to flush out toxins, support healthy digestion and give your skin a radiant glow. Sustainably sourced and never from concentrate.
 
-Net Qty: 280 ml (USP: ₹0.71/ml)
+Net Qty: 280 ml (USP: ₹0.71/ml)
 MRP: ₹199 (Inclusive of All Taxes)
 
-Highlights: All Natural | Cold-Pressed | No Added Sugar | No Preservatives | Vegan | Glass Bottle
+Highlights: All Natural | Cold-Pressed | No Added Sugar | No Preservatives | Vegan | Glass Bottle
 
 Nutrition Facts (per 200 ml):
- • Calories: 80 kcal
- • Total Fat: 0 g
- • Carbohydrate: 18 g
- • Dietary Fiber: 2 g
- • Total Sugars: 16 g
- • Protein: 1 g
+• Calories: 80 kcal
+• Total Fat: 0 g
+• Carbohydrate: 18 g
+• Dietary Fiber: 2 g
+• Total Sugars: 16 g
+• Protein: 1 g
 
 Ingredients: Green Apple, Cucumber, Mint
 Allergen Info: None
-        "
-      ></p>
-
+">
+  <div class="card__content">
+    <div class="text-wrapper">
+      <!-- Juice Name -->
+      <h3 class="text-2xl font-bold text-green-600 mb-2 text-center">Green Detox</h3>
+      <!-- Subtitle -->
+      <h4 class="text-lg font-medium text-gray-700 mb-4 text-center">Fresh Green Detox</h4>
+      <!-- यहां टाइमराइटर से आएगा पूरा डिस्क्रिप्शन -->
+      <p class="desc text-gray-600 whitespace-pre-wrap"></p>
     </div>
     <figure>
       <img src="image/clm2.png" alt="Green Detox" class="object-contain w-full h-auto">
@@ -319,29 +315,36 @@ Allergen Info: None
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // हर .typewriter element के लिए typewriter effect
-  document.querySelectorAll('.typewriter').forEach(el => {
-    const fullText = el.dataset.text.trim().split('\n');
+  const cards = document.querySelectorAll('.card');
+
+  function typeWriter(el, text, delay = 40) {
     el.textContent = '';
-    let line = 0, char = 0;
-
-    function typeLine() {
-      if (line < fullText.length) {
-        if (char <= fullText[line].length) {
-          el.textContent = fullText.slice(0, line).join('\n') + '\n' + fullText[line].slice(0, char++);
-          setTimeout(typeLine, 30);
-        } else {
-          // अगले लाइन पे चलते हैं, थोड़ी देर बाद
-          line++;
-          char = 0;
-          setTimeout(typeLine, 200);
-        }
+    let i = 0;
+    (function step() {
+      if (i < text.length) {
+        el.textContent += text.charAt(i++);
+        setTimeout(step, delay);
       }
-    }
+    })();
+  }
 
-    typeLine();
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+        const card   = entry.target;
+        const descEl = card.querySelector('.desc');
+        const full   = card.dataset.desc.trim();
+        typeWriter(descEl, full);
+      }
+    });
+  }, {
+    root: null,
+    threshold: 0.5
   });
+
+  cards.forEach(card => observer.observe(card));
 });
+
 </script>
 
 </body>
