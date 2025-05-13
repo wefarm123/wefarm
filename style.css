@@ -320,3 +320,27 @@ white-space: pre-wrap;
   }
 }
 }
+
+#reviewsViewport {
+  /* hide overflow, only show one (or 2) cards at a time */
+  overflow: hidden;
+}
+
+#reviewsList {
+  display: flex;
+  /* we'll translate this UL left/right in JS */
+}
+
+.review-card {
+  /* fixed width so JS can compute step size */
+  width: 20rem; /* ~80 */
+  flex-shrink: 0;
+}
+
+/* on very narrow phones, make cards full width */
+@media (max-width: 480px) {
+  .review-card {
+    width: 100%;
+    margin-right: 1rem;
+  }
+}
