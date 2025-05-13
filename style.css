@@ -260,47 +260,64 @@ white-space: pre-wrap;
 
 
 @media (max-width: 768px) {
-  /* UL और LI जैसा पहले बताया */
-   #cards {
-    height: calc(100vh - 4rem);
+  /* 1) make the UL a full‐screen, padded, snap‐scroll container */
+  #cards {
+    display: block;                        /* stack cards vertically */
+    height: calc(100vh - 4rem);            /* full viewport minus header */
     overflow-y: auto;
     scroll-snap-type: y mandatory;
-    padding: 0 1rem;          /* left & right padding */
+    padding: 0 1rem;                       /* side padding so content isn’t flush */
   }
 
+  /* 2) each card fills the screen and snaps into view */
   .card {
-    display: block;
     height: calc(100vh - 4rem);
     scroll-snap-align: start;
-    margin-bottom: 1rem;   /* कार्डों में गैप */
+    margin-bottom: 1rem;                   /* gap between cards */
   }
 
+  /* 3) switch .card__content to a vertical flex column */
   .card__content {
-    /* turn into a vertical flex column: text first, image below */
     display: flex;
     flex-direction: column;
-    position: sticky;
-    top: 4rem;
+    position: sticky;                      /* keep it pinned at top */
+    top: 4rem;                             /* below the fixed header */
     height: calc(100vh - 4rem);
-    overflow: visible;  /* allow the image at bottom to show */
   }
 
-.text-wrapper {
-    padding: 1.5rem;           /* padding all around */
-    max-height: 50vh;          /* up to half the viewport */
-    overflow-y: auto;          /* scroll inside if content overflows */
-    padding-right: 1rem;       /* room for scrollbar */
+  /* 4) text wrapper scrolls, gets roomy padding */
+  .text-wrapper {
+    flex: 1 1 auto;                        /* take up leftover space */
+    overflow-y: auto;                      /* scroll inside if too long */
+    padding: 1.5rem 1rem;                  /* comfortable padding */
   }
 
-  /* इमेज को हमेशा नीचे दिखने दो */
- .card__content figure {
-    flex-shrink: 0;           /* keep the figure at its height */
-    margin-top: auto;         /* push it to the bottom */
-    padding-bottom: 1rem;
+  /* 5) titles go back to normal flow (no absolute overlap) */
+  .text-wrapper h3,
+  .text-wrapper h4 {
+    position: static;
+    transform: none;
+    text-align: center;
+    margin: 0.5rem 0;
   }
-.card__content > figure > img {
+
+  /* 6) make sure your description has breathing room */
+  .desc {
+    margin-bottom: 1rem;
+  }
+
+  /* 7) image container sticks below text */
+  .card__content figure {
+    flex: 0 0 auto;                        /* never shrink */
+    margin-top: auto;                      /* push to bottom */
+    padding: 1rem 0;                       /* some bottom space */
+  }
+
+  /* 8) shrink the image so it never disappears off‐screen */
+  .card__content figure img {
     width: auto;
-    height: 40vh;             /* only 40% of viewport high */
+    height: 30vh;                          /* about a third of viewport */
     object-fit: contain;
     object-position: center;
   }
+}
