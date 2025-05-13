@@ -217,7 +217,7 @@ video::-moz-media-controls { display:none!important; }
 	grid-area: text;
 	width: 80%;
 	place-self: start center;
-	text-align: center;
+	text-align: left;
 
 	display: grid;
 	gap: 1em;
