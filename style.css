@@ -321,36 +321,22 @@ white-space: pre-wrap;
 }
 }
 
-#reviewsViewport {
-  /* hide overflow, only show one (or 2) cards at a time */
-  overflow: hidden;
-}
 
-#reviewsList {
-  display: flex;
-  /* we'll translate this UL left/right in JS */
-}
 
-.review-card {
-  /* fixed width so JS can compute step size */
-  width: 20rem; /* ~80 */
-  flex-shrink: 0;
-}
-#google-reviews .review-card {
-  background: #f9fafb;
-  border-radius: .5rem;
-  padding: 1rem;
+/* DESKTOP: 3 across, with 1rem gutter */
+#reviewsList .review-card {
+  flex: 0 0 calc(33.333% - 1rem);
   margin-right: 1rem;
-  flex: 0 0 calc(25% - 1rem);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-#google-reviews .review-card:last-child {
+/* remove last-right-gap */
+#reviewsList .review-card:last-child {
   margin-right: 0;
 }
-/* on very narrow phones, make cards full width */
+
+/* MOBILE: 1 across */
 @media (max-width: 768px) {
-  #google-reviews .review-card {
+  #reviewsList .review-card {
     flex: 0 0 100%;
     margin-right: 0;
   }
