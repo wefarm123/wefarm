@@ -260,33 +260,42 @@ white-space: pre-wrap;
 
 
 @media (max-width: 768px) {
- 
+  /* UL और LI जैसा पहले बताया */
   #cards {
-    display: block !important;       
-    height: calc(100vh - 4rem);      
-    margin: 0;
-    padding: 0;
+    display: block !important;
+    height: calc(100vh - 4rem);
     overflow-y: auto;
     scroll-snap-type: y mandatory;
+    padding-left: 1rem;    /* थोड़ा लेफ्ट पैडिंग */
+    padding-right: 1rem;   /* ताकि राइट से बिलकुल चिपके नहीं */
   }
 
-  
   .card {
     display: block;
-    height: calc(100vh - 4rem);     
+    height: calc(100vh - 4rem);
     scroll-snap-align: start;
-    margin: 0;
-    padding: 0;
+    margin-bottom: 1rem;   /* कार्डों में गैप */
   }
 
-
+  /* टेक्स्ट-wrap को ही स्क्रॉल होने दें, इमेज दिखती रहे */
   .card__content {
     display: flex;
     flex-direction: column;
     position: sticky;
-    top: 4rem;                      
+    top: 4rem;
     height: calc(100vh - 4rem);
-    overflow: hidden;
+  }
+
+  /* टेक्स्ट वाला हिस्सा scrollable */
+  .text-wrapper {
+    overflow-y: auto;
+    padding-right: 1rem;   /* स्क्रॉलबार के लिए जगह */
+  }
+
+  /* इमेज को हमेशा नीचे दिखने दो */
+  .card__content figure {
+    flex-shrink: 0;
+    margin-top: auto;      /* टेक्स्ट के नीचे अटैच */
+    padding-bottom: 1rem;  /* थोड़ा स्पेस बॉटम */
   }
 }
-
