@@ -494,33 +494,40 @@ Allergen Info: None
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const list     = document.getElementById('reviewsList');
-    const prevBtn  = document.getElementById('reviewsPrev');
-    const nextBtn  = document.getElementById('reviewsNext');
-    const cards    = Array.from(list.children);
-    const cardWidth = cards[0].getBoundingClientRect().width + parseInt(getComputedStyle(cards[0]).marginRight);
+document.addEventListener('DOMContentLoaded', function(){
+  const track        = document.getElementById('reviews-track');
+  const cards        = track.children;
+  const prevBtn      = document.getElementById('prevBtn');
+  const nextBtn      = document.getElementById('nextBtn');
+  let visibleCount   = window.innerWidth < 768 ? 1 : 4;
+  let index          = 0;                     // which card is at the left
 
-    let index = 0;
-    const maxIndex = cards.length - 1;
+  function render(){
+    // how much to shift in percent
+    const shiftPct = (100 / visibleCount) * index;
+    track.style.transform = `translateX(-${shiftPct}%)`;
+  }
 
-    function update() {
-      // circular wrap
-      if (index < 0) index = maxIndex;
-      if (index > maxIndex) index = 0;
-      list.style.transform = `translateX(${-index * cardWidth}px)`;
-    }
+  nextBtn.addEventListener('click', ()=>{
+    index = (index + 1) % cards.length;
+    render();
+  });
 
-    prevBtn.addEventListener('click', () => {
-      index--;
-      update();
-    });
-    nextBtn.addEventListener('click', () => {
-      index++;
-      update();
-    });
+  prevBtn.addEventListener('click', ()=>{
+    index = (index - 1 + cards.length) % cards.length;
+    render();
+  });
+
+  window.addEventListener('resize', ()=>{
+    visibleCount = window.innerWidth < 768 ? 1 : 4;
+    render();
+  });
+
+  // initial paint
+  render();
 });
 </script>
+
 
   <!-- AOS & Counter & Menu Script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
